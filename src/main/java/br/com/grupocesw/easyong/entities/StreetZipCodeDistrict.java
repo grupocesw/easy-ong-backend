@@ -11,8 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -25,18 +24,18 @@ public class StreetZipCodeDistrict implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
-	@ManyToMany
-	@JoinTable(name = "street_zip_code_district_street", joinColumns = @JoinColumn(name = "street_id"), inverseJoinColumns = @JoinColumn(name = "street_zip_code_district_id"))
-	private Set<Street> streets = new HashSet<>();
-
-	@ManyToMany
-	@JoinTable(name = "street_zip_code_district_zip_code", joinColumns = @JoinColumn(name = "zip_code_id"), inverseJoinColumns = @JoinColumn(name = "street_zip_code_district_id"))
-	private Set<ZipCode> zipCodes = new HashSet<>();
-
-	@ManyToMany
-	@JoinTable(name = "street_zip_code_district_district", joinColumns = @JoinColumn(name = "district_id"), inverseJoinColumns = @JoinColumn(name = "street_zip_code_district_id"))
-	private Set<District> districts = new HashSet<>();
+	
+	@ManyToOne
+	@JoinColumn(name="street_id")
+	private Street street;
+	
+	@ManyToOne
+	@JoinColumn(name="zip_code_id")
+	private ZipCode zipCode;
+	
+	@ManyToOne
+	@JoinColumn(name="district_id")
+	private District district;
 	
 	@JsonIgnore
 	@OneToMany(targetEntity=Address.class, mappedBy="streetZipCodeDistrict", cascade=CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
@@ -44,6 +43,14 @@ public class StreetZipCodeDistrict implements Serializable {
 
 	public StreetZipCodeDistrict() {}
 	
+	public StreetZipCodeDistrict(Long id, Street street, ZipCode zipCode, District district) {
+		super();
+		this.id = id;
+		this.street = street;
+		this.zipCode = zipCode;
+		this.district = district;
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -52,20 +59,36 @@ public class StreetZipCodeDistrict implements Serializable {
 		this.id = id;
 	}
 
-	public Set<Street> getStreets() {
-		return streets;
-	}
-
-	public Set<ZipCode> getZipCodes() {
-		return zipCodes;
-	}
-
-	public Set<District> getDistricts() {
-		return districts;
-	}
-	
 	public Set<Address> getAddresses() {
 		return addresses;
+	}
+	
+	public void setAddresses(Set<Address> addresses) {
+		this.addresses = addresses;
+	}
+
+	public Street getStreet() {
+		return street;
+	}
+
+	public void setStreet(Street street) {
+		this.street = street;
+	}
+
+	public ZipCode getZipCode() {
+		return zipCode;
+	}
+
+	public void setZipCode(ZipCode zipCode) {
+		this.zipCode = zipCode;
+	}
+
+	public District getDistrict() {
+		return district;
+	}
+
+	public void setDistrict(District district) {
+		this.district = district;
 	}
 
 	@Override

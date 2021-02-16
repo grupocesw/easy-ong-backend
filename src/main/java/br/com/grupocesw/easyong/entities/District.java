@@ -4,14 +4,16 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
@@ -32,7 +34,7 @@ public class District implements Serializable {
 	private String name;
 	
 	@JsonIgnore
-	@ManyToMany(mappedBy = "districts")
+	@OneToMany(targetEntity=StreetZipCodeDistrict.class, mappedBy="district", cascade=CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	private Set<StreetZipCodeDistrict> streetZipCodeDistricts = new HashSet<>();
 	
 	@JsonIgnore
@@ -67,10 +69,6 @@ public class District implements Serializable {
 	
 	public Set<StreetZipCodeDistrict> getStreetZipCodeDistricts() {
 		return streetZipCodeDistricts;
-	}
-
-	public void setStreetZipCodeDistricts(Set<StreetZipCodeDistrict> streetZipCodeDistricts) {
-		this.streetZipCodeDistricts = streetZipCodeDistricts;
 	}
 
 	public City getCity() {

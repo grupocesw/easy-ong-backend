@@ -13,6 +13,8 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import br.com.grupocesw.easyong.enumerations.ContactType;
 
 @Entity
@@ -33,6 +35,7 @@ public class Contact implements Serializable {
 	@Column(name = "content", nullable = false, length = 255)
 	private String content;
 	
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name="ngo_id")
 	private Ngo ngo;

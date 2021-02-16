@@ -4,12 +4,14 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
@@ -28,9 +30,9 @@ public class Street implements Serializable {
 	@Size(min = 3, max = 255, message = "Name must contain between 3 and 255 characters")
 	@Column(name = "name", nullable = false, length = 255)
 	private String name;
-
+	
 	@JsonIgnore
-	@ManyToMany(mappedBy = "streets")
+	@OneToMany(targetEntity=StreetZipCodeDistrict.class, mappedBy="street", cascade=CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	private Set<StreetZipCodeDistrict> streetZipCodeDistricts = new HashSet<>();
 
 	public Street() {
@@ -56,10 +58,6 @@ public class Street implements Serializable {
 
 	public String setName(String name) {
 		return name;
-	}
-
-	public Set<StreetZipCodeDistrict> getStreetZipCodeDistricts() {
-		return streetZipCodeDistricts;
 	}
 
 	public void setStreetZipCodeDistricts(Set<StreetZipCodeDistrict> streetZipCodeDistricts) {

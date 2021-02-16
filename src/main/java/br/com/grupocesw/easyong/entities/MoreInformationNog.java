@@ -12,6 +12,8 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class MoreInformationNog implements Serializable {
 
@@ -26,6 +28,7 @@ public class MoreInformationNog implements Serializable {
 	@Column(name = "information", nullable = false, length = 255)
 	private String information;
 
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name="ngo_id")
 	private Ngo ngo;
