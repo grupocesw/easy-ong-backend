@@ -16,7 +16,7 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-public class Notification implements Serializable {
+public class ZipCode implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -24,20 +24,22 @@ public class Notification implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@NotEmpty(message = "Title required")
-	@Size(min = 3, max = 100, message = "Title must contain between 3 and 100 characters")
-	@Column(name = "title", nullable = false, length = 100)
-	private String title;
-
-	@NotEmpty(message = "Name required")
-	@Column(name = "description", nullable = false, columnDefinition = "TEXT")
-	private String description;
-
+	@NotEmpty(message = "Number required")
+	@Size(min = 8, max = 8, message = "Number must contain 8 digits")
+	@Column(name = "number", nullable = false, length = 8)
+	private String number;
+	
 	@JsonIgnore
-	@ManyToMany(mappedBy = "notifications")
-	private Set<User> users = new HashSet<>();
+	@ManyToMany(mappedBy = "zipCodes")
+	private Set<StreetZipCodeDistrict> streetZipCodeDistricts = new HashSet<>();
 
-	public Notification() {}
+	public ZipCode() {}
+
+	public ZipCode(Long id, String number) {
+		super();
+		this.id = id;
+		this.number = number;
+	}
 
 	public Long getId() {
 		return id;
@@ -47,24 +49,20 @@ public class Notification implements Serializable {
 		this.id = id;
 	}
 
-	public Set<User> getUsers() {
-		return users;
+	public String getNumber() {
+		return number;
+	}
+	
+	public void setNumber(String number) {
+		this.number = number;
+	}
+	
+	public Set<StreetZipCodeDistrict> getStreetZipCodeDistricts() {
+		return streetZipCodeDistricts;
 	}
 
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
+	public void setStreetZipCodeDistricts(Set<StreetZipCodeDistrict> streetZipCodeDistricts) {
+		this.streetZipCodeDistricts = streetZipCodeDistricts;
 	}
 
 	@Override
@@ -83,7 +81,7 @@ public class Notification implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Notification other = (Notification) obj;
+		ZipCode other = (ZipCode) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

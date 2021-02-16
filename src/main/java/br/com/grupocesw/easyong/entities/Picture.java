@@ -36,7 +36,7 @@ public class Picture implements Serializable {
 	
 	@JsonIgnore
 	@ManyToMany(mappedBy = "pictures")
-	private Set<Ngo> ngos;
+	private Set<Ngo> ngos = new HashSet<>();
 	
 	public Picture() {}
 	

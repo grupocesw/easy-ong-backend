@@ -88,18 +88,18 @@ public class User implements Serializable {
 	
 	@ManyToMany
 	@JoinTable(name = "user_social_cause", joinColumns= @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "social_cause_id"))
-	private Set<SocialCause> causes;
+	private Set<SocialCause> causes = new HashSet<>();
 	
 	@ManyToMany
 	@JoinTable(name = "user_favorite_ngo", joinColumns= @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "ngo_id"))
-	private Set<Ngo> favoriteNgos;
+	private Set<Ngo> favoriteNgos = new HashSet<>();
 	
 	@ManyToMany
 	@JoinTable(name = "user_notification", joinColumns= @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "notification_id"))
-	private Set<Notification> notifications;
+	private Set<Notification> notifications = new HashSet<>();
 	
 	@OneToMany(targetEntity=NgoSuggestion.class, mappedBy="user",cascade=CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-	private Set<NgoSuggestion> NgoSuggestions;
+	private Set<NgoSuggestion> NgoSuggestions = new HashSet<>();
 
 	public User() {}
 
@@ -111,7 +111,6 @@ public class User implements Serializable {
 		this.gender = gender;
 		this.login = login;
 		this.setPassword(password);
-		this.causes = new HashSet<>();
 	}
 
 	public Long getId() {

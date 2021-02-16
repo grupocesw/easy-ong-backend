@@ -2,6 +2,7 @@ package br.com.grupocesw.easyong.entities;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -42,14 +43,14 @@ public class Ngo implements Serializable {
 	@NotEmpty(message="CNPJ required")
 	@Size(min = 14, max = 14, message = "CNPJ must contain 14 digits")
 	@Column(name = "cnpj", nullable = false, length = 14)
-	private Integer cnpj;
+	private String cnpj;
 	
 	@NotEmpty(message="Name required")
 	@Column(name = "description", nullable = false, columnDefinition="TEXT")
 	private String description;
 	
 	@Column(name = "activated", nullable = false, columnDefinition="boolean default false")
-	private Boolean activated;
+	private Boolean activated = true;
 
 	@CreationTimestamp
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
@@ -61,34 +62,36 @@ public class Ngo implements Serializable {
 	@Column(name = "update_at", columnDefinition = "TIMESTAMP")
 	private LocalDateTime updateAt;
 	
-	@OneToOne(mappedBy = "ngo", cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id", referencedColumnName = "id")
 	private Address address;
 	
 	@OneToMany(targetEntity=Contact.class, mappedBy="ngo",cascade=CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-	private Set<Contact> contacts;
+	private Set<Contact> contacts = new HashSet<>();
 	
 	@OneToMany(targetEntity=MoreInformationNog.class, mappedBy="ngo",cascade=CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-	private Set<MoreInformationNog> moreInformations;
+	private Set<MoreInformationNog> moreInformations = new HashSet<>();
 	
 	@ManyToMany
 	@JoinTable(name = "ngo_social_cause", joinColumns= @JoinColumn(name = "ngo_id"), inverseJoinColumns = @JoinColumn(name = "social_cause_id"))
-	private Set<SocialCause> causes;
+	private Set<SocialCause> causes = new HashSet<>();
 	
 	@ManyToMany
 	@JoinTable(name = "ngo_picture", joinColumns= @JoinColumn(name = "ngo_id"), inverseJoinColumns = @JoinColumn(name = "picture_id"))
-	private Set<Picture> pictures;
+	private Set<Picture> pictures = new HashSet<>();
 	
 	@JsonIgnore
 	@ManyToMany(mappedBy = "favoriteNgos")
-	private Set<User> users;
+	private Set<User> users = new HashSet<>();
 
 	public Ngo() {}
 	
-	public Ngo(Long id, String name, Integer cnpj, String description) {
+	public Ngo(Long id, String name, String cnpj, Address address, String description) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.cnpj = cnpj;
+		this.address = address;
 		this.description = description;
 	}
 
@@ -108,11 +111,11 @@ public class Ngo implements Serializable {
 		this.name = name;
 	}
 	
-	public Integer getCnpj() {
+	public String getCnpj() {
 		return cnpj;
 	}
 
-	public void setCnpj(Integer cnpj) {
+	public void setCnpj(String cnpj) {
 		this.cnpj = cnpj;
 	}
 
