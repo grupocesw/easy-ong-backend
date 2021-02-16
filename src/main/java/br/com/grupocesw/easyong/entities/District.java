@@ -35,6 +35,7 @@ public class District implements Serializable {
 	@ManyToMany(mappedBy = "districts")
 	private Set<StreetZipCodeDistrict> streetZipCodeDistricts = new HashSet<>();
 	
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name="city_id")
 	private City city;

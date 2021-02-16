@@ -15,6 +15,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class StreetZipCodeDistrict implements Serializable {
 
@@ -36,6 +38,7 @@ public class StreetZipCodeDistrict implements Serializable {
 	@JoinTable(name = "street_zip_code_district_district", joinColumns = @JoinColumn(name = "district_id"), inverseJoinColumns = @JoinColumn(name = "street_zip_code_district_id"))
 	private Set<District> districts = new HashSet<>();
 	
+	@JsonIgnore
 	@OneToMany(targetEntity=Address.class, mappedBy="streetZipCodeDistrict", cascade=CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	private Set<Address> addresses = new HashSet<>();
 

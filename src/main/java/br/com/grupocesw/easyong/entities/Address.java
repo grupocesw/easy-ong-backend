@@ -43,7 +43,6 @@ public class Address implements Serializable {
 	@OneToOne(mappedBy = "address", cascade = CascadeType.ALL)
 	private Ngo ngo;
 	
-	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "street_zip_code_district_id")
 	private StreetZipCodeDistrict streetZipCodeDistrict;
