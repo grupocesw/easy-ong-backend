@@ -83,8 +83,7 @@ public class User implements Serializable {
 	@Column(name = "checked_at", columnDefinition = "TIMESTAMP")
 	private LocalDateTime checkedAt;
 	
-	@OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "picture_id", referencedColumnName = "id")
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
 	private Picture picture;
 	
 	@ManyToMany

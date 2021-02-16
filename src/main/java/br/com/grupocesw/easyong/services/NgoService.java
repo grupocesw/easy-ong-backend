@@ -41,10 +41,10 @@ public class NgoService {
 
 	public Ngo update(Long id, Ngo ngo) {
 		try {
-			Ngo ngoEntity = repository.getOne(id);
-			this.updateData(ngoEntity, ngo);
+			Ngo entity = repository.getOne(id);
+			this.updateData(entity, ngo);
 
-			return repository.save(ngoEntity);
+			return repository.save(entity);
 		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException(id);
 		}		

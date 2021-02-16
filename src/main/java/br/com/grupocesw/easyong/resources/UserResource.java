@@ -27,7 +27,7 @@ import io.swagger.annotations.ApiResponses;
 public class UserResource {
 
 	@Autowired
-	private UserService us;
+	private UserService service;
 	
 	@ApiResponses(value = {
 	    @ApiResponse(code = 200, message = "Retorna a lista de usuário"),
@@ -37,7 +37,7 @@ public class UserResource {
 	})
 	@GetMapping
 	public ResponseEntity<List<UserDTO>> list() {
-		List<User> users = us.findAll();
+		List<User> users = service.findAll();
 		
 		List<UserDTO> usersDTO = users.stream()
 				.map(o -> new UserDTO(o))
@@ -49,9 +49,9 @@ public class UserResource {
 	@PostMapping
 	public ResponseEntity<UserDTO> create(@RequestBody User user) {
 		
-		User userSalvo = us.insert(user);
+		User userSalved = service.insert(user);
 		
-		UserDTO userDTO = new UserDTO(userSalvo);
+		UserDTO userDTO = new UserDTO(userSalved);
 		
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(userDTO.getId()).toUri();
@@ -61,7 +61,7 @@ public class UserResource {
 	
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<UserDTO> retrieve(@PathVariable Long id) {
-		User user = us.findById(id);
+		User user = service.findById(id);
 		
 		UserDTO userDTO = new UserDTO(user);
 		
@@ -70,7 +70,7 @@ public class UserResource {
 	
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<UserDTO> update(@PathVariable Long id, @RequestBody User user) {
-		user = us.update(id, user);
+		user = service.update(id, user);
 		
 		UserDTO userDTO = new UserDTO(user);
 		
@@ -79,7 +79,7 @@ public class UserResource {
 	
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<Void> delete(@PathVariable Long id) {
-		us.delete(id);
+		service.delete(id);
 		
 		return ResponseEntity.noContent().build();
 	}

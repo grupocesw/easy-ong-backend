@@ -41,10 +41,10 @@ public class UserService {
 
 	public User update(Long id, User user) {
 		try {
-			User userEntity = repository.getOne(id);
-			this.updateData(userEntity, user);
+			User entity = repository.getOne(id);
+			this.updateData(entity, user);
 
-			return repository.save(userEntity);
+			return repository.save(entity);
 		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException(id);
 		}		

@@ -41,10 +41,10 @@ public class FrequentlyAskedQuestionService {
 
 	public FrequentlyAskedQuestion update(Long id, FrequentlyAskedQuestion faq) {
 		try {
-			FrequentlyAskedQuestion faqEntity = repository.getOne(id);
-			this.updateData(faqEntity, faq);
+			FrequentlyAskedQuestion entity = repository.getOne(id);
+			this.updateData(entity, faq);
 
-			return repository.save(faqEntity);
+			return repository.save(entity);
 		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException(id);
 		}		

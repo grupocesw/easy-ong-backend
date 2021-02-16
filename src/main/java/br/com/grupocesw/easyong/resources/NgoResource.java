@@ -27,7 +27,7 @@ import io.swagger.annotations.ApiResponses;
 public class NgoResource {
 
 	@Autowired
-	private NgoService us;
+	private NgoService service;
 	
 	@ApiResponses(value = {
 	    @ApiResponse(code = 200, message = "Retorna a lista de ONG"),
@@ -37,7 +37,7 @@ public class NgoResource {
 	})
 	@GetMapping
 	public ResponseEntity<List<NgoDTO>> list() {
-		List<Ngo> ngos = us.findAll();
+		List<Ngo> ngos = service.findAll();
 		
 		List<NgoDTO> ngosDTO = ngos.stream()
 				.map(o -> new NgoDTO(o))
@@ -49,7 +49,7 @@ public class NgoResource {
 	@PostMapping
 	public ResponseEntity<NgoDTO> create(@RequestBody Ngo ngo) {
 		
-		Ngo ngoSalvo = us.insert(ngo);
+		Ngo ngoSalvo = service.insert(ngo);
 		
 		NgoDTO ngoDTO = new NgoDTO(ngoSalvo);
 		
@@ -61,7 +61,7 @@ public class NgoResource {
 	
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<NgoDTO> retrieve(@PathVariable Long id) {
-		Ngo ngo = us.findById(id);
+		Ngo ngo = service.findById(id);
 		
 		NgoDTO ngoDTO = new NgoDTO(ngo);
 		
@@ -70,7 +70,7 @@ public class NgoResource {
 	
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<NgoDTO> update(@PathVariable Long id, @RequestBody Ngo ngo) {
-		ngo = us.update(id, ngo);
+		ngo = service.update(id, ngo);
 		
 		NgoDTO ngoDTO = new NgoDTO(ngo);
 		
@@ -79,7 +79,7 @@ public class NgoResource {
 	
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<Void> delete(@PathVariable Long id) {
-		us.delete(id);
+		service.delete(id);
 		
 		return ResponseEntity.noContent().build();
 	}
