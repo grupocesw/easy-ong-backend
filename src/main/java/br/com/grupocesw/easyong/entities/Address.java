@@ -9,9 +9,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Address implements Serializable {
@@ -22,62 +24,37 @@ public class Address implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotEmpty(message = "Street required")
-	@Size(min = 3, max = 255, message = "Street must contain between 3 and 255 characters")
-	@Column(name = "street", nullable = false, length = 255)
-	private String street;
-
-	@NotEmpty(message = "Number required")
-	@Size(max = 5, message = "Number must contain a maximum of 5 digits")
-	@Column(name = "number", nullable = false, length = 5)
+	@Column(name = "number", nullable = true, length = 5)
 	private Integer number;
-
-	@NotEmpty(message = "ZipCode required")
-	@Size(min = 8, max = 8, message = "Number must contain a maximum of 8 digits")
-	@Column(name = "zip_code", nullable = false, length = 8)
-	private Integer zipCode;
+	
+	@Size(max = 255, message = "Complement must contain a maximum of 255 digits")
+	@Column(name = "complement", nullable = true, length = 255)
+	private String complement;
 
 	@Size(max = 12, message = "Latitude must contain a maximum of 12 digits")
 	@Column(name = "latitude", nullable = true, length = 12)
-	private Double latitude;
+	private String latitude;
 
 	@Size(max = 12, message = "Longitude must contain a maximum of 12 digits")
 	@Column(name = "longitude", nullable = true, length = 12)
-	private Double longitude;
-
-	@NotEmpty(message = "City required")
-	@Size(max = 100, message = "City must contain a maximum of 100 characters")
-	@Column(name = "city", nullable = false, length = 100)
-	private String city;
-
-	@NotEmpty(message = "State required")
-	@Size(max = 100, message = "State must contain a maximum of 100 characters")
-	@Column(name = "state", nullable = false, length = 100)
-	private String state;
-
-	@NotEmpty(message = "Country required")
-	@Size(max = 100, message = "Country must contain a maximum of 100 characters")
-	@Column(name = "country", nullable = false, length = 100)
-	private String country;
+	private String longitude;
 	
-	@OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "ong_id", referencedColumnName = "id")
+	@JsonIgnore
+	@OneToOne(mappedBy = "address", cascade = CascadeType.ALL)
 	private Ngo ngo;
+	
+	@JsonIgnore
+	@ManyToOne
+	@JoinColumn(name = "street_zip_code_district_id")
+	private StreetZipCodeDistrict streetZipCodeDistrict;
 
 	public Address() {}
 
-	public Address(Long id, String street, Integer number, Integer zipCode, Double latitude, Double longitude,
-			String city, String state, String country) {
+	public Address(Long id, Integer number, StreetZipCodeDistrict streetZipCodeDistrict) {
 		super();
 		this.id = id;
-		this.street = street;
 		this.number = number;
-		this.zipCode = zipCode;
-		this.latitude = latitude;
-		this.longitude = longitude;
-		this.city = city;
-		this.state = state;
-		this.country = country;
+		this.streetZipCodeDistrict = streetZipCodeDistrict;
 	}
 
 	public Long getId() {
@@ -88,14 +65,6 @@ public class Address implements Serializable {
 		this.id = id;
 	}
 
-	public String getStreet() {
-		return street;
-	}
-
-	public void setStreet(String street) {
-		this.street = street;
-	}
-
 	public Integer getNumber() {
 		return number;
 	}
@@ -104,60 +73,44 @@ public class Address implements Serializable {
 		this.number = number;
 	}
 
-	public Integer getZipCode() {
-		return zipCode;
+	public String getComplement() {
+		return complement;
 	}
 
-	public void setZipCode(Integer zipCode) {
-		this.zipCode = zipCode;
+	public void setComplement(String complement) {
+		this.complement = complement;
 	}
 
-	public Double getLatitude() {
+	public String getLatitude() {
 		return latitude;
 	}
 
-	public void setLatitude(Double latitude) {
+	public void setLatitude(String latitude) {
 		this.latitude = latitude;
 	}
 
-	public Double getLongitude() {
+	public String getLongitude() {
 		return longitude;
 	}
 
-	public void setLongitude(Double longitude) {
+	public void setLongitude(String longitude) {
 		this.longitude = longitude;
 	}
 
-	public String getCity() {
-		return city;
-	}
-
-	public void setCity(String city) {
-		this.city = city;
-	}
-
-	public String getState() {
-		return state;
-	}
-
-	public void setState(String state) {
-		this.state = state;
-	}
-
-	public String getCountry() {
-		return country;
-	}
-
-	public void setCountry(String country) {
-		this.country = country;
-	}
-	
 	public Ngo getNgo() {
 		return ngo;
 	}
 	
 	public void setNgo(Ngo ngo) {
 		this.ngo = ngo;
+	}
+
+	public StreetZipCodeDistrict getStreetZipCodeDistrict() {
+		return streetZipCodeDistrict;
+	}
+
+	public void setStreetZipCodeDistrict(StreetZipCodeDistrict streetZipCodeDistrict) {
+		this.streetZipCodeDistrict = streetZipCodeDistrict;
 	}
 
 	@Override

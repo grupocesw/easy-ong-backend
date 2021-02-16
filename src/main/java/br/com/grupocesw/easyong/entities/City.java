@@ -7,44 +7,46 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotEmpty;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.validation.constraints.Size;
 
 @Entity
-public class Picture implements Serializable {
-	
+public class City implements Serializable {
+
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
-	@NotEmpty(message="Name required")
-	@Column(name = "name", nullable = false)
+
+	@NotEmpty(message = "Name required")
+	@Size(min = 3, max = 255, message = "Name must contain between 3 and 255 characters")
+	@Column(name = "name", nullable = false, length = 255)
 	private String name;
 	
-	@OneToOne(mappedBy = "picture", cascade = CascadeType.ALL)
-	private User user;
+	@OneToMany(targetEntity=District.class, mappedBy="city",cascade=CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	private Set<District> districts = new HashSet<>();
 	
-	@JsonIgnore
-	@ManyToMany(mappedBy = "pictures")
-	private Set<Ngo> ngos = new HashSet<>();
-	
-	public Picture() {}
-	
-	public Picture(Long id, String name) {
+	@ManyToOne
+	@JoinColumn(name="state_id")
+	private State state;
+
+	public City() {}
+
+	public City(Long id, String name, State state) {
 		super();
 		this.id = id;
 		this.name = name;
-		this.ngos = new HashSet<>();
+		this.state = state;
 	}
-	
+
 	public Long getId() {
 		return id;
 	}
@@ -52,21 +54,29 @@ public class Picture implements Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
+	
+	public String setName(String name) {
+		return name;
+	}
 
-	public void setName(String name) {
-		this.name = name;
+	public Set<District> getDistricts() {
+		return districts;
 	}
-	
-	public Set<Ngo> getNgos() {
-		return ngos;
+
+	public void setDistricts(Set<District> districts) {
+		this.districts = districts;
 	}
-	
-	public User getUser() {
-		return user;
+
+	public State getState() {
+		return state;
+	}
+
+	public void setState(State state) {
+		this.state = state;
 	}
 
 	@Override
@@ -76,7 +86,7 @@ public class Picture implements Serializable {
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -85,7 +95,7 @@ public class Picture implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Picture other = (Picture) obj;
+		City other = (City) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

@@ -16,28 +16,31 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-public class Notification implements Serializable {
+public class Street implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
-	@NotEmpty(message = "Title required")
-	@Size(min = 3, max = 100, message = "Title must contain between 3 and 100 characters")
-	@Column(name = "title", nullable = false, length = 100)
-	private String title;
 
 	@NotEmpty(message = "Name required")
-	@Column(name = "description", nullable = false, columnDefinition = "TEXT")
-	private String description;
+	@Size(min = 3, max = 255, message = "Name must contain between 3 and 255 characters")
+	@Column(name = "name", nullable = false, length = 255)
+	private String name;
 
 	@JsonIgnore
-	@ManyToMany(mappedBy = "notifications")
-	private Set<User> users = new HashSet<>();
+	@ManyToMany(mappedBy = "streets")
+	private Set<StreetZipCodeDistrict> streetZipCodeDistricts = new HashSet<>();
 
-	public Notification() {}
+	public Street() {
+	}
+
+	public Street(Long id, String name) {
+		super();
+		this.id = id;
+		this.name = name;
+	}
 
 	public Long getId() {
 		return id;
@@ -47,24 +50,20 @@ public class Notification implements Serializable {
 		this.id = id;
 	}
 
-	public Set<User> getUsers() {
-		return users;
+	public String getName() {
+		return name;
 	}
 
-	public String getTitle() {
-		return title;
+	public String setName(String name) {
+		return name;
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
+	public Set<StreetZipCodeDistrict> getStreetZipCodeDistricts() {
+		return streetZipCodeDistricts;
 	}
 
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
+	public void setStreetZipCodeDistricts(Set<StreetZipCodeDistrict> streetZipCodeDistricts) {
+		this.streetZipCodeDistricts = streetZipCodeDistricts;
 	}
 
 	@Override
@@ -83,7 +82,7 @@ public class Notification implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Notification other = (Notification) obj;
+		Street other = (Street) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

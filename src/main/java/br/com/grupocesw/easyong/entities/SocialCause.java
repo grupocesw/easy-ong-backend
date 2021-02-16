@@ -31,7 +31,7 @@ public class SocialCause implements Serializable {
 	
 	@JsonIgnore
 	@ManyToMany(mappedBy = "causes")
-	private Set<User> users;
+	private Set<User> users = new HashSet<>();
 	
 	@JsonIgnore
 	@ManyToMany(mappedBy = "causes")
