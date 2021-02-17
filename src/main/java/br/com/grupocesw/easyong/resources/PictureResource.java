@@ -2,6 +2,8 @@ package br.com.grupocesw.easyong.resources;
 
 import java.io.IOException;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import br.com.grupocesw.easyong.entities.Picture;
 import br.com.grupocesw.easyong.services.PictureService;
 
 @RequestMapping(value = "/api/pictures")
@@ -32,11 +33,10 @@ public class PictureResource {
 	}
 
 	@ResponseBody
-	@GetMapping(value = "/{id}", produces = { MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })
-	public byte[] showPicture(@PathVariable("id") Long id) throws IOException {
-		Picture picture = service.findById(id);
-
-		return service.getPicture(picture.getName());
+	@GetMapping(value = "/{pictureName}", produces = { MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })
+	public byte[] showPicture(@PathVariable("pictureName") String pictureName, HttpServletRequest request) throws IOException {
+//		Picture picture = service.findById(id);
+		return service.getPicture(pictureName);
 	}
 
 }

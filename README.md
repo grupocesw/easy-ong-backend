@@ -10,16 +10,10 @@ Dependencies Installed
 - Validator
 - H2 Database
 
-
 Dependencies to Install
 - Swagger 2
 - Redis
 - Kafka
-
-
-grupocesw
-grupocesw@2020
-
 
 Access in browser H2 Database Terminal
 
@@ -28,3 +22,16 @@ http://localhost:8080/h2-console/login.jsp
 JDBC URL: jdbc:h2:mem:easyong
 User: sa
 Password:
+
+Build
+Run As -> 5. Maven build..
+Goal: clean package
+Profiles: pom.xml
+Offline: true
+Skip Tests: true
+Run
+
+java -jar easy-ong-0.0.1-SNAPSHOT.jar
+
+Documentation
+http://localhost:8080/swagger-ui.html

@@ -17,7 +17,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -83,8 +82,9 @@ public class User implements Serializable {
 	@Column(name = "checked_at", columnDefinition = "TIMESTAMP")
 	private LocalDateTime checkedAt;
 	
-	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-	private Picture picture;
+	@ManyToMany
+	@JoinTable(name = "user_picture", joinColumns= @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "picture_id"))
+	private Set<Picture> pictures = new HashSet<>();
 	
 	@ManyToMany
 	@JoinTable(name = "user_social_cause", joinColumns= @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "social_cause_id"))
@@ -186,12 +186,8 @@ public class User implements Serializable {
 		this.checkedAt = checkedAt;
 	}
 	
-	public Picture getPicture() {
-		return picture;
-	}
-
-	public void setPicture(Picture picture) {
-		this.picture = picture;
+	public Set<Picture> getPictures() {
+		return pictures;
 	}
 
 	public Set<SocialCause> getCauses() {

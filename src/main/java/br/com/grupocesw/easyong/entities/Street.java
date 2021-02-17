@@ -11,6 +11,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
@@ -25,23 +27,32 @@ public class Street implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
+	
 	@NotEmpty(message = "Name required")
 	@Size(min = 3, max = 255, message = "Name must contain between 3 and 255 characters")
 	@Column(name = "name", nullable = false, length = 255)
 	private String name;
 	
+	@ManyToOne
+	@JoinColumn(name="zip_code_id")
+	private ZipCode zipCode;
+	
+	@ManyToOne
+	@JoinColumn(name="district_id")
+	private District district;
+	
 	@JsonIgnore
-	@OneToMany(targetEntity=StreetZipCodeDistrict.class, mappedBy="street", cascade=CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-	private Set<StreetZipCodeDistrict> streetZipCodeDistricts = new HashSet<>();
+	@OneToMany(targetEntity=Address.class, mappedBy="street", cascade=CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	private Set<Address> addresses = new HashSet<>();
 
-	public Street() {
-	}
-
-	public Street(Long id, String name) {
+	public Street() {}
+	
+	public Street(Long id, String name, ZipCode zipCode, District district) {
 		super();
 		this.id = id;
 		this.name = name;
+		this.zipCode = zipCode;
+		this.district = district;
 	}
 
 	public Long getId() {
@@ -59,9 +70,29 @@ public class Street implements Serializable {
 	public String setName(String name) {
 		return name;
 	}
+	
+	public Set<Address> getAddresses() {
+		return addresses;
+	}
+	
+	public void setAddresses(Set<Address> addresses) {
+		this.addresses = addresses;
+	}
 
-	public void setStreetZipCodeDistricts(Set<StreetZipCodeDistrict> streetZipCodeDistricts) {
-		this.streetZipCodeDistricts = streetZipCodeDistricts;
+	public ZipCode getZipCode() {
+		return zipCode;
+	}
+
+	public void setZipCode(ZipCode zipCode) {
+		this.zipCode = zipCode;
+	}
+
+	public District getDistrict() {
+		return district;
+	}
+
+	public void setDistrict(District district) {
+		this.district = district;
 	}
 
 	@Override

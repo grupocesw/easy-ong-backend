@@ -32,8 +32,8 @@ public class ZipCode implements Serializable {
 	private String number;
 	
 	@JsonIgnore
-	@OneToMany(targetEntity=StreetZipCodeDistrict.class, mappedBy="zipCode", cascade=CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-	private Set<StreetZipCodeDistrict> streetZipCodeDistricts = new HashSet<>();
+	@OneToMany(targetEntity=Street.class, mappedBy="zipCode", cascade=CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	private Set<Street> streets = new HashSet<>();
 
 	public ZipCode() {}
 
@@ -59,8 +59,8 @@ public class ZipCode implements Serializable {
 		this.number = number;
 	}
 
-	public void setStreetZipCodeDistricts(Set<StreetZipCodeDistrict> streetZipCodeDistricts) {
-		this.streetZipCodeDistricts = streetZipCodeDistricts;
+	public void setStreets(Set<Street> streets) {
+		this.streets = streets;
 	}
 
 	@Override

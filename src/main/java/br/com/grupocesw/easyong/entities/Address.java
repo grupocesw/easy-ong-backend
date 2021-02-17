@@ -45,15 +45,15 @@ public class Address implements Serializable {
 	
 	@ManyToOne
 	@JoinColumn(name = "street_zip_code_district_id")
-	private StreetZipCodeDistrict streetZipCodeDistrict;
+	private Street street;
 
 	public Address() {}
 
-	public Address(Long id, Integer number, StreetZipCodeDistrict streetZipCodeDistrict) {
+	public Address(Long id, Integer number, Street street) {
 		super();
 		this.id = id;
 		this.number = number;
-		this.streetZipCodeDistrict = streetZipCodeDistrict;
+		this.street = street;
 	}
 
 	public Long getId() {
@@ -104,12 +104,12 @@ public class Address implements Serializable {
 		this.ngo = ngo;
 	}
 
-	public StreetZipCodeDistrict getStreetZipCodeDistrict() {
-		return streetZipCodeDistrict;
+	public Street getStreet() {
+		return street;
 	}
 
-	public void setStreetZipCodeDistrict(StreetZipCodeDistrict streetZipCodeDistrict) {
-		this.streetZipCodeDistrict = streetZipCodeDistrict;
+	public void setStreet(Street street) {
+		this.street = street;
 	}
 
 	@Override

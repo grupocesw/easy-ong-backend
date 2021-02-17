@@ -34,8 +34,8 @@ public class District implements Serializable {
 	private String name;
 	
 	@JsonIgnore
-	@OneToMany(targetEntity=StreetZipCodeDistrict.class, mappedBy="district", cascade=CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-	private Set<StreetZipCodeDistrict> streetZipCodeDistricts = new HashSet<>();
+	@OneToMany(targetEntity=Street.class, mappedBy="district", cascade=CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	private Set<Street> streets = new HashSet<>();
 	
 	@JsonIgnore
 	@ManyToOne
@@ -67,8 +67,8 @@ public class District implements Serializable {
 		return name;
 	}
 	
-	public Set<StreetZipCodeDistrict> getStreetZipCodeDistricts() {
-		return streetZipCodeDistricts;
+	public Set<Street> getStreets() {
+		return streets;
 	}
 
 	public City getCity() {

@@ -103,7 +103,7 @@ public class PictureService {
         return fileName;
     }
 
-    public  byte[] getPicture(String pictureName) throws IOException {
+    public byte[] getPicture(String pictureName) throws IOException {
         Path destination = Paths.get(storageDirectoryPath + pictureName);
         
         return IOUtils.toByteArray(destination.toUri());

@@ -2,6 +2,7 @@ package br.com.grupocesw.easyong.dto;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 import br.com.grupocesw.easyong.entities.SocialCause;
@@ -18,6 +19,7 @@ public class UserDTO implements Serializable {
 	private Gender gender;
 	private String login;
 	private Set<SocialCause> causes;
+	private Set<PictureDTO> pictures = new HashSet<>();
 
 	public UserDTO() {}
 
@@ -27,7 +29,8 @@ public class UserDTO implements Serializable {
 		birthday = user.getBirthday();
 		gender = user.getGender();
 		login = user.getLogin();
-		causes = user.getCauses();		
+		causes = user.getCauses();
+		user.getPictures().forEach(picture -> this.pictures.add(new PictureDTO(picture)));
 	}
 
 	public Long getId() {
@@ -76,6 +79,14 @@ public class UserDTO implements Serializable {
 
 	public void setCauses(Set<SocialCause> causes) {
 		this.causes = causes;
+	}
+
+	public Set<PictureDTO> getPictureDTOs() {
+		return pictures;
+	}
+
+	public void setPictureDTOs(Set<PictureDTO> pictures) {
+		this.pictures = pictures;
 	}
 
 }

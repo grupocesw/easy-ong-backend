@@ -4,15 +4,12 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToOne;
 import javax.validation.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -30,9 +27,9 @@ public class Picture implements Serializable {
 	@Column(name = "name", nullable = false)
 	private String name;
 	
-	@OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-	private User user;
+	@JsonIgnore
+	@ManyToMany(mappedBy = "pictures")
+	private Set<User> users = new HashSet<>();
 	
 	@JsonIgnore
 	@ManyToMany(mappedBy = "pictures")
@@ -67,8 +64,8 @@ public class Picture implements Serializable {
 		return ngos;
 	}
 	
-	public User getUser() {
-		return user;
+	public Set<User> getUsers() {
+		return users;
 	}
 
 	@Override
