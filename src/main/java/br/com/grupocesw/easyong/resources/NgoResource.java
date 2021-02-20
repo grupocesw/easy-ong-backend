@@ -1,10 +1,11 @@
 package br.com.grupocesw.easyong.resources;
 
 import java.net.URI;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,14 +14,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.grupocesw.easyong.dto.NgoDTO;
 import br.com.grupocesw.easyong.entities.Ngo;
 import br.com.grupocesw.easyong.services.NgoService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import springfox.documentation.annotations.ApiIgnore;
 
 @RequestMapping(value = "/api/ngos")
 @RestController
@@ -34,16 +40,24 @@ public class NgoResource {
 	    @ApiResponse(code = 401, message = "Credencial inválida para acessar este recurso"),
 	    @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso"),
 	    @ApiResponse(code = 500, message = "Foi gerada uma exceção"),
-	})
+	})	
 	@GetMapping
-	public ResponseEntity<List<NgoDTO>> list() {
-		List<Ngo> ngos = service.findAll();
+	@ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "Find ngos")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+                value = "Results page you want to retrieve (0..N)"),
+        @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+                value = "Number of records per page."),
+        @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query",
+                value = "Sorting criteria in the format: property(,asc|desc). " +
+                        "Default sort order is ascending. " +
+                        "Multiple sort criteria are supported.")
+    })
+	public Page<NgoDTO> list(@ApiIgnore final Pageable pageable) {
+		final Page<Ngo> ngos = service.findAll(pageable);
 		
-		List<NgoDTO> ngosDTO = ngos.stream()
-				.map(o -> new NgoDTO(o))
-				.collect(Collectors.toList());
-		
-		return ResponseEntity.ok().body(ngosDTO);
+		return ngos.map(ngo -> new NgoDTO(ngo));
 	}
 	
 	@PostMapping

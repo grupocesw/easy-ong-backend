@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
+import br.com.grupocesw.easyong.entities.Picture;
 import br.com.grupocesw.easyong.entities.SocialCause;
 import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.enumerations.Gender;
@@ -30,7 +31,10 @@ public class UserDTO implements Serializable {
 		gender = user.getGender();
 		login = user.getLogin();
 		causes = user.getCauses();
-		user.getPictures().forEach(picture -> this.pictures.add(new PictureDTO(picture)));
+
+		for (Picture p: user.getPictures()) {
+			pictures.add(new PictureDTO(p));
+	    }
 	}
 
 	public Long getId() {
@@ -81,11 +85,11 @@ public class UserDTO implements Serializable {
 		this.causes = causes;
 	}
 
-	public Set<PictureDTO> getPictureDTOs() {
+	public Set<PictureDTO> getPictures() {
 		return pictures;
 	}
 
-	public void setPictureDTOs(Set<PictureDTO> pictures) {
+	public void setPictures(Set<PictureDTO> pictures) {
 		this.pictures = pictures;
 	}
 

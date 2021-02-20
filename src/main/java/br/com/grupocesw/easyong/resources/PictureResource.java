@@ -35,7 +35,6 @@ public class PictureResource {
 	@ResponseBody
 	@GetMapping(value = "/{pictureName}", produces = { MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })
 	public byte[] showPicture(@PathVariable("pictureName") String pictureName, HttpServletRequest request) throws IOException {
-//		Picture picture = service.findById(id);
 		return service.getPicture(pictureName);
 	}
 

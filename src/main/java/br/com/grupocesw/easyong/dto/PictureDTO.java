@@ -2,6 +2,8 @@ package br.com.grupocesw.easyong.dto;
 
 import java.io.Serializable;
 
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 import br.com.grupocesw.easyong.entities.Picture;
 
 public class PictureDTO implements Serializable {
@@ -13,7 +15,12 @@ public class PictureDTO implements Serializable {
 	public PictureDTO() {}
 
 	public PictureDTO(Picture picture) {
-		url = "http://localhost:8080/api/pictures/" + picture.getName();
+		url = ServletUriComponentsBuilder
+				.fromCurrentContextPath()
+				.build()
+				.toUriString()
+				.concat("/api/pictures/")
+				.concat(picture.getName());
 	}
 
 	public String getUrl() {

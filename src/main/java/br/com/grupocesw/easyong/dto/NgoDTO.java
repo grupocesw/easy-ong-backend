@@ -8,6 +8,7 @@ import br.com.grupocesw.easyong.entities.Address;
 import br.com.grupocesw.easyong.entities.Contact;
 import br.com.grupocesw.easyong.entities.MoreInformationNog;
 import br.com.grupocesw.easyong.entities.Ngo;
+import br.com.grupocesw.easyong.entities.Picture;
 import br.com.grupocesw.easyong.entities.SocialCause;
 
 public class NgoDTO implements Serializable {
@@ -33,7 +34,10 @@ public class NgoDTO implements Serializable {
 		causes = ngo.getCauses();
 		contacts = ngo.getContacts();
 		moreInformations = ngo.getMoreInformations();
-		ngo.getPictures().forEach(picture -> pictures.add(new PictureDTO(picture)));		
+
+		for (Picture p: ngo.getPictures()) {
+			pictures.add(new PictureDTO(p));
+	    }
 	}
 
 	public Long getId() {
@@ -92,11 +96,11 @@ public class NgoDTO implements Serializable {
 		this.moreInformations = moreInformations;
 	}
 
-	public Set<PictureDTO> getPictureDTOs() {
+	public Set<PictureDTO> getPictures() {
 		return pictures;
 	}
 
-	public void setPictureDTOs(Set<PictureDTO> pictures) {
+	public void setPictures(Set<PictureDTO> pictures) {
 		this.pictures = pictures;
 	}
 

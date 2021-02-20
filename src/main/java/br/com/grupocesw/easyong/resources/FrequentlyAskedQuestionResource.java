@@ -1,10 +1,11 @@
 package br.com.grupocesw.easyong.resources;
 
 import java.net.URI;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,12 +14,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.grupocesw.easyong.dto.FrequentlyAskedQuestionDTO;
 import br.com.grupocesw.easyong.entities.FrequentlyAskedQuestion;
 import br.com.grupocesw.easyong.services.FrequentlyAskedQuestionService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
@@ -27,7 +32,7 @@ import io.swagger.annotations.ApiResponses;
 public class FrequentlyAskedQuestionResource {
 
 	@Autowired
-	private FrequentlyAskedQuestionService us;
+	private FrequentlyAskedQuestionService service;
 	
 	@ApiResponses(value = {
 	    @ApiResponse(code = 200, message = "Retorna a lista de Pergunta Frequente"),
@@ -36,20 +41,28 @@ public class FrequentlyAskedQuestionResource {
 	    @ApiResponse(code = 500, message = "Foi gerada uma exceção"),
 	})
 	@GetMapping
-	public ResponseEntity<List<FrequentlyAskedQuestionDTO>> list() {
-		List<FrequentlyAskedQuestion> frequentlyAskedQuestions = us.findAll();
+	@ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "Find faqs")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+                value = "Results page you want to retrieve (0..N)"),
+        @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+                value = "Number of records per page."),
+        @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query",
+                value = "Sorting criteria in the format: property(,asc|desc). " +
+                        "Default sort order is ascending. " +
+                        "Multiple sort criteria are supported.")
+    })
+	public Page<FrequentlyAskedQuestionDTO> list(Pageable pageable) {
+		final Page<FrequentlyAskedQuestion> frequentlyAskedQuestions = service.findAll(pageable);
 		
-		List<FrequentlyAskedQuestionDTO> frequentlyAskedQuestionsDTO = frequentlyAskedQuestions.stream()
-				.map(o -> new FrequentlyAskedQuestionDTO(o))
-				.collect(Collectors.toList());
-		
-		return ResponseEntity.ok().body(frequentlyAskedQuestionsDTO);
+		return frequentlyAskedQuestions.map(faq -> new FrequentlyAskedQuestionDTO(faq));
 	}
 	
 	@PostMapping
 	public ResponseEntity<FrequentlyAskedQuestionDTO> create(@RequestBody FrequentlyAskedQuestion frequentlyAskedQuestion) {
 		
-		FrequentlyAskedQuestion frequentlyAskedQuestionSalvo = us.insert(frequentlyAskedQuestion);
+		FrequentlyAskedQuestion frequentlyAskedQuestionSalvo = service.insert(frequentlyAskedQuestion);
 		
 		FrequentlyAskedQuestionDTO frequentlyAskedQuestionDTO = new FrequentlyAskedQuestionDTO(frequentlyAskedQuestionSalvo);
 		
@@ -61,7 +74,7 @@ public class FrequentlyAskedQuestionResource {
 	
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<FrequentlyAskedQuestionDTO> retrieve(@PathVariable Long id) {
-		FrequentlyAskedQuestion frequentlyAskedQuestion = us.findById(id);
+		FrequentlyAskedQuestion frequentlyAskedQuestion = service.findById(id);
 		
 		FrequentlyAskedQuestionDTO frequentlyAskedQuestionDTO = new FrequentlyAskedQuestionDTO(frequentlyAskedQuestion);
 		
@@ -70,7 +83,7 @@ public class FrequentlyAskedQuestionResource {
 	
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<FrequentlyAskedQuestionDTO> update(@PathVariable Long id, @RequestBody FrequentlyAskedQuestion frequentlyAskedQuestion) {
-		frequentlyAskedQuestion = us.update(id, frequentlyAskedQuestion);
+		frequentlyAskedQuestion = service.update(id, frequentlyAskedQuestion);
 		
 		FrequentlyAskedQuestionDTO frequentlyAskedQuestionDTO = new FrequentlyAskedQuestionDTO(frequentlyAskedQuestion);
 		
@@ -79,7 +92,7 @@ public class FrequentlyAskedQuestionResource {
 	
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<Void> delete(@PathVariable Long id) {
-		us.delete(id);
+		service.delete(id);
 		
 		return ResponseEntity.noContent().build();
 	}

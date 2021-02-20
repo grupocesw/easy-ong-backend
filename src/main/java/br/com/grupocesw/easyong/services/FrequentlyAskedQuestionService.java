@@ -1,6 +1,5 @@
 package br.com.grupocesw.easyong.services;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
@@ -8,6 +7,8 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.com.grupocesw.easyong.entities.FrequentlyAskedQuestion;
@@ -21,8 +22,8 @@ public class FrequentlyAskedQuestionService {
 	@Autowired
 	private FrequentlyAskedQuestionRepository repository;
 
-	public List<FrequentlyAskedQuestion> findAll() {
-		return repository.findAll();
+	public Page<FrequentlyAskedQuestion> findAll(Pageable pageable) {
+		return repository.findAll(pageable);
 	}
 
 	public FrequentlyAskedQuestion findById(Long id) {
