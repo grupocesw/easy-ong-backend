@@ -25,6 +25,10 @@ public class FrequentlyAskedQuestionService {
 	public Page<FrequentlyAskedQuestion> findAll(Pageable pageable) {
 		return repository.findAll(pageable);
 	}
+	
+	public Page<FrequentlyAskedQuestion> findByQuestionAndAnswer(String filter, Pageable pageable) {
+		return repository.findByQuestionAndAnswer(filter, pageable);
+	}
 
 	public FrequentlyAskedQuestion findById(Long id) {
 		Optional<FrequentlyAskedQuestion> optional = repository.findById(id);

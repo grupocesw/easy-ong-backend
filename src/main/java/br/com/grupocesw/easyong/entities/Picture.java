@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -26,10 +27,9 @@ public class Picture implements Serializable {
 	@NotEmpty(message="Name required")
 	@Column(name = "name", nullable = false)
 	private String name;
-	
-	@JsonIgnore
-	@ManyToMany(mappedBy = "pictures")
-	private Set<User> users = new HashSet<>();
+
+	@OneToOne
+	private User user;
 	
 	@JsonIgnore
 	@ManyToMany(mappedBy = "pictures")
@@ -41,7 +41,13 @@ public class Picture implements Serializable {
 		super();
 		this.id = id;
 		this.name = name;
-		this.ngos = new HashSet<>();
+	}
+	
+	public Picture(Long id, String name, User user) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.user = user;
 	}
 	
 	public Long getId() {
@@ -63,9 +69,13 @@ public class Picture implements Serializable {
 	public Set<Ngo> getNgos() {
 		return ngos;
 	}
+
+	public User getUser() {
+		return user;
+	}
 	
-	public Set<User> getUsers() {
-		return users;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	@Override

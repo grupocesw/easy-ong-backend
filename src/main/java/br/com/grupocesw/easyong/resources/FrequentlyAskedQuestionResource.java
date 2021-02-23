@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -53,8 +54,15 @@ public class FrequentlyAskedQuestionResource {
                         "Default sort order is ascending. " +
                         "Multiple sort criteria are supported.")
     })
-	public Page<FrequentlyAskedQuestionDTO> list(Pageable pageable) {
-		final Page<FrequentlyAskedQuestion> frequentlyAskedQuestions = service.findAll(pageable);
+	public Page<FrequentlyAskedQuestionDTO> list(
+			@RequestParam(required = false) String filter,
+			Pageable pageable) {
+		Page<FrequentlyAskedQuestion> frequentlyAskedQuestions = null;
+		
+		if (filter == null)
+			frequentlyAskedQuestions = service.findAll(pageable);
+		else
+			frequentlyAskedQuestions = service.findByQuestionAndAnswer(filter, pageable);
 		
 		return frequentlyAskedQuestions.map(faq -> new FrequentlyAskedQuestionDTO(faq));
 	}
