@@ -4,11 +4,13 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotEmpty;
@@ -28,7 +30,8 @@ public class Picture implements Serializable {
 	@Column(name = "name", nullable = false)
 	private String name;
 
-	@OneToOne
+	@OneToOne(mappedBy = "picture", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "picture_id")
 	private User user;
 	
 	@JsonIgnore

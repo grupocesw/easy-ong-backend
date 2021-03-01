@@ -2,8 +2,10 @@ package br.com.grupocesw.easyong.dto;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
+import br.com.grupocesw.easyong.entities.Ngo;
 import br.com.grupocesw.easyong.entities.SocialCause;
 import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.enumerations.Gender;
@@ -16,8 +18,9 @@ public class UserDTO implements Serializable {
 	private String name;
 	private LocalDate birthday;
 	private Gender gender;
-	private String login;
-	private Set<SocialCause> causes;
+	private String username;
+	private Set<SocialCause> causes = new HashSet<>();
+	private Set<Long> favoriteNgoIds = new HashSet<>();
 	private PictureDTO picture;
 
 	public UserDTO() {}
@@ -27,9 +30,15 @@ public class UserDTO implements Serializable {
 		name = user.getName();
 		birthday = user.getBirthday();
 		gender = user.getGender();
-		login = user.getLogin();
+		username = user.getUsername();
 		causes = user.getCauses();
-		picture = new PictureDTO(user.getPicture());
+		picture = user.getPicture() != null ? new PictureDTO(user.getPicture()) : null;
+		
+		for (Ngo ngo: user.getFavoriteNgos()) {
+			if (ngo.getActivated()) {
+				favoriteNgoIds.add(ngo.getId());
+			}			
+	    }
 	}
 
 	public Long getId() {
@@ -64,14 +73,22 @@ public class UserDTO implements Serializable {
 		this.gender = gender;
 	}
 
-	public String getLogin() {
-		return login;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setLogin(String login) {
-		this.login = login;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
+	public Set<Long> getFavoriteNgoIds() {
+		return favoriteNgoIds;
+	}
+
+	public void setFavoriteNgoIds(Set<Long> favoriteNgoIds) {
+		this.favoriteNgoIds = favoriteNgoIds;
+	}
+	
 	public Set<SocialCause> getCauses() {
 		return causes;
 	}

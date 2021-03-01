@@ -1,14 +1,14 @@
 package br.com.grupocesw.easyong.entities;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -34,11 +34,10 @@ public class Contact implements Serializable {
 	@Size(min = 3, max = 255, message = "Content must contain between 3 and 255 characters")
 	@Column(name = "content", nullable = false, length = 255)
 	private String content;
-	
+
 	@JsonIgnore
-	@ManyToOne
-	@JoinColumn(name="ngo_id")
-	private Ngo ngo;
+	@ManyToMany(mappedBy = "contacts")
+	private Set<Ngo> ngos;
 
 	public Contact() {}
 
@@ -73,12 +72,8 @@ public class Contact implements Serializable {
 		this.content = content;
 	}
 
-	public Ngo getNgo() {
-		return ngo;
-	}
-
-	public void setNgo(Ngo ngo) {
-		this.ngo = ngo;
+	public Set<Ngo> getNgos() {
+		return ngos;
 	}
 
 	@Override

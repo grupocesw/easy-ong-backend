@@ -54,23 +54,24 @@ public class Ngo implements Serializable {
 
 	@CreationTimestamp
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-	@Column(name = "create_at", columnDefinition = "TIMESTAMP")
+	@Column(name = "created_at", columnDefinition = "TIMESTAMP")
 	private LocalDateTime createAt;
 	
 	@UpdateTimestamp
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-	@Column(name = "update_at", columnDefinition = "TIMESTAMP")
+	@Column(name = "updated_at", columnDefinition = "TIMESTAMP")
 	private LocalDateTime updateAt;
 	
 	@OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id", referencedColumnName = "id")
 	private Address address;
 	
-	@OneToMany(targetEntity=Contact.class, mappedBy="ngo",cascade=CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	@ManyToMany
+	@JoinTable(name = "ngo_contact", joinColumns= @JoinColumn(name = "ngo_id"), inverseJoinColumns = @JoinColumn(name = "contact_id"))
 	private Set<Contact> contacts = new HashSet<>();
 	
-	@OneToMany(targetEntity=MoreInformationNog.class, mappedBy="ngo",cascade=CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-	private Set<MoreInformationNog> moreInformations = new HashSet<>();
+	@OneToMany(targetEntity=MoreInformationNgo.class, mappedBy="ngo",cascade=CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	private Set<MoreInformationNgo> moreInformations = new HashSet<>();
 	
 	@ManyToMany
 	@JoinTable(name = "ngo_social_cause", joinColumns= @JoinColumn(name = "ngo_id"), inverseJoinColumns = @JoinColumn(name = "social_cause_id"))
@@ -175,7 +176,7 @@ public class Ngo implements Serializable {
 		return pictures;
 	}
 	
-	public Set<MoreInformationNog> getMoreInformations() {
+	public Set<MoreInformationNgo> getMoreInformations() {
 		return moreInformations;
 	}
 	

@@ -22,8 +22,8 @@ public class NgoService {
 	@Autowired
 	private NgoRepository repository;
 
-	public Page<Ngo> findAll(Pageable pageable) {
-		return repository.findAll(pageable);
+	public Page<Ngo> findByActivated(Pageable pageable) {
+		return repository.findByActivated(pageable);
 	}
 
 	public Ngo findById(Long id) {

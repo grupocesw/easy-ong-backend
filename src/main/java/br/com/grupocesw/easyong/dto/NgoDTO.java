@@ -6,7 +6,7 @@ import java.util.Set;
 
 import br.com.grupocesw.easyong.entities.Address;
 import br.com.grupocesw.easyong.entities.Contact;
-import br.com.grupocesw.easyong.entities.MoreInformationNog;
+import br.com.grupocesw.easyong.entities.MoreInformationNgo;
 import br.com.grupocesw.easyong.entities.Ngo;
 import br.com.grupocesw.easyong.entities.Picture;
 import br.com.grupocesw.easyong.entities.SocialCause;
@@ -21,7 +21,7 @@ public class NgoDTO implements Serializable {
 	private Address address;
 	private Set<SocialCause> causes;
 	private Set<Contact> contacts;
-	private Set<MoreInformationNog> moreInformations;
+	private Set<MoreInformationNgo> moreInformations;
 	private Set<PictureDTO> pictures = new HashSet<>();
 
 	public NgoDTO() {}
@@ -88,11 +88,11 @@ public class NgoDTO implements Serializable {
 		this.contacts = contacts;
 	}
 
-	public Set<MoreInformationNog> getMoreInformations() {
+	public Set<MoreInformationNgo> getMoreInformations() {
 		return moreInformations;
 	}
 
-	public void setMoreInformations(Set<MoreInformationNog> moreInformations) {
+	public void setMoreInformations(Set<MoreInformationNgo> moreInformations) {
 		this.moreInformations = moreInformations;
 	}
 

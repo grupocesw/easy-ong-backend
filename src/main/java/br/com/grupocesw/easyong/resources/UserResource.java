@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,12 +15,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.grupocesw.easyong.dto.UserDTO;
+import br.com.grupocesw.easyong.entities.Picture;
 import br.com.grupocesw.easyong.entities.User;
+import br.com.grupocesw.easyong.services.PictureService;
 import br.com.grupocesw.easyong.services.UserService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -34,6 +40,9 @@ public class UserResource {
 
 	@Autowired
 	private UserService service;
+	
+	@Autowired
+	private PictureService pictureService;
 
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Retorna a lista de ONG"),
 			@ApiResponse(code = 401, message = "Credencial inválida para acessar este recurso"),
@@ -48,15 +57,23 @@ public class UserResource {
 			@ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
 					+ "Default sort order is ascending. " + "Multiple sort criteria are supported.") })
 	public Page<UserDTO> list(@ApiIgnore final Pageable pageable) {
-		final Page<User> users = service.findAll(pageable);
+		final Page<User> users = service.findByChecked(pageable);
 
 		return users.map(user -> new UserDTO(user));
 	}
 
-	@PostMapping
-	public ResponseEntity<UserDTO> create(@RequestBody User user) {
+	@ResponseBody
+	@PostMapping(
+			produces = { 
+					MediaType.IMAGE_JPEG_VALUE,
+					MediaType.IMAGE_PNG_VALUE,
+					MediaType.MULTIPART_FORM_DATA_VALUE }
+	)
+	public ResponseEntity<UserDTO> create(@RequestPart(name = "file", required = false) MultipartFile file, @RequestBody User user) {
 
-		User userSalved = service.insert(user);
+		Picture picture = pictureService.insert(file);
+		user.setPicture(picture);
+		User userSalved = service.insert(user);	
 
 		UserDTO userDTO = new UserDTO(userSalved);
 

@@ -44,7 +44,7 @@ public class Address implements Serializable {
 	private Ngo ngo;
 	
 	@ManyToOne
-	@JoinColumn(name = "street_zip_code_district_id")
+	@JoinColumn(name = "street_id")
 	private Street street;
 
 	public Address() {}

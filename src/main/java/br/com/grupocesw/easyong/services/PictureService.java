@@ -41,9 +41,10 @@ public class PictureService {
 		return optional.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 
-	public Picture insert(Picture picture) {		
+	public Picture insert(MultipartFile file) {		
 		try {
-			return repository.save(picture);
+			String filename = this.upload(file);			
+			return repository.save(new Picture(null, filename));
 		} catch (DataIntegrityViolationException e) {
 			throw new DatabaseException(e.getMessage());
 		}
@@ -95,10 +96,6 @@ public class PictureService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-//        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-//                .path(storageDirectory.toString().concat("/").concat(fileName))
-//                .toUriString();
 
         return fileName;
     }

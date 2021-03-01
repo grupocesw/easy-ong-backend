@@ -15,7 +15,7 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-public class MoreInformationNog implements Serializable {
+public class MoreInformationNgo implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -33,9 +33,9 @@ public class MoreInformationNog implements Serializable {
 	@JoinColumn(name="ngo_id")
 	private Ngo ngo;
 	
-	public MoreInformationNog() {}
+	public MoreInformationNgo() {}
 
-	public MoreInformationNog(Long id, String information) {
+	public MoreInformationNgo(Long id, String information) {
 		super();
 		this.id = id;
 		this.information = information;
@@ -81,7 +81,7 @@ public class MoreInformationNog implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		MoreInformationNog other = (MoreInformationNog) obj;
+		MoreInformationNgo other = (MoreInformationNgo) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

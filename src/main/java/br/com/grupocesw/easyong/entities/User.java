@@ -18,6 +18,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -32,6 +33,7 @@ import br.com.grupocesw.easyong.enumerations.Gender;
 import br.com.grupocesw.easyong.utilities.UserUtility;
 
 @Entity
+@Table(name="users")
 public class User implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -59,10 +61,10 @@ public class User implements Serializable {
 	        + "(?:[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\\.)+[A-Za-z0-9]"
 	        + "(?:[A-Za-z0-9-]*[A-Za-z0-9])?",
 	        message = "The email format is incorrect")
-	@NotEmpty(message="Login required")
-	@Size(min = 3, max = 100, message = "Login must contain between 3 and 100 characters")
-	@Column(name = "login", nullable = false, length = 100, unique = true)
-	private String login;
+	@NotEmpty(message="Username required")
+	@Size(min = 3, max = 100, message = "Username must contain between 3 and 100 characters")
+	@Column(name = "username", nullable = false, length = 100, unique = true)
+	private String username;
 	
 	@NotEmpty(message="Password required")
 	@Size(min = 3, max = 100, message = "Password must contain between 3 and 100 characters")
@@ -70,21 +72,19 @@ public class User implements Serializable {
 
 	@CreationTimestamp
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-	@Column(name = "create_at", columnDefinition = "TIMESTAMP")
+	@Column(name = "created_at", columnDefinition = "TIMESTAMP")
 	private LocalDateTime createAt;
 	
 	@UpdateTimestamp
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-	@Column(name = "update_at", columnDefinition = "TIMESTAMP")
+	@Column(name = "updated_at", columnDefinition = "TIMESTAMP")
 	private LocalDateTime updateAt;
 	
-	@UpdateTimestamp
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-	@Column(name = "checked_at", columnDefinition = "TIMESTAMP")
+	@Column(name = "checked_at", columnDefinition = "TIMESTAMP", nullable = true)
 	private LocalDateTime checkedAt;
 	
-	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "user_id")
+	@OneToOne(optional = true)
 	private Picture picture;
 	
 	@ManyToMany
@@ -104,13 +104,13 @@ public class User implements Serializable {
 
 	public User() {}
 
-	public User(Long id, String name, LocalDate birthday, Gender gender, String login, String password) {
+	public User(Long id, String name, LocalDate birthday, Gender gender, String username, String password) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.birthday = birthday;
 		this.gender = gender;
-		this.login = login;
+		this.username = username;
 		this.setPassword(password);
 	}
 
@@ -146,12 +146,12 @@ public class User implements Serializable {
 		this.gender = gender;
 	}
 
-	public String getLogin() {
-		return login;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setLogin(String login) {
-		this.login = login;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String getPassword() {

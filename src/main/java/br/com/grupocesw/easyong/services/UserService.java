@@ -22,8 +22,8 @@ public class UserService {
 	@Autowired
 	private UserRepository repository;
 
-	public Page<User> findAll(Pageable pageable) {
-		return repository.findAll(pageable);
+	public Page<User> findByChecked(Pageable pageable) {
+		return repository.findByChecked(pageable);
 	}
 
 	public User findById(Long id) {
