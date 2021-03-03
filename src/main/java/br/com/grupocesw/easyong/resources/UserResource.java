@@ -44,13 +44,13 @@ public class UserResource {
 	@Autowired
 	private PictureService pictureService;
 
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Retorna a lista de ONG"),
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Retorna a lista de usuário"),
 			@ApiResponse(code = 401, message = "Credencial inválida para acessar este recurso"),
 			@ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso"),
 			@ApiResponse(code = 500, message = "Foi gerada uma exceção"), })
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	@ApiOperation(value = "Find ngos")
+	@ApiOperation(value = "Find users")
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "page", dataType = "integer", paramType = "query", value = "Results page you want to retrieve (0..N)"),
 			@ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", value = "Number of records per page."),

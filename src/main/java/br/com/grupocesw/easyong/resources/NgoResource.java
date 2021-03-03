@@ -56,7 +56,7 @@ public class NgoResource {
     })
 	public Page<NgoDTO> list(@ApiIgnore final Pageable pageable) {
 		final Page<Ngo> ngos = service.findByActivated(pageable);
-		
+
 		return ngos.map(ngo -> new NgoDTO(ngo));
 	}
 	

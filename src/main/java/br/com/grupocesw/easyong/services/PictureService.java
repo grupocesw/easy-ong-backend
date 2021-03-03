@@ -5,17 +5,18 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.com.grupocesw.easyong.entities.Picture;
@@ -44,7 +45,7 @@ public class PictureService {
 	public Picture insert(MultipartFile file) {		
 		try {
 			String filename = this.upload(file);			
-			return repository.save(new Picture(null, filename));
+			return repository.save(new Picture(filename));
 		} catch (DataIntegrityViolationException e) {
 			throw new DatabaseException(e.getMessage());
 		}
@@ -77,7 +78,8 @@ public class PictureService {
 	
     public String upload(MultipartFile file) {
 
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+    	String fileName = LocalDateTime.now().toString() + FilenameUtils.getExtension(file.getOriginalFilename());
+//        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         Path storageDirectory = Paths.get(storageDirectoryPath);
 
         if(!Files.exists(storageDirectory)){
@@ -92,7 +94,6 @@ public class PictureService {
 
         try {
             Files.copy(file.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
-
         } catch (IOException e) {
             e.printStackTrace();
         }

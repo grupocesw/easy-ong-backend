@@ -15,6 +15,7 @@ import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.repositories.UserRepository;
 import br.com.grupocesw.easyong.services.exceptions.DatabaseException;
 import br.com.grupocesw.easyong.services.exceptions.ResourceNotFoundException;
+import br.com.grupocesw.easyong.utilities.UserUtility;
 
 @Service
 public class UserService {
@@ -34,6 +35,7 @@ public class UserService {
 
 	public User insert(User user) {		
 		try {
+			user.setPassword(UserUtility.encryptPassword(user.getPassword()));
 			return repository.save(user);
 		} catch (DataIntegrityViolationException e) {
 			throw new DatabaseException(e.getMessage());

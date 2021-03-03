@@ -3,7 +3,15 @@ package br.com.grupocesw.easyong.dto;
 import java.io.Serializable;
 
 import br.com.grupocesw.easyong.entities.User;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class SocialCauseDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -11,27 +19,8 @@ public class SocialCauseDTO implements Serializable {
 	private Long id;
 	private String name;
 
-	public SocialCauseDTO() {}
-
 	public SocialCauseDTO(User user) {
 		id = user.getId();
 		name = user.getName();
 	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 }

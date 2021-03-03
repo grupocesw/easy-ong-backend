@@ -9,12 +9,25 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 @Entity
+@Table(name = "more_information_ngos")
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString
 public class MoreInformationNgo implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -32,61 +45,4 @@ public class MoreInformationNgo implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="ngo_id")
 	private Ngo ngo;
-	
-	public MoreInformationNgo() {}
-
-	public MoreInformationNgo(Long id, String information) {
-		super();
-		this.id = id;
-		this.information = information;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getInformation() {
-		return information;
-	}
-
-	public void setInformation(String information) {
-		this.information = information;
-	}
-	
-	public Ngo getNgo() {
-		return ngo;
-	}
-
-	public void setNgo(Ngo ngo) {
-		this.ngo = ngo;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		MoreInformationNgo other = (MoreInformationNgo) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
-	}
 }
