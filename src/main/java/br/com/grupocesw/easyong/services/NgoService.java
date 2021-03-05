@@ -1,6 +1,7 @@
 package br.com.grupocesw.easyong.services;
 
 import java.util.Optional;
+import java.util.Set;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -9,9 +10,11 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 
 import br.com.grupocesw.easyong.entities.Ngo;
+import br.com.grupocesw.easyong.entities.SocialCause;
 import br.com.grupocesw.easyong.repositories.NgoRepository;
 import br.com.grupocesw.easyong.services.exceptions.DatabaseException;
 import br.com.grupocesw.easyong.services.exceptions.ResourceNotFoundException;
@@ -24,6 +27,10 @@ public class NgoService {
 
 	public Page<Ngo> findByActivated(Pageable pageable) {
 		return repository.findByActivated(pageable);
+	}
+	
+	public Page<Ngo> findSuggested(@PageableDefault(page = 0, size = 1) Pageable pageable, Set<SocialCause> causes) {
+		return repository.findSuggested(pageable, causes);
 	}
 
 	public Ngo findById(Long id) {
