@@ -1,7 +1,6 @@
 package br.com.grupocesw.easyong.resources;
 
 import java.net.URI;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,8 +21,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.grupocesw.easyong.dto.NgoDTO;
 import br.com.grupocesw.easyong.entities.Ngo;
-import br.com.grupocesw.easyong.entities.SocialCause;
-import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.services.NgoService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -38,9 +35,6 @@ public class NgoResource {
 
 	@Autowired
 	private NgoService service;
-	
-	@Autowired
-	private User authenticatedUser;
 	
 	@ApiResponses(value = {
 	    @ApiResponse(code = 200, message = "Retorna a lista de ONG"),
@@ -69,8 +63,7 @@ public class NgoResource {
 	
 	@GetMapping(value = "/suggested")
 	public Page<NgoDTO> findSuggested(@PageableDefault(page = 0, size = 1) Pageable pageable) {
-		Set<SocialCause> causes = (authenticatedUser != null) ? authenticatedUser.getCauses() : null;
-		Page<Ngo> ngos = service.findSuggested(pageable, causes);
+		Page<Ngo> ngos = service.findSuggested(pageable);
 
 		return ngos.map(ngo -> new NgoDTO(ngo));
 	}

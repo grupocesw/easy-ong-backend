@@ -1,7 +1,6 @@
 package br.com.grupocesw.easyong.services;
 
 import java.util.Optional;
-import java.util.Set;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -14,7 +13,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 
 import br.com.grupocesw.easyong.entities.Ngo;
-import br.com.grupocesw.easyong.entities.SocialCause;
 import br.com.grupocesw.easyong.repositories.NgoRepository;
 import br.com.grupocesw.easyong.services.exceptions.DatabaseException;
 import br.com.grupocesw.easyong.services.exceptions.ResourceNotFoundException;
@@ -29,8 +27,8 @@ public class NgoService {
 		return repository.findByActivated(pageable);
 	}
 	
-	public Page<Ngo> findSuggested(@PageableDefault(page = 0, size = 1) Pageable pageable, Set<SocialCause> causes) {
-		return repository.findSuggested(pageable, causes);
+	public Page<Ngo> findSuggested(@PageableDefault(page = 0, size = 1) Pageable pageable) {
+		return repository.findSuggested(pageable);
 	}
 
 	public Ngo findById(Long id) {

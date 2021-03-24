@@ -48,7 +48,7 @@ INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES
 (1, 5);
 
 INSERT INTO users (id, name, birthday, gender, username, password, picture_id, created_at, updated_at, checked_at) VALUES
-(1, 'Astrobilobaldo Paixão', '1990-09-22', 0, 'astrobilobaldo@test.com',  '12345678', 4, '2021-01-01 00:00:00', '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
+(1, 'Astrobilobaldo Paixão', '1990-09-22', 0, 'astrobilobaldo@test.com',  '12345678', 4, '2021-01-01 00:00:00', '2021-01-01 00:00:00', null),
 (2, 'Biri Jean', '1983-07-23', 0, 'birijean@test.com',  '12345678', null, '2021-01-01 00:00:00', '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
 (3, 'Paul Stronger', '1998-05-04', 0, 'paulstronger@test.com',  '12345678', null, '2021-01-01 00:00:00', '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
 (4, 'Sander Jay', '1996-11-29', 0, 'sanderjay@test.com',  '12345678', null, '2021-01-01 00:00:00', '2021-01-01 00:00:00', '2021-01-01 00:00:00'),

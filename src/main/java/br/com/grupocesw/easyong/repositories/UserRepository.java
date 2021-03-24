@@ -1,5 +1,7 @@
 package br.com.grupocesw.easyong.repositories;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,4 +15,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	
 	@Query("SELECT u FROM User u WHERE u.checkedAt IS NOT NULL")
     Page<User> findByChecked(Pageable pageable);
+	
+	@Query("SELECT u FROM User u WHERE u.checkedAt IS NOT NULL AND u.id = ?1")
+	Optional<User> getOneChecked(Long id);
+	
+	@Query("SELECT u FROM User u WHERE u.checkedAt IS NULL AND u.id = ?1")
+	Optional<User> getOneNotChecked(Long id);
 }
