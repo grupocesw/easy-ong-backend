@@ -4,10 +4,10 @@ INSERT INTO addresses (id, number,  complement, latitude, longitude, street_id) 
 (3, 876, '', '', '', 3);
 
 INSERT INTO pictures (id, name) VALUES
-(1, 'ong1.jpeg'),
-(2, 'ong2.png'),
-(3, 'ong3.jpg'),
-(4, 'user1.jpg');
+(1, 'picture1.jpeg'),
+(2, 'picture2.png'),
+(3, 'picture3.jpg'),
+(4, 'picture4.jpg');
 
 INSERT INTO ngos (id, name, cnpj, description, activated, address_id, created_at, updated_at) VALUES
 (1, 'Cantinho Feliz', '59300268000191', 'Lorem ipsum hendrerit ut arcu dapibus etiam habitant faucibus gravida egestas, ut porttitor blandit venenatis per vestibulum venenatis massa leo quisque, pretium mattis auctor lorem curabitur ut aliquet praesent libero', true, 1, '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
@@ -48,13 +48,22 @@ INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES
 (1, 5);
 
 INSERT INTO users (id, name, birthday, gender, username, password, picture_id, created_at, updated_at, checked_at) VALUES
-(1, 'Astrobilobaldo Paixão', '1990-09-22', 0, 'astrobilobaldo@test.com',  '12345678', 4, '2021-01-01 00:00:00', '2021-01-01 00:00:00', null),
-(2, 'Biri Jean', '1983-07-23', 0, 'birijean@test.com',  '12345678', null, '2021-01-01 00:00:00', '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
-(3, 'Paul Stronger', '1998-05-04', 0, 'paulstronger@test.com',  '12345678', null, '2021-01-01 00:00:00', '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
-(4, 'Sander Jay', '1996-11-29', 0, 'sanderjay@test.com',  '12345678', null, '2021-01-01 00:00:00', '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
-(5, 'Juma Haskovo', '2000-06-07', 1, 'jumahaskov@test.com',  '12345678', null, '2021-01-01 00:00:00', '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
-(6, 'Mirna Kyle', '1967-03-09', 1, 'mirnakyle@test.com',  '12345678', null, '2021-01-01 00:00:00', '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
-(7, 'Tricia Marcos', '1984-12-25', 2, 'triciamarcos@test.com',  '12345678', null, '2021-01-01 00:00:00', '2021-01-01 00:00:00', '2021-01-01 00:00:00');
+(1, 'Astrobilobaldo Paixão', '1990-09-22', 0, 'astrobilobaldo@test.com', '$2a$10$RfwrevwuOvdxyw8v7x1eN.AhJbE7V4g/rhuPeEhiOujIgxvNmA.HK', 4, '2021-01-01 00:00:00', '2021-01-01 00:00:00', null),
+(2, 'Biri Jean', '1983-07-23', 0, 'birijean@test.com', '$2a$10$RfwrevwuOvdxyw8v7x1eN.AhJbE7V4g/rhuPeEhiOujIgxvNmA.HK', null, '2021-01-01 00:00:00', '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
+(3, 'Paul Stronger', '1998-05-04', 0, 'paulstronger@test.com', '$2a$10$RfwrevwuOvdxyw8v7x1eN.AhJbE7V4g/rhuPeEhiOujIgxvNmA.HK', null, '2021-01-01 00:00:00', '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
+(4, 'Sander Jay', '1996-11-29', 0, 'sanderjay@test.com', '$2a$10$RfwrevwuOvdxyw8v7x1eN.AhJbE7V4g/rhuPeEhiOujIgxvNmA.HK', null, '2021-01-01 00:00:00', '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
+(5, 'Juma Haskovo', '2000-06-07', 1, 'jumahaskov@test.com', '$2a$10$RfwrevwuOvdxyw8v7x1eN.AhJbE7V4g/rhuPeEhiOujIgxvNmA.HK', null, '2021-01-01 00:00:00', '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
+(6, 'Mirna Kyle', '1967-03-09', 1, 'mirnakyle@test.com', '$2a$10$RfwrevwuOvdxyw8v7x1eN.AhJbE7V4g/rhuPeEhiOujIgxvNmA.HK', null, '2021-01-01 00:00:00', '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
+(7, 'Tricia Marcos', '1984-12-25', 2, 'triciamarcos@test.com', '$2a$10$RfwrevwuOvdxyw8v7x1eN.AhJbE7V4g/rhuPeEhiOujIgxvNmA.HK', null, '2021-01-01 00:00:00', '2021-01-01 00:00:00', '2021-01-01 00:00:00');
+
+INSERT INTO user_roles (user_id, role_id) VALUES
+(1, 3),
+(2, 3),
+(3, 3),
+(4, 3),
+(5, 3),
+(6, 3),
+(7, 3);
 
 INSERT INTO user_social_causes (user_id, social_cause_id) VALUES
 (1, 6),

@@ -21,4 +21,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	
 	@Query("SELECT u FROM User u WHERE u.checkedAt IS NULL AND u.id = ?1")
 	Optional<User> getOneNotChecked(Long id);
+	
+	@Query("SELECT u FROM User u WHERE u.username = ?1")
+	User getUserByUsername(String username);
+	
+    Boolean existsByUsername(String username);
+    Optional<User> findByUsername(String username);
 }

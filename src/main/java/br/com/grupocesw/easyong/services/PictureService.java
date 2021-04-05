@@ -22,6 +22,7 @@ import br.com.grupocesw.easyong.entities.Picture;
 import br.com.grupocesw.easyong.repositories.PictureRepository;
 import br.com.grupocesw.easyong.services.exceptions.DatabaseException;
 import br.com.grupocesw.easyong.services.exceptions.ResourceNotFoundException;
+import br.com.grupocesw.easyong.utilities.PictureUtility;
 
 @Service
 public class PictureService {
@@ -43,8 +44,12 @@ public class PictureService {
 
 	public Picture insert(MultipartFile file) {		
 		try {
-			String filename = this.upload(file);			
-			return repository.save(new Picture(filename));
+			String fileName = StringUtils.cleanPath(file.getOriginalFilename());			
+			Picture picture = repository.save(new Picture(fileName));
+			
+			this.upload(picture, file);
+			
+			return picture;
 		} catch (DataIntegrityViolationException e) {
 			throw new DatabaseException(e.getMessage());
 		}
@@ -75,10 +80,8 @@ public class PictureService {
 		}
 	}
 	
-    public String upload(MultipartFile file) {
+    public void upload(Picture picture, MultipartFile file) {
 
-//    	String fileName = LocalDateTime.now().toString() + FilenameUtils.getExtension(file.getOriginalFilename());
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         Path storageDirectory = Paths.get(storageDirectoryPath);
 
         if(!Files.exists(storageDirectory)){
@@ -89,21 +92,28 @@ public class PictureService {
             }
         }
 
-        Path destination = Paths.get(storageDirectory.toString().concat("/").concat(fileName));
+        Path destination = Paths.get(storageDirectory.toString().concat("/").concat(picture.getName()));
 
         try {
             Files.copy(file.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        return fileName;
     }
 
-    public byte[] getPicture(String pictureName) throws IOException {
-        Path destination = Paths.get(storageDirectoryPath + pictureName);
-        
-        return IOUtils.toByteArray(destination.toUri());
+    public byte[] getPicture(String name) throws IOException {
+    	try {           	
+    		Path destination = Paths.get(
+    			storageDirectoryPath.concat(
+    				PictureUtility.getFileNameWithExtension(storageDirectoryPath, name)
+    			)
+    		);
+            
+            return IOUtils.toByteArray(destination.toUri());
+    	} catch (EntityNotFoundException|NumberFormatException|IOException e) {
+    		Path destination = Paths.get(storageDirectoryPath.concat(Picture.noImage));
+            return IOUtils.toByteArray(destination.toUri());    		
+    	}		
     }
 
 }

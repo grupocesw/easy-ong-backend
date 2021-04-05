@@ -97,4 +97,5 @@ public class Ngo implements Serializable {
 	@JsonIgnore
 	@ManyToMany(mappedBy = "favoriteNgos")
 	private Set<User> users = new HashSet<>();
+
 }

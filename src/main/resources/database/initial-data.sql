@@ -14,6 +14,11 @@ INSERT INTO social_causes (id, name) VALUES
 (7, 'Saúde e Bem Estar'),
 (8, 'Direitos Humanos');
 
+INSERT INTO roles (id, name) VALUES
+(1, 'ADMIN'),
+(2, 'MANAGER'),
+(3, 'USER');
+
 INSERT INTO countries (id, name, abbreviation) VALUES
 (1, 'Brasil', 'BRA');
 

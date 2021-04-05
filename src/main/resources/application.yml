@@ -1,0 +1,11 @@
+security:
+  basic:
+    enable: true
+    authorize-mode: NONE
+
+  jwt:
+    uri: /auth/**
+    header: Authorization
+    prefix: Bearer
+    expiration: 86400
+    secret: JwtSecretKey

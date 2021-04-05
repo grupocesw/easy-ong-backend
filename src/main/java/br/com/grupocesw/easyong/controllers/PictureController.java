@@ -1,4 +1,4 @@
-package br.com.grupocesw.easyong.resources;
+package br.com.grupocesw.easyong.controllers;
 
 import java.io.IOException;
 
@@ -20,7 +20,7 @@ import br.com.grupocesw.easyong.services.PictureService;
 
 @RequestMapping(value = "/api/pictures")
 @RestController
-public class PictureResource {
+public class PictureController {
 
 	@Autowired
 	private PictureService service;
@@ -28,14 +28,14 @@ public class PictureResource {
 	@ResponseBody
 	@PostMapping(value = "upload", produces = { MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })
 	public ResponseEntity<Void> uploadImage(@RequestPart(required = true) MultipartFile file) {
-		service.upload(file);
+		service.insert(file);
 		return ResponseEntity.noContent().build();
 	}
 
 	@ResponseBody
-	@GetMapping(value = "/{pictureName}", produces = { MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })
-	public byte[] showPicture(@PathVariable("pictureName") String pictureName, HttpServletRequest request) throws IOException {
-		return service.getPicture(pictureName);
+	@GetMapping(value = "/{name}", produces = { MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })
+	public byte[] showPicture(@PathVariable("name") String name, HttpServletRequest request) throws IOException {
+		return service.getPicture(name);
 	}
 
 }

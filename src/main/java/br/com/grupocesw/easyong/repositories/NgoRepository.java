@@ -16,4 +16,5 @@ public interface NgoRepository extends JpaRepository<Ngo, Long> {
 	
 	@Query("SELECT n FROM Ngo n WHERE n.activated = true ORDER BY RAND()")
 	Page<Ngo> findSuggested(Pageable pageable);
+
 }

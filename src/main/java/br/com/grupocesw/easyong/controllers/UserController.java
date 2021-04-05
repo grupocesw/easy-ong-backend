@@ -1,4 +1,4 @@
-package br.com.grupocesw.easyong.resources;
+package br.com.grupocesw.easyong.controllers;
 
 import java.net.URI;
 
@@ -31,7 +31,7 @@ import springfox.documentation.annotations.ApiIgnore;
 
 @RequestMapping(value = "/api/users")
 @RestController
-public class UserResource {
+public class UserController {
 
 	@Autowired
 	private UserService service;
@@ -93,41 +93,4 @@ public class UserResource {
 		return ResponseEntity.noContent().build();
 	}
 
-	@PutMapping(value = "/{id}/check")
-	public ResponseEntity<UserDTO> check(@PathVariable Long id) {
-		
-		User user = service.check(id, true);
-
-		UserDTO userDTO = new UserDTO(user);
-
-		return ResponseEntity.ok().body(userDTO);
-	}
-	
-	@DeleteMapping(value = "/{id}/check")
-	public ResponseEntity<UserDTO> uncheck(@PathVariable Long id) {
-		
-		User user = service.check(id, false);
-
-		UserDTO userDTO = new UserDTO(user);
-
-		return ResponseEntity.ok().body(userDTO);
-	}
-	
-	@PostMapping(value = "/{userId}/favorite/{ngoId}")
-	public ResponseEntity<UserDTO> favoriteNgo(@PathVariable Long userId, @PathVariable Long ngoId) {
-		
-		User user = service.favoriteNgo(userId, ngoId, true);		
-		UserDTO userDTO = new UserDTO(user);
-
-		return ResponseEntity.ok().body(userDTO);
-	}
-	
-	@DeleteMapping(value = "/{userId}/favorite/{ngoId}")
-	public ResponseEntity<UserDTO> unfavoriteNgo(@PathVariable Long userId, @PathVariable Long ngoId) {
-		
-		User user = service.favoriteNgo(userId, ngoId, false);		
-		UserDTO userDTO = new UserDTO(user);
-
-		return ResponseEntity.ok().body(userDTO);
-	}
 }

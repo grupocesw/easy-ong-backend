@@ -38,6 +38,8 @@ public class Picture implements Serializable {
 	
 	private static final String path = "/api/pictures/";
 	
+	public static final String noImage = "no_image.png";
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -63,7 +65,7 @@ public class Picture implements Serializable {
 		.build()
 		.toUriString()
 		.concat(path)
-		.concat(this.name);
+		.concat(this.getName());
 	}
 	
 	public static String getNoImageUrl() {
@@ -72,6 +74,6 @@ public class Picture implements Serializable {
 		.build()
 		.toUriString()
 		.concat(path)
-		.concat("no_image.png");
+		.concat(noImage);
 	}
 }

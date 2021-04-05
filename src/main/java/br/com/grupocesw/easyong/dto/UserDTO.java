@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
-import br.com.grupocesw.easyong.entities.Ngo;
+import br.com.grupocesw.easyong.entities.Role;
 import br.com.grupocesw.easyong.entities.SocialCause;
 import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.enumerations.Gender;
@@ -28,7 +28,7 @@ public class UserDTO implements Serializable {
 	private Gender gender;
 	private String username;
 	private Set<SocialCause> causes = new HashSet<>();
-	private Set<Long> favoriteNgoIds = new HashSet<>();
+	private Set<Role> roles = new HashSet<>();
 	private PictureDTO picture;
 
 	public UserDTO(User user) {
@@ -38,12 +38,7 @@ public class UserDTO implements Serializable {
 		gender = user.getGender();
 		username = user.getUsername();
 		causes = user.getCauses();
+		roles = user.getRoles();
 		picture = new PictureDTO(user.getPicture());
-		
-		for (Ngo ngo: user.getFavoriteNgos()) {
-			if (ngo.getActivated()) {
-				favoriteNgoIds.add(ngo.getId());
-			}			
-	    }
 	}
 }

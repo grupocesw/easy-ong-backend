@@ -1,10 +1,11 @@
-package br.com.grupocesw.easyong.resources;
+package br.com.grupocesw.easyong.controllers;
 
 import java.net.URI;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,36 +15,36 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import br.com.grupocesw.easyong.dto.FrequentlyAskedQuestionDTO;
-import br.com.grupocesw.easyong.entities.FrequentlyAskedQuestion;
-import br.com.grupocesw.easyong.services.FrequentlyAskedQuestionService;
+import br.com.grupocesw.easyong.dto.NgoDTO;
+import br.com.grupocesw.easyong.entities.Ngo;
+import br.com.grupocesw.easyong.services.NgoService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import springfox.documentation.annotations.ApiIgnore;
 
-@RequestMapping(value = "/api/faqs")
+@RequestMapping(value = "/api/ngos")
 @RestController
-public class FrequentlyAskedQuestionResource {
+public class NgoController {
 
 	@Autowired
-	private FrequentlyAskedQuestionService service;
+	private NgoService service;
 	
 	@ApiResponses(value = {
-	    @ApiResponse(code = 200, message = "Retorna a lista de Pergunta Frequente"),
+	    @ApiResponse(code = 200, message = "Retorna a lista de ONG"),
 	    @ApiResponse(code = 401, message = "Credencial inválida para acessar este recurso"),
 	    @ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso"),
 	    @ApiResponse(code = 500, message = "Foi gerada uma exceção"),
-	})
+	})	
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "Find faqs")
+    @ApiOperation(value = "Find ngos")
     @ApiImplicitParams({
         @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
                 value = "Results page you want to retrieve (0..N)"),
@@ -54,48 +55,48 @@ public class FrequentlyAskedQuestionResource {
                         "Default sort order is ascending. " +
                         "Multiple sort criteria are supported.")
     })
-	public Page<FrequentlyAskedQuestionDTO> list(
-			@RequestParam(required = false) String filter,
-			Pageable pageable) {
-		Page<FrequentlyAskedQuestion> frequentlyAskedQuestions = null;
-		
-		if (filter == null)
-			frequentlyAskedQuestions = service.findAll(pageable);
-		else
-			frequentlyAskedQuestions = service.findByQuestionAndAnswer(filter, pageable);
-		
-		return frequentlyAskedQuestions.map(faq -> new FrequentlyAskedQuestionDTO(faq));
+	public Page<NgoDTO> list(@ApiIgnore final Pageable pageable) {
+		final Page<Ngo> ngos = service.findByActivated(pageable);
+
+		return ngos.map(ngo -> new NgoDTO(ngo));
+	}
+	
+	@GetMapping(value = "/suggested")
+	public Page<NgoDTO> findSuggested(@PageableDefault(page = 0, size = 1) Pageable pageable) {
+		Page<Ngo> ngos = service.findSuggested(pageable);
+
+		return ngos.map(ngo -> new NgoDTO(ngo));
 	}
 	
 	@PostMapping
-	public ResponseEntity<FrequentlyAskedQuestionDTO> create(@RequestBody FrequentlyAskedQuestion frequentlyAskedQuestion) {
+	public ResponseEntity<NgoDTO> create(@RequestBody Ngo ngo) {
 		
-		FrequentlyAskedQuestion frequentlyAskedQuestionSalvo = service.insert(frequentlyAskedQuestion);
+		Ngo ngoSalvo = service.insert(ngo);
 		
-		FrequentlyAskedQuestionDTO frequentlyAskedQuestionDTO = new FrequentlyAskedQuestionDTO(frequentlyAskedQuestionSalvo);
+		NgoDTO ngoDTO = new NgoDTO(ngoSalvo);
 		
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-				.buildAndExpand(frequentlyAskedQuestionDTO.getId()).toUri();
+				.buildAndExpand(ngoDTO.getId()).toUri();
 		
-		return ResponseEntity.created(uri).body(frequentlyAskedQuestionDTO);
+		return ResponseEntity.created(uri).body(ngoDTO);
 	}
 	
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<FrequentlyAskedQuestionDTO> retrieve(@PathVariable Long id) {
-		FrequentlyAskedQuestion frequentlyAskedQuestion = service.findById(id);
+	public ResponseEntity<NgoDTO> retrieve(@PathVariable Long id) {
+		Ngo ngo = service.findById(id);
 		
-		FrequentlyAskedQuestionDTO frequentlyAskedQuestionDTO = new FrequentlyAskedQuestionDTO(frequentlyAskedQuestion);
+		NgoDTO ngoDTO = new NgoDTO(ngo);
 		
-		return ResponseEntity.ok(frequentlyAskedQuestionDTO);
+		return ResponseEntity.ok(ngoDTO);
 	}
 	
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<FrequentlyAskedQuestionDTO> update(@PathVariable Long id, @RequestBody FrequentlyAskedQuestion frequentlyAskedQuestion) {
-		frequentlyAskedQuestion = service.update(id, frequentlyAskedQuestion);
+	public ResponseEntity<NgoDTO> update(@PathVariable Long id, @RequestBody Ngo ngo) {
+		ngo = service.update(id, ngo);
 		
-		FrequentlyAskedQuestionDTO frequentlyAskedQuestionDTO = new FrequentlyAskedQuestionDTO(frequentlyAskedQuestion);
+		NgoDTO ngoDTO = new NgoDTO(ngo);
 		
-		return ResponseEntity.ok().body(frequentlyAskedQuestionDTO);
+		return ResponseEntity.ok().body(ngoDTO);
 	}
 	
 	@DeleteMapping(value = "/{id}")
