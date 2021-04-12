@@ -22,7 +22,7 @@ import br.com.grupocesw.easyong.entities.Picture;
 import br.com.grupocesw.easyong.repositories.PictureRepository;
 import br.com.grupocesw.easyong.services.exceptions.DatabaseException;
 import br.com.grupocesw.easyong.services.exceptions.ResourceNotFoundException;
-import br.com.grupocesw.easyong.utilities.PictureUtility;
+import br.com.grupocesw.easyong.utils.PictureUtil;
 
 @Service
 public class PictureService {
@@ -105,7 +105,7 @@ public class PictureService {
     	try {           	
     		Path destination = Paths.get(
     			storageDirectoryPath.concat(
-    				PictureUtility.getFileNameWithExtension(storageDirectoryPath, name)
+    				PictureUtil.getFileNameWithExtension(storageDirectoryPath, name)
     			)
     		);
             

@@ -1,14 +1,15 @@
-package br.com.grupocesw.easyong.configurations;
+package br.com.grupocesw.easyong.configs;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 @Data
 @NoArgsConstructor
 @Component
-public class JwtConfiguration {
+public class JwtConfig {
 
     @Value("${security.jwt.uri:}")
     private String Uri;

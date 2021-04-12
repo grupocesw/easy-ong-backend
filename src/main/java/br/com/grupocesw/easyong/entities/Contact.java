@@ -16,7 +16,7 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import br.com.grupocesw.easyong.enumerations.ContactType;
+import br.com.grupocesw.easyong.enums.ContactTypeEmun;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,7 +40,7 @@ public class Contact implements Serializable {
 
 	@NotNull(message = "Type required")
 	@Column(name = "type", nullable = false)
-	private ContactType type;
+	private ContactTypeEmun type;
 
 	@NotEmpty(message = "Content required")
 	@Size(min = 3, max = 255, message = "Content must contain between 3 and 255 characters")

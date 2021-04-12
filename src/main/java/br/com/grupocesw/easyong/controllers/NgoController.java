@@ -2,12 +2,15 @@ package br.com.grupocesw.easyong.controllers;
 
 import java.net.URI;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +25,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.com.grupocesw.easyong.dto.NgoDTO;
 import br.com.grupocesw.easyong.entities.Ngo;
 import br.com.grupocesw.easyong.services.NgoService;
+import br.com.grupocesw.easyong.services.exceptions.ResourceNotFoundException;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -62,18 +66,15 @@ public class NgoController {
 	}
 	
 	@GetMapping(value = "/suggested")
-	public Page<NgoDTO> findSuggested(@PageableDefault(page = 0, size = 1) Pageable pageable) {
+	public Page<NgoDTO> findSuggested(@PageableDefault(page = 0, size = 5) Pageable pageable) {
 		Page<Ngo> ngos = service.findSuggested(pageable);
 
 		return ngos.map(ngo -> new NgoDTO(ngo));
 	}
 	
 	@PostMapping
-	public ResponseEntity<NgoDTO> create(@RequestBody Ngo ngo) {
-		
-		Ngo ngoSalvo = service.insert(ngo);
-		
-		NgoDTO ngoDTO = new NgoDTO(ngoSalvo);
+	public ResponseEntity<NgoDTO> create(@Valid @RequestBody Ngo ngo) {
+		NgoDTO ngoDTO = new NgoDTO(service.insert(ngo));
 		
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(ngoDTO.getId()).toUri();
@@ -82,21 +83,20 @@ public class NgoController {
 	}
 	
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<NgoDTO> retrieve(@PathVariable Long id) {
-		Ngo ngo = service.findById(id);
-		
-		NgoDTO ngoDTO = new NgoDTO(ngo);
-		
-		return ResponseEntity.ok(ngoDTO);
+	public ResponseEntity<NgoDTO> retrieve(@PathVariable Long id) {		
+		return ResponseEntity.ok(new NgoDTO(service.findById(id)));
 	}
 	
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<NgoDTO> update(@PathVariable Long id, @RequestBody Ngo ngo) {
-		ngo = service.update(id, ngo);
-		
-		NgoDTO ngoDTO = new NgoDTO(ngo);
-		
-		return ResponseEntity.ok().body(ngoDTO);
+	public ResponseEntity<?> update(@PathVariable Long id, @Valid @RequestBody Ngo ngo, Errors errors) {		
+		try {
+			return ResponseEntity.ok()
+					.body(new NgoDTO(service.update(id, ngo)));
+		} catch (ResourceNotFoundException e) {
+			return ResponseEntity.badRequest().body(new br.com.grupocesw.easyong.payloads.ApiResponse(false, e.getMessage()));
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(new br.com.grupocesw.easyong.payloads.ApiResponse(false, e.getMessage()));
+		}
 	}
 	
 	@DeleteMapping(value = "/{id}")

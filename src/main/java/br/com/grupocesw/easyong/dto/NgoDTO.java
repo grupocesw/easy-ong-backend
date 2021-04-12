@@ -25,8 +25,10 @@ public class NgoDTO implements Serializable {
 
 	private Long id;
 	private String name;
+	private String cnpj;
 	private String description;
-	private Address address;
+	private Boolean activated;
+	private Address address;	
 	private Set<SocialCause> causes;
 	private Set<Contact> contacts;
 	private Set<MoreInformationNgo> moreInformations;
@@ -35,7 +37,9 @@ public class NgoDTO implements Serializable {
 	public NgoDTO(Ngo ngo) {
 		id = ngo.getId();
 		name = ngo.getName();
+		cnpj = ngo.getCnpj();
 		description = ngo.getDescription();
+		activated = ngo.getActivated();
 		address = ngo.getAddress();
 		causes = ngo.getCauses();
 		contacts = ngo.getContacts();

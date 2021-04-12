@@ -6,6 +6,7 @@ import javax.mail.AuthenticationFailedException;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -20,11 +21,14 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.grupocesw.easyong.dto.UserDTO;
 import br.com.grupocesw.easyong.entities.User;
-import br.com.grupocesw.easyong.payload.ApiResponse;
-import br.com.grupocesw.easyong.payload.JwtAuthenticationResponse;
-import br.com.grupocesw.easyong.payload.LoginRequest;
-import br.com.grupocesw.easyong.payload.RegisterRequest;
+import br.com.grupocesw.easyong.payloads.ApiResponse;
+import br.com.grupocesw.easyong.payloads.JwtAuthenticationResponse;
+import br.com.grupocesw.easyong.payloads.LoginPayload;
+import br.com.grupocesw.easyong.payloads.RegisterPayload;
 import br.com.grupocesw.easyong.services.UserService;
+import br.com.grupocesw.easyong.services.exceptions.UserNotCheckedException;
+import br.com.grupocesw.easyong.services.exceptions.UserNotExistException;
+import br.com.grupocesw.easyong.services.exceptions.UserVerificationException;
 import br.com.grupocesw.easyong.services.exceptions.UsernameAlreadyExistsException;
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,28 +49,37 @@ public class AuthController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
+	public ResponseEntity<?> login(@Valid @RequestBody LoginPayload loginRequest) {
 		try {
 			String token = userService.login(loginRequest.getUsername(), loginRequest.getPassword());
 			return ResponseEntity.ok(new JwtAuthenticationResponse(token));
 		} catch (BadCredentialsException e) {
-			return ResponseEntity.badRequest().body(new ApiResponse(false, "User or Password Incorrect."));
+			return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage()));
+		} catch (UserNotExistException e) {
+			return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage()));
+		} catch (UserNotCheckedException e) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse(false, e.getMessage()));
 		}
 	}
-
-	@PostMapping("/logout")
-	public ResponseEntity<?> logout(@Valid @RequestBody LoginRequest loginRequest) {
-		String token = userService.login(loginRequest.getUsername(), loginRequest.getPassword());
-		return ResponseEntity.ok(new JwtAuthenticationResponse(token));
+	
+	@PostMapping("/token/refresh")
+	public ResponseEntity<?> tokenRefresh(@Valid @RequestBody LoginPayload loginRequest) {
+//		String token = userService.logout(loginRequest.getUsername(), loginRequest.getPassword());
+		// TODO
+		return ResponseEntity.ok().build();
 	}
 
 	@PostMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest payload) throws AuthenticationFailedException {
+	public ResponseEntity<?> register(@Valid @RequestBody RegisterPayload payload) throws AuthenticationFailedException {
 		log.info("creating user {}", payload.getUsername());
 
-		User user = User.builder().name(payload.getName()).username(payload.getUsername())
-				.password(payload.getPassword()).birthday(payload.getBirthday()).gender(payload.getGender()).build();
-
+		User user = User.builder()
+						.name(payload.getName())
+						.username(payload.getUsername())
+						.password(payload.getPassword())
+						.birthday(payload.getBirthday())
+						.gender(payload.getGender())
+						.build();
 		try {
 			userService.register(user);
 
@@ -84,9 +97,11 @@ public class AuthController {
 		try {
 			userService.verify(username, code);
 			return ResponseEntity.ok().body(new ApiResponse(true, "Account verificated with success!"));
-		} catch (RuntimeException e) {
+		} catch (UserNotExistException|UserVerificationException e) {
 			return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage()));
-		}		
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(new ApiResponse(false, e.getMessage()));
+		}
 	}
 	
 	@GetMapping(value = "/resend-verfication/{username}")
@@ -94,9 +109,11 @@ public class AuthController {
 		try {
 			userService.reSendVerification(username);
 			return ResponseEntity.ok().body(new ApiResponse(true, "E-mail sent with success!"));
-		} catch (RuntimeException e) {
+		} catch (UserNotExistException e) {
 			return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage()));
-		}		
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(new ApiResponse(false, e.getMessage()));
+		}
 	}
 
 	@PutMapping(value = "{ngoId}/favorite")

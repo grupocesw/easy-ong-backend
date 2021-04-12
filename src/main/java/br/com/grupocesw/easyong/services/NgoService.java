@@ -9,7 +9,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 
 import br.com.grupocesw.easyong.entities.Ngo;
@@ -27,7 +26,7 @@ public class NgoService {
 		return repository.findByActivated(pageable);
 	}
 	
-	public Page<Ngo> findSuggested(@PageableDefault(page = 0, size = 1) Pageable pageable) {
+	public Page<Ngo> findSuggested(Pageable pageable) {
 		return repository.findSuggested(pageable);
 	}
 
@@ -45,22 +44,40 @@ public class NgoService {
 		}
 	}
 
-	public Ngo update(Long id, Ngo ngo) {
+	public Ngo update(Long id, Ngo payload) throws Exception {
 		try {
-			Ngo entity = repository.getOne(id);
-			this.updateData(entity, ngo);
+			Ngo ngo = repository.getOne(id);
+			this.updateData(ngo, payload);
 
-			return repository.save(entity);
+			return repository.save(ngo);
 		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException(id);
-		}		
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
 	}
 
-	private void updateData(Ngo entity, Ngo ngo) {
-		entity.setName(ngo.getName());
-		entity.setCnpj(ngo.getCnpj());
-		entity.setDescription(ngo.getDescription());
-		entity.getCauses().addAll(ngo.getCauses());
+	private void updateData(Ngo ngo, Ngo payload) {
+		ngo.setName(payload.getName());
+		ngo.setCnpj(payload.getCnpj());
+		ngo.setDescription(payload.getDescription());
+		ngo.setActivated(payload.getActivated());
+		
+		if (payload.getAddress() != null) {
+			ngo.getAddress().setNumber(payload.getAddress().getNumber());
+			ngo.getAddress().setComplement(payload.getAddress().getComplement());
+			ngo.getAddress().setLatitude(payload.getAddress().getLatitude());
+			ngo.getAddress().setLongitude(payload.getAddress().getLongitude());
+			
+			if (payload.getAddress().getStreet() != null) {
+				ngo.getAddress().getStreet().setId(payload.getAddress().getStreet().getId());
+			}
+		}
+		
+		if (payload.getCauses() != null) {
+			ngo.getCauses().clear();
+			ngo.getCauses().addAll(payload.getCauses());
+		}			
 	}
 
 	public void delete(Long id) {

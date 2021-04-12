@@ -1,4 +1,4 @@
-package br.com.grupocesw.easyong.payload;
+package br.com.grupocesw.easyong.payloads;
 
 
 import lombok.Data;

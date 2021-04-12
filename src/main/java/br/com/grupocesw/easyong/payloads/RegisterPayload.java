@@ -1,4 +1,4 @@
-package br.com.grupocesw.easyong.payload;
+package br.com.grupocesw.easyong.payloads;
 
 import java.time.LocalDate;
 
@@ -10,11 +10,11 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import br.com.grupocesw.easyong.enumerations.Gender;
+import br.com.grupocesw.easyong.enums.GenderEnum;
 import lombok.Data;
 
 @Data
-public class RegisterRequest {
+public class RegisterPayload {
 
 	@NotEmpty(message = "Name required")
 	@Size(min = 3, max = 100, message = "Name must contain between 3 and 100 characters")
@@ -36,5 +36,5 @@ public class RegisterRequest {
 	private LocalDate birthday;
 
 	@Column(name = "gender", nullable = true)
-	private Gender gender = Gender.UNINFORMED;
+	private GenderEnum gender = GenderEnum.UNINFORMED;
 }

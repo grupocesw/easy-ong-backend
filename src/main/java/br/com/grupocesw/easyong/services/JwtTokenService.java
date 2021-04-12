@@ -19,7 +19,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import br.com.grupocesw.easyong.configurations.JwtConfiguration;
+import br.com.grupocesw.easyong.configs.JwtConfig;
 import br.com.grupocesw.easyong.entities.UserAuthDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -34,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JwtTokenService extends OncePerRequestFilter {
 
-	@Autowired private JwtConfiguration jwtConfig;
+	@Autowired private JwtConfig jwtConfig;
     @Autowired private UserService userService;
 
     public String generateToken(Authentication authentication) {

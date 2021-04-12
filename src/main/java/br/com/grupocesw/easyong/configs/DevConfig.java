@@ -1,4 +1,4 @@
-package br.com.grupocesw.easyong.configurations;
+package br.com.grupocesw.easyong.configs;
 //package br.com.grupocesw.easyong.configurations;
 //
 //import java.time.LocalDate;

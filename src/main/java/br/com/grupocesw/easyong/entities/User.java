@@ -20,14 +20,17 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import br.com.grupocesw.easyong.enumerations.Gender;
+import br.com.grupocesw.easyong.enums.GenderEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -84,7 +87,7 @@ public class User implements Serializable {
 	private LocalDate birthday;
 
 	@Column(name = "gender", nullable = true)
-	private Gender gender;
+	private GenderEnum gender;
 
 	@Email
 	@NotEmpty(message = "Username required")
@@ -95,6 +98,10 @@ public class User implements Serializable {
 	@NotEmpty(message = "Password required")
 	@Size(min = 3, max = 100, message = "Password must contain between 3 and 100 characters")
 	private String password;
+	
+	@NotNull
+	@Size(min = 10, max = 10)
+	private String verificationCode;
 
 	@CreationTimestamp
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
@@ -106,7 +113,6 @@ public class User implements Serializable {
 	@Column(name = "updated_at", columnDefinition = "TIMESTAMP")
 	private LocalDateTime updatedAt;
 
-	@CreationTimestamp
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
 	@Column(name = "checked_at", columnDefinition = "TIMESTAMP", nullable = true)
 	private LocalDateTime checkedAt;
@@ -115,14 +121,17 @@ public class User implements Serializable {
 	private Picture picture;
 
 	@ManyToMany
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinTable(name = "user_social_causes", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "social_cause_id"))
 	private Set<SocialCause> causes;
 
 	@ManyToMany
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinTable(name = "user_favorite_ngos", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "ngo_id"))
 	private Set<Ngo> favoriteNgos;
 
 	@ManyToMany
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinTable(name = "user_notifications", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "notification_id"))
 	private Set<Notification> notifications;
 

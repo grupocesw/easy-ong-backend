@@ -49,7 +49,7 @@ public class UserController {
 			@ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
 					+ "Default sort order is ascending. " + "Multiple sort criteria are supported.") })
 	public Page<UserDTO> list(@ApiIgnore final Pageable pageable) {
-		final Page<User> users = service.findByChecked(pageable);
+		final Page<User> users = service.findByAllChecked(pageable);
 
 		return users.map(user -> new UserDTO(user));
 	}

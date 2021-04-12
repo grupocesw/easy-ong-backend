@@ -1,11 +1,11 @@
-package br.com.grupocesw.easyong.enumerations;
+package br.com.grupocesw.easyong.enums;
 
-public enum Gender {
+public enum GenderEnum {
 	MALE(0), FEMALE(1), OTHER(2), UNINFORMED(3);
 
 	private Integer code;
 
-	private Gender(Integer code) {
+	private GenderEnum(Integer code) {
 		this.code = code;
 	}
 
@@ -17,8 +17,8 @@ public enum Gender {
 		this.code = code;
 	}
 
-	public static Gender fromString(Integer code) {
-		for(Gender value : Gender.values()) {
+	public static GenderEnum fromString(Integer code) {
+		for(GenderEnum value : GenderEnum.values()) {
 			if(value.getCode() == code) {
 				return value;
 			}

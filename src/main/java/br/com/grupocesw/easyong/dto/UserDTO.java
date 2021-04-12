@@ -8,7 +8,7 @@ import java.util.Set;
 import br.com.grupocesw.easyong.entities.Role;
 import br.com.grupocesw.easyong.entities.SocialCause;
 import br.com.grupocesw.easyong.entities.User;
-import br.com.grupocesw.easyong.enumerations.Gender;
+import br.com.grupocesw.easyong.enums.GenderEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,7 +25,7 @@ public class UserDTO implements Serializable {
 	private Long id;
 	private String name;
 	private LocalDate birthday;
-	private Gender gender;
+	private GenderEnum gender;
 	private String username;
 	private Set<SocialCause> causes = new HashSet<>();
 	private Set<Role> roles = new HashSet<>();

@@ -1,10 +1,10 @@
-package br.com.grupocesw.easyong.utilities;
+package br.com.grupocesw.easyong.utils;
 
 import java.io.File;
 
 import org.apache.commons.io.FilenameUtils;
 
-public class PictureUtility {
+public class PictureUtil {
 	
     public static String getFileNameWithExtension(String path, String name) {
     	File directory = new File(path);

@@ -1,4 +1,4 @@
-package br.com.grupocesw.easyong.configurations;
+package br.com.grupocesw.easyong.configs;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -25,7 +25,7 @@ import br.com.grupocesw.easyong.services.JwtTokenService;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     
 	private static final String[] BLACK_LIST = {};
 
@@ -42,8 +42,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         "/v3/api-docs/**",
         "/swagger-ui/**",
         // other public endpoints of your API may be appended to this array
-        "/api/ngos",
-        "/api/faqs",
+        "/api/ngos/**",
+        "/api/faqs/**",
         "/api/pictures/**",
         "/h2-console",
         "/h2-console/**"

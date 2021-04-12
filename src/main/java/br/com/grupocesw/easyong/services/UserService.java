@@ -1,10 +1,8 @@
 package br.com.grupocesw.easyong.services;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +23,11 @@ import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.repositories.UserRepository;
 import br.com.grupocesw.easyong.services.exceptions.DatabaseException;
 import br.com.grupocesw.easyong.services.exceptions.ResourceNotFoundException;
+import br.com.grupocesw.easyong.services.exceptions.UserNotCheckedException;
+import br.com.grupocesw.easyong.services.exceptions.UserNotExistException;
+import br.com.grupocesw.easyong.services.exceptions.UserVerificationException;
 import br.com.grupocesw.easyong.services.exceptions.UsernameAlreadyExistsException;
+import br.com.grupocesw.easyong.utils.UserUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -39,8 +41,8 @@ public class UserService {
     @Autowired private JwtTokenService jwtTokenService;
     @Autowired private JavaMailSenderService javaMailSenderService;
 
-	public Page<User> findByChecked(Pageable pageable) {
-		return repository.findByChecked(pageable);
+	public Page<User> findByAllChecked(Pageable pageable) {
+		return repository.findByAllChecked(pageable);
 	}
 	
 	public User getMe() {
@@ -50,7 +52,8 @@ public class UserService {
 	}
 	
 	public User getUserByUsername(String username) {
-		return repository.getUserByUsername(username);
+		return repository.getUserByUsername(username)
+				.orElseThrow(() -> new UserNotExistException());
 	}
 
 	public User getOneChecked(Long id) {
@@ -68,6 +71,7 @@ public class UserService {
 	                    String.format("username %s already exists", user.getUsername()));
 	        }
 			user.setPassword(passwordEncoder.encode(user.getPassword()));
+			user.setVerificationCode(UserUtil.createRandomCode(10));
 			return repository.save(user);
 		} catch (DataIntegrityViolationException e) {
 			throw new DatabaseException(e.getMessage());
@@ -105,6 +109,14 @@ public class UserService {
 	}
 	
     public String login(String username, String password) {
+    	
+    	User user = repository.getUserByUsername(username)
+    			.orElseThrow(() -> new UserNotExistException());;
+    	
+    	if(user.getCheckedAt() == null) {
+    		throw new UserNotCheckedException();
+    	}
+
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(username, password));
 
@@ -114,28 +126,22 @@ public class UserService {
      public User register(User user) {
          log.info("registering user {}", user.getUsername());
 
-         if(repository.existsByUsername(user.getUsername())) {
-             log.warn("username {} already exists.", user.getUsername());
-
-             throw new UsernameAlreadyExistsException(
-                     String.format("username %s already exists", user.getUsername()));
-         }
-
-         user.setPassword(passwordEncoder.encode(user.getPassword()));         
-         User userRegisted = repository.save(user);
+         User userRegisted = this.insert(user);
 
         try {
 			javaMailSenderService.sendUserRegister(userRegisted);
-		} catch (MessagingException | IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
 		}
 
-         return userRegisted;
+        return userRegisted;
+         
      }
      
      public Optional<User> findByUsername(String username) {
          log.info("retrieving user {}", username);
-         return repository.findByUsername(username);
+         return Optional.ofNullable(repository.findByUsername(username)
+        	.orElseThrow(() -> new UserNotExistException()));
      }
      
  	public void favorite(Long ngoId) {
@@ -153,32 +159,26 @@ public class UserService {
 	}
 
 	public void verify(String username, String code) {
-		User user = repository.getUserByUsername(username);
+		User user = repository.getUserByUsername(username)
+				.orElseThrow(() -> new UserNotExistException());
 		
-		if(user == null) {
-			throw new RuntimeException("User verification failed.");
-		}
-		
-		if(!user.getPassword().replaceAll("\\D+", "").equals(code)) {
-			throw new RuntimeException("User verification failed.");
+		if(!user.getVerificationCode().equals(code)) {
+			throw new UserVerificationException();
 		}
 		
 		user.setCheckedAt(LocalDateTime.now());
 		repository.save(user);
 	}
 	
-	public void reSendVerification(String username) {
-		try {
-			
-			User user = repository.getUserByUsername(username);
+	public void reSendVerification(String username) throws Exception {
+		
+		User user = repository.getUserByUsername(username)
+				.orElseThrow(() -> new UserNotExistException());
 
-			if(user == null) {
-				throw new RuntimeException("User verification failed.");
-			}
-			
+		try {			
 			javaMailSenderService.sendUserRegister(user);
-		} catch (MessagingException | IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
 		}
 	}
 }
