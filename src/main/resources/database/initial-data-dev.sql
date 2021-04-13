@@ -14,7 +14,7 @@ INSERT INTO ngos (id, name, cnpj, description, activated, address_id, created_at
 (2, 'Ong Bom de Bola', '26809488000196', 'Lorem ipsum hendrerit ut arcu dapibus etiam habitant faucibus gravida egestas, ut porttitor blandit venenatis per vestibulum venenatis massa leo quisque, pretium mattis auctor lorem curabitur ut aliquet praesent libero', true, 2, '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
 (3, 'Ong Green Side', '52851775000174', 'Lorem ipsum hendrerit ut arcu dapibus etiam habitant faucibus gravida egestas, ut porttitor blandit venenatis per vestibulum venenatis massa leo quisque, pretium mattis auctor lorem curabitur ut aliquet praesent libero', true, 3, '2021-01-01 00:00:00', '2021-01-01 00:00:00');
 
-INSERT INTO more_information_ngos (id, information, ngo_id) VALUES
+INSERT INTO ngo_more_informations (id, information, ngo_id) VALUES
 (1, 'No ano de 2020 foram doadas 800 cestas básicas.', 1),
 (2, 'Somos mais de 40 voluntários.', 1),
 (3, 'Foram arrecadados mais de R$50000 em 2020.', 1);
@@ -78,3 +78,5 @@ INSERT INTO user_favorite_ngos (user_id, ngo_id) VALUES
 (2, 2),
 (3, 3),
 (4, 1);
+
+

@@ -74,7 +74,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	        .antMatchers(WHITE_LIST).permitAll()
 	        .antMatchers(BLACK_LIST).denyAll()
 	        .antMatchers(ANONYMOUS_LIST).anonymous()
-	        .anyRequest().authenticated();
+	        .anyRequest().permitAll();
     }
 
     @Override

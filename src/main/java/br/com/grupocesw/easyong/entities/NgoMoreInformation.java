@@ -22,13 +22,13 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "more_information_ngos")
+@Table(name = "ngo_more_informations")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @ToString
-public class MoreInformationNgo implements Serializable {
+public class NgoMoreInformation implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

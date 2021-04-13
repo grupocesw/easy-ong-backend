@@ -99,8 +99,8 @@ public class Ngo implements Serializable {
 	@JoinTable(name = "ngo_contacts", joinColumns= @JoinColumn(name = "ngo_id"), inverseJoinColumns = @JoinColumn(name = "contact_id"))
 	private Set<Contact> contacts;
 	
-	@OneToMany(targetEntity=MoreInformationNgo.class, mappedBy="ngo",cascade=CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-	private Set<MoreInformationNgo> moreInformations;
+	@OneToMany(targetEntity=NgoMoreInformation.class, mappedBy="ngo",cascade=CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	private Set<NgoMoreInformation> moreInformations;
 	
 	@ManyToMany
 	@OnDelete(action = OnDeleteAction.CASCADE)

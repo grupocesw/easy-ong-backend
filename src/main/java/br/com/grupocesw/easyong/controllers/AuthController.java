@@ -89,6 +89,8 @@ public class AuthController {
 			return ResponseEntity.created(location).body(new ApiResponse(true, user.getUsername()));
 		} catch (UsernameAlreadyExistsException e) {			
           return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage()));
+		} catch (Exception e) {
+			return ResponseEntity.status(500).body(new ApiResponse(false, e.getMessage()));
 		}
 	}
 
