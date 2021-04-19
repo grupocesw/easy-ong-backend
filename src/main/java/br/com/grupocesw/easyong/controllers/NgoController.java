@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import br.com.grupocesw.easyong.dto.NgoDTO;
+import br.com.grupocesw.easyong.dtos.NgoDTO;
 import br.com.grupocesw.easyong.entities.Ngo;
 import br.com.grupocesw.easyong.services.NgoService;
 import br.com.grupocesw.easyong.services.exceptions.ResourceNotFoundException;
@@ -37,8 +37,7 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 public class NgoController {
 
-	@Autowired
-	private NgoService service;
+	@Autowired private NgoService service;
 	
 	@ApiResponses(value = {
 	    @ApiResponse(code = 200, message = "Retorna a lista de ONG"),
@@ -74,7 +73,7 @@ public class NgoController {
 	
 	@PostMapping
 	public ResponseEntity<NgoDTO> create(@Valid @RequestBody Ngo ngo) {
-		NgoDTO ngoDTO = new NgoDTO(service.insert(ngo));
+		NgoDTO ngoDTO = new NgoDTO(service.create(ngo));
 		
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(ngoDTO.getId()).toUri();
@@ -84,7 +83,7 @@ public class NgoController {
 	
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<NgoDTO> retrieve(@PathVariable Long id) {		
-		return ResponseEntity.ok(new NgoDTO(service.findById(id)));
+		return ResponseEntity.ok(new NgoDTO(service.retrieve(id)));
 	}
 	
 	@PutMapping(value = "/{id}")

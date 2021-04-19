@@ -16,14 +16,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import br.com.grupocesw.easyong.services.PictureService;
+import br.com.grupocesw.easyong.services.impl.PictureServiceImpl;
 
 @RequestMapping(value = "/api/pictures")
 @RestController
 public class PictureController {
 
-	@Autowired
-	private PictureService service;
+	@Autowired private PictureServiceImpl service;
 
 	@ResponseBody
 	@PostMapping(value = "upload", produces = { MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })

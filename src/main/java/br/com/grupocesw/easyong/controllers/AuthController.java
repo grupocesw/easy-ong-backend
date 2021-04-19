@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import br.com.grupocesw.easyong.dto.UserDTO;
+import br.com.grupocesw.easyong.dtos.UserDTO;
 import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.payloads.ApiResponse;
 import br.com.grupocesw.easyong.payloads.JwtAuthenticationResponse;
@@ -32,20 +32,22 @@ import br.com.grupocesw.easyong.services.exceptions.UserVerificationException;
 import br.com.grupocesw.easyong.services.exceptions.UsernameAlreadyExistsException;
 import lombok.extern.slf4j.Slf4j;
 
-@RequestMapping(value = "/api/auth")
+@RequestMapping(value = "/auth")
 @RestController
 @Slf4j
 public class AuthController {
 
-	@Autowired
-	private UserService userService;
+	@Autowired private UserService userService;
 
 	@GetMapping(value = "/me")
-	public ResponseEntity<UserDTO> me() {
+	public ResponseEntity<?> me() {
+		
+		User user = userService.getMe();
+		
+		if (user == null)
+			return ResponseEntity.badRequest().body(new ApiResponse(false, "Unauthenticated user."));
 
-		UserDTO userDTO = new UserDTO(userService.getMe());
-
-		return ResponseEntity.ok(userDTO);
+		return ResponseEntity.ok(new UserDTO(user));
 	}
 
 	@PostMapping("/login")

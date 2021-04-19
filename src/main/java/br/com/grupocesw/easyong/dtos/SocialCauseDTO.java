@@ -1,4 +1,4 @@
-package br.com.grupocesw.easyong.dto;
+package br.com.grupocesw.easyong.dtos;
 
 import java.io.Serializable;
 

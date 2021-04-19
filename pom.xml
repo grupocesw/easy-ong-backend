@@ -3,18 +3,33 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.4.2</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
+
 	<groupId>br.com.grupocesw</groupId>
 	<artifactId>easy-ong</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>easy-ong</name>
+	<name>Easy ONG</name>
 	<description>MVP Project to MBA Software Engineering - Faculdade Impacta </description>
+	<url>https://github.com/grupocesw/easy-ong-backend</url>
+
+	<developers>
+		<developer>
+			<name>Andrê Reges Silva dos Santos</name>
+			<email>andre.reges@aluno.faculdadeimpacta.com.br</email>
+			<timezone>3</timezone>
+			<id>arss</id>
+		</developer>
+	</developers>
+
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>11</java.version>
 	</properties>
 	<dependencies>
@@ -123,9 +138,9 @@
 			</activation>
 		</profile>
 		<profile>
-			<id>test</id>
+			<id>staging</id>
 			<properties>
-				<activatedProperties>test</activatedProperties>
+				<activatedProperties>staging</activatedProperties>
 			</properties>
 		</profile>
 		<profile>

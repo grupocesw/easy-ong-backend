@@ -1,5 +1,6 @@
 package br.com.grupocesw.easyong.configs;
 
+import javax.servlet.Filter;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,9 +51,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     };
 	
 	private static final String[] ANONYMOUS_LIST = {
-		"/api/auth/login",
-		"/api/auth/register",
-		"/api/auth/verify/**"
+		"/auth/login",
+		"/auth/register",
+		"/auth/verify/**"
     };
     
 	@Autowired private UserDetailsService userDetailsService;
@@ -69,7 +70,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	        .and()
 	        .exceptionHandling().authenticationEntryPoint((req, rsp, e) -> rsp.sendError(HttpServletResponse.SC_UNAUTHORIZED))
 	        .and()
-	        .addFilterBefore(jwtTokenService, UsernamePasswordAuthenticationFilter.class)
+	        .addFilterBefore((Filter) jwtTokenService, UsernamePasswordAuthenticationFilter.class)
 	        .authorizeRequests()	        
 	        .antMatchers(WHITE_LIST).permitAll()
 	        .antMatchers(BLACK_LIST).denyAll()

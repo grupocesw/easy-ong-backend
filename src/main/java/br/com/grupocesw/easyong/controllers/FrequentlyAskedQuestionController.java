@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import br.com.grupocesw.easyong.dto.FrequentlyAskedQuestionDTO;
+import br.com.grupocesw.easyong.dtos.FrequentlyAskedQuestionDTO;
 import br.com.grupocesw.easyong.entities.FrequentlyAskedQuestion;
 import br.com.grupocesw.easyong.services.FrequentlyAskedQuestionService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -32,8 +32,7 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 public class FrequentlyAskedQuestionController {
 
-	@Autowired
-	private FrequentlyAskedQuestionService service;
+	@Autowired private FrequentlyAskedQuestionService service;
 	
 	@ApiResponses(value = {
 	    @ApiResponse(code = 200, message = "Retorna a lista de Pergunta Frequente"),
@@ -70,7 +69,7 @@ public class FrequentlyAskedQuestionController {
 	@PostMapping
 	public ResponseEntity<FrequentlyAskedQuestionDTO> create(@RequestBody FrequentlyAskedQuestion frequentlyAskedQuestion) {
 		
-		FrequentlyAskedQuestion frequentlyAskedQuestionSalvo = service.insert(frequentlyAskedQuestion);
+		FrequentlyAskedQuestion frequentlyAskedQuestionSalvo = service.create(frequentlyAskedQuestion);
 		
 		FrequentlyAskedQuestionDTO frequentlyAskedQuestionDTO = new FrequentlyAskedQuestionDTO(frequentlyAskedQuestionSalvo);
 		
@@ -82,7 +81,7 @@ public class FrequentlyAskedQuestionController {
 	
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<FrequentlyAskedQuestionDTO> retrieve(@PathVariable Long id) {
-		FrequentlyAskedQuestion frequentlyAskedQuestion = service.findById(id);
+		FrequentlyAskedQuestion frequentlyAskedQuestion = service.retrieve(id);
 		
 		FrequentlyAskedQuestionDTO frequentlyAskedQuestionDTO = new FrequentlyAskedQuestionDTO(frequentlyAskedQuestion);
 		

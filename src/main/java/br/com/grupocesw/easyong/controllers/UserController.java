@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import br.com.grupocesw.easyong.dto.UserDTO;
+import br.com.grupocesw.easyong.dtos.UserDTO;
 import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.services.UserService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -33,8 +33,7 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 public class UserController {
 
-	@Autowired
-	private UserService service;
+	@Autowired private UserService service;
 
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Retorna a lista de usuário"),
 			@ApiResponse(code = 401, message = "Credencial inválida para acessar este recurso"),
@@ -57,7 +56,7 @@ public class UserController {
 	@ResponseBody
 	@PostMapping
 	public ResponseEntity<UserDTO> create(@RequestBody User user) {
-		User userCreated = service.insert(user);	
+		User userCreated = service.create(user);	
 
 		UserDTO userDTO = new UserDTO(userCreated);
 
