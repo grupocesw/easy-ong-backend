@@ -21,6 +21,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.grupocesw.easyong.dtos.UserDTO;
 import br.com.grupocesw.easyong.entities.User;
+import br.com.grupocesw.easyong.payloads.UserRequest;
 import br.com.grupocesw.easyong.services.UserService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -48,19 +49,20 @@ public class UserController {
 			@ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
 					+ "Default sort order is ascending. " + "Multiple sort criteria are supported.") })
 	public Page<UserDTO> list(@ApiIgnore final Pageable pageable) {
-		final Page<User> users = service.findByAllChecked(pageable);
+		final Page<User> users = service.findCheckedAll(pageable);
 
 		return users.map(user -> new UserDTO(user));
 	}
 
 	@ResponseBody
 	@PostMapping
-	public ResponseEntity<UserDTO> create(@RequestBody User user) {
-		User userCreated = service.create(user);	
+	public ResponseEntity<UserDTO> create(@RequestBody UserRequest request) {
+		UserDTO userDTO = new UserDTO(service.create(request));
 
-		UserDTO userDTO = new UserDTO(userCreated);
-
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(userDTO.getId())
+		URI uri = ServletUriComponentsBuilder
+				.fromCurrentRequest()
+				.path("/{id}")
+				.buildAndExpand(userDTO.getId())
 				.toUri();
 
 		return ResponseEntity.created(uri).body(userDTO);
@@ -68,27 +70,18 @@ public class UserController {
 
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<UserDTO> retrieve(@PathVariable Long id) {
-		User user = service.getOneChecked(id);
-
-		UserDTO userDTO = new UserDTO(user);
-
-		return ResponseEntity.ok(userDTO);
+		return ResponseEntity.ok(new UserDTO(service.findCheckedById(id)));
 	}
 
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<UserDTO> update(@PathVariable Long id, @RequestBody User user) {
-		
-		user = service.update(id, user);
-
-		UserDTO userDTO = new UserDTO(user);
-
-		return ResponseEntity.ok().body(userDTO);
+	public ResponseEntity<UserDTO> update(@PathVariable Long id, @RequestBody UserRequest userRequest) {
+		return ResponseEntity.ok().body(new UserDTO(service.update(id, userRequest)));
 	}
 
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<Void> delete(@PathVariable Long id) {
 		service.delete(id);
-
+		
 		return ResponseEntity.noContent().build();
 	}
 

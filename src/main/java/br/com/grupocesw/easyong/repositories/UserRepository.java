@@ -15,20 +15,19 @@ import br.com.grupocesw.easyong.entities.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 	
-	List<User> findAll();
-	
 	@Query("SELECT u FROM User u WHERE u.checkedAt IS NOT NULL")
-    Page<User> findByAllChecked(Pageable pageable);
+    Page<User> findCheckedAll(Pageable pageable);
 	
 	@Query("SELECT u FROM User u WHERE u.checkedAt IS NOT NULL AND u.id = :id")
-	Optional<User> getOneChecked(@Param("id") Long id);
+	User findCheckedById(@Param("id") Long id);
 	
 	@Query("SELECT u FROM User u WHERE u.checkedAt IS NOT NULL AND u.username = :username")
-	Optional<User> getOneCheckedByUsername(@Param("username") String username);
+	User findCheckedByUsername(@Param("username") String username);
 	
 	@Query("SELECT u FROM User u WHERE u.username = :username")
-	Optional<User> getUserByUsername(@Param("username") String username);
-	
+	Optional<User> findByUsernameOptional(@Param("username") String username);
+
+	List<User> findAll();
     Boolean existsByUsername(String username);
-    Optional<User> findByUsername(String username);
+    User findByUsername(String username);
 }

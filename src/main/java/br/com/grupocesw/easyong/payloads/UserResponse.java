@@ -5,10 +5,10 @@ import lombok.Data;
 
 @Data
 @Builder
-public class UserSummary {
+public class UserResponse {
 
     private String id;
-    private String username;
     private String name;
+    private String username;   
     private String profilePicture;
 }

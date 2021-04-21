@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import br.com.grupocesw.easyong.entities.User;
 
 @Service
-public interface JavaMailSenderService {
+public interface EmailSenderService {
     
-	public void sendUserRegister(User user) throws MessagingException, IOException;  
+	public void sendUserRegister(User user, String link) throws MessagingException, IOException;  
 }

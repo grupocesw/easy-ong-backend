@@ -24,6 +24,6 @@ public enum GenderEnum {
 			}
 		}
 		
-		throw new IllegalArgumentException("Invalid Gender code");
+		throw new IllegalArgumentException("Invalid gender code");
 	}
 }

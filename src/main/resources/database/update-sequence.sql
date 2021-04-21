@@ -13,6 +13,7 @@ SELECT setval(pg_get_serial_sequence('roles', 'id'), MAX(id)) FROM roles;
 SELECT setval(pg_get_serial_sequence('social_causes', 'id'), MAX(id)) FROM social_causes;
 SELECT setval(pg_get_serial_sequence('states', 'id'), MAX(id)) FROM states;
 SELECT setval(pg_get_serial_sequence('streets', 'id'), MAX(id)) FROM streets;
+SELECT setval(pg_get_serial_sequence('people', 'id'), MAX(id)) FROM people;
 SELECT setval(pg_get_serial_sequence('users', 'id'), MAX(id)) FROM users;
 SELECT setval(pg_get_serial_sequence('zip_codes', 'id'), MAX(id)) FROM zip_codes;
 

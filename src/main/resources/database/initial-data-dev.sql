@@ -47,14 +47,23 @@ INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES
 (1, 4),
 (1, 5);
 
-INSERT INTO users (id, name, birthday, gender, username, password, verification_code, picture_id, created_at, updated_at, checked_at) VALUES
-(1, 'Astrobilobaldo Paixão', '1990-09-22', 0, 'astrobilobaldo@test.com', '$2a$10$RfwrevwuOvdxyw8v7x1eN.AhJbE7V4g/rhuPeEhiOujIgxvNmA.HK', '123abc456d', 4, '2021-01-01 00:00:00', '2021-01-01 00:00:00', null),
-(2, 'Biri Jean', '1983-07-23', 0, 'birijean@test.com', '$2a$10$RfwrevwuOvdxyw8v7x1eN.AhJbE7V4g/rhuPeEhiOujIgxvNmA.HK', '123abc456d', null, '2021-01-01 00:00:00', '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
-(3, 'Paul Stronger', '1998-05-04', 0, 'paulstronger@test.com', '$2a$10$RfwrevwuOvdxyw8v7x1eN.AhJbE7V4g/rhuPeEhiOujIgxvNmA.HK', '123abc456d', null, '2021-01-01 00:00:00', '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
-(4, 'Sander Jay', '1996-11-29', 0, 'sanderjay@test.com', '$2a$10$RfwrevwuOvdxyw8v7x1eN.AhJbE7V4g/rhuPeEhiOujIgxvNmA.HK', '123abc456d', null, '2021-01-01 00:00:00', '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
-(5, 'Juma Haskovo', '2000-06-07', 1, 'jumahaskov@test.com', '$2a$10$RfwrevwuOvdxyw8v7x1eN.AhJbE7V4g/rhuPeEhiOujIgxvNmA.HK', '123abc456d', null, '2021-01-01 00:00:00', '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
-(6, 'Mirna Kyle', '1967-03-09', 1, 'mirnakyle@test.com', '$2a$10$RfwrevwuOvdxyw8v7x1eN.AhJbE7V4g/rhuPeEhiOujIgxvNmA.HK', '123abc456d', null, '2021-01-01 00:00:00', '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
-(7, 'Tricia Marcos', '1984-12-25', 2, 'triciamarcos@test.com', '$2a$10$RfwrevwuOvdxyw8v7x1eN.AhJbE7V4g/rhuPeEhiOujIgxvNmA.HK', '123abc456d', null, '2021-01-01 00:00:00', '2021-01-01 00:00:00', '2021-01-01 00:00:00');
+INSERT INTO people (id, name, birthday, gender) VALUES
+(1, 'Astrobilobaldo Paixão', '1990-09-22', 0),
+(2, 'Biri Jean', '1983-07-23', 0),
+(3, 'Paul Stronger', '1998-05-04', 0),
+(4, 'Sander Jay', '1996-11-29', 0),
+(5, 'Juma Haskovo', '2000-06-07', 1),
+(6, 'Mirna Kyle', '1967-03-09', 1),
+(7, 'Tricia Marcos', '1984-12-25', 2);
+
+INSERT INTO users (id, username, password, locked, person_id, picture_id, created_at, updated_at, checked_at) VALUES
+(1, 'astrobilobaldo@test.com', '$2a$10$RfwrevwuOvdxyw8v7x1eN.AhJbE7V4g/rhuPeEhiOujIgxvNmA.HK', false, 1, 4, '2021-01-01 00:00:00', '2021-01-01 00:00:00', null),
+(2, 'birijean@test.com', '$2a$10$RfwrevwuOvdxyw8v7x1eN.AhJbE7V4g/rhuPeEhiOujIgxvNmA.HK', false, 2, null, '2021-01-01 00:00:00', '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
+(3, 'paulstronger@test.com', '$2a$10$RfwrevwuOvdxyw8v7x1eN.AhJbE7V4g/rhuPeEhiOujIgxvNmA.HK', false, 3, null, '2021-01-01 00:00:00', '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
+(4, 'sanderjay@test.com', '$2a$10$RfwrevwuOvdxyw8v7x1eN.AhJbE7V4g/rhuPeEhiOujIgxvNmA.HK', false, 4, null, '2021-01-01 00:00:00', '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
+(5, 'jumahaskov@test.com', '$2a$10$RfwrevwuOvdxyw8v7x1eN.AhJbE7V4g/rhuPeEhiOujIgxvNmA.HK', false, 5, null, '2021-01-01 00:00:00', '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
+(6, 'mirnakyle@test.com', '$2a$10$RfwrevwuOvdxyw8v7x1eN.AhJbE7V4g/rhuPeEhiOujIgxvNmA.HK', false, 6, null, '2021-01-01 00:00:00', '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
+(7, 'triciamarcos@test.com', '$2a$10$RfwrevwuOvdxyw8v7x1eN.AhJbE7V4g/rhuPeEhiOujIgxvNmA.HK', false, 7, null, '2021-01-01 00:00:00', '2021-01-01 00:00:00', '2021-01-01 00:00:00');
 
 INSERT INTO user_roles (user_id, role_id) VALUES
 (1, 3),

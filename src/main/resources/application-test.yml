@@ -1,0 +1,55 @@
+server:
+  port: 8080
+  error:
+    include-message: always
+    include-binding-errors: always
+
+spring:
+  config:
+    use-legacy-processing: true
+    activate:
+      on-profile: dev
+
+---
+
+spring:
+  h2:
+    console:
+      enabled: true
+      path: /h2/console
+  datasource:
+    platform: h2
+    url: jdbc:h2:mem:easyong
+    username: sa
+    password: 
+    initialization-mode: ALWAYS
+    data: classpath:/database/initial-data.sql, classpath:/database/initial-data-dev.sql, classpath:/database/update-sequence.sql
+  
+  jpa:
+    hibernate:
+      ddl-auto: update
+      
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+
+  mail:
+    host: localhost
+    port: 1025
+    username: hello
+    password: hello
+
+    properties:
+      mail:
+        smtp:
+          ssl:
+            trust: "*"
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 3000
+          writetimeout: 5000
+

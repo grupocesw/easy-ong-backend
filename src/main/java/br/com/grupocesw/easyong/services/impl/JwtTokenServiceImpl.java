@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import br.com.grupocesw.easyong.configs.JwtConfig;
-import br.com.grupocesw.easyong.entities.UserAuthDetails;
+import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.services.JwtTokenService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -123,8 +123,8 @@ public class JwtTokenServiceImpl extends OncePerRequestFilter implements JwtToke
             String username = claims.getSubject();
 
             UsernamePasswordAuthenticationToken auth =
-                    userService.findByUsername(username)
-                            .map(UserAuthDetails::new)
+                    userService.findByUsernameOptional(username)
+                            .map(User::new)
                             .map(userDetails -> {
                                 UsernamePasswordAuthenticationToken authentication =
                                         new UsernamePasswordAuthenticationToken(

@@ -24,6 +24,6 @@ public enum ContactTypeEmun {
 			}
 		}
 		
-		throw new IllegalArgumentException("Invalid Contact Type code");
+		throw new IllegalArgumentException("Invalid contact type code");
 	}
 }

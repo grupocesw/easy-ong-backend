@@ -1,9 +1,9 @@
 package br.com.grupocesw.easyong.entities;
 
-import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -20,17 +20,18 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import br.com.grupocesw.easyong.enums.GenderEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -50,16 +51,14 @@ import lombok.ToString;
 @Setter
 @EqualsAndHashCode
 @ToString
-public class User implements Serializable {
+public class User implements UserDetails {
 
 	private static final long serialVersionUID = 1L;
 
 	public User(User user) {
 		this.id = user.id;
 		this.username = user.username;
-		this.password = user.password;
-		this.birthday = user.birthday;
-		this.gender = user.gender;
+		this.setPerson(user.person);
 		this.causes = user.causes;
 		this.roles = user.roles;
 		this.createdAt = user.getCreatedAt();
@@ -67,41 +66,25 @@ public class User implements Serializable {
 		this.checkedAt = user.getCheckedAt();
 	}
 
-	public User(String name, String username, String password) {
-		this.name = name;
+	public User(String username, String password, Person person) {
 		this.username = username;
 		this.password = password;
+		this.person = person;
 	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotEmpty(message = "Name required")
-	@Size(min = 3, max = 100, message = "Name must contain between 3 and 100 characters")
-	@Column(name = "name", nullable = false, length = 100)
-	private String name;
-
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-	@Column(name = "birthday", nullable = true)
-	private LocalDate birthday;
-
-	@Column(name = "gender", nullable = true)
-	private GenderEnum gender;
-
-	@Email
+	@Email(message = "Invalid email format")
 	@NotEmpty(message = "Username required")
 	@Size(min = 3, max = 100, message = "Username must contain between 3 and 100 characters")
 	@Column(name = "username", nullable = false, length = 100, unique = true)
 	private String username;
 
 	@NotEmpty(message = "Password required")
-	@Size(min = 3, max = 100, message = "Password must contain between 3 and 100 characters")
+	@Size(min = 6, max = 100, message = "Password must contain between 6 and 100 characters")
 	private String password;
-	
-	@NotNull
-	@Size(min = 10, max = 10)
-	private String verificationCode;
 
 	@CreationTimestamp
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
@@ -116,9 +99,23 @@ public class User implements Serializable {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
 	@Column(name = "checked_at", columnDefinition = "TIMESTAMP", nullable = true)
 	private LocalDateTime checkedAt;
+	
+	@Builder.Default
+	@Column(name = "locked")
+	private Boolean locked = false;
 
-	@OneToOne(optional = true)
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	private Picture picture;
+
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	private Person person;
+	
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+	private Set<Role> roles;
+	
+	@OneToMany(targetEntity = ConfirmationToken.class, mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	private Set<ConfirmationToken> tokens;
 
 	@ManyToMany
 	@OnDelete(action = OnDeleteAction.CASCADE)
@@ -138,7 +135,31 @@ public class User implements Serializable {
 	@OneToMany(targetEntity = NgoSuggestion.class, mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	private Set<NgoSuggestion> NgoSuggestions;
 
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-	private Set<Role> roles;
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return !locked;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return checkedAt != null;
+	}
+	
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return getRoles()
+            .stream()
+            .map(role -> new SimpleGrantedAuthority(role.getName()))
+            .collect(Collectors.toSet());
+    }
 }

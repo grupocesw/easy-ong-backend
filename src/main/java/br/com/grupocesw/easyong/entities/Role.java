@@ -1,7 +1,6 @@
 package br.com.grupocesw.easyong.entities;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -17,15 +16,21 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 @Entity
+@Data
+@Builder
 @Table(name = "roles")
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(exclude="users")
 @Getter
 @Setter
 @ToString
@@ -44,5 +49,5 @@ public class Role implements Serializable {
 	
 	@JsonIgnore
 	@ManyToMany(mappedBy = "roles")
-	private Set<User> users = new HashSet<>();
+	private Set<User> users;
 }

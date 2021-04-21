@@ -33,9 +33,9 @@ public class UserDTO implements Serializable {
 
 	public UserDTO(User user) {
 		id = user.getId();
-		name = user.getName();
-		birthday = user.getBirthday();
-		gender = user.getGender();
+		name = user.getPerson().getName();
+		birthday = user.getPerson().getBirthday();
+		gender = user.getPerson().getGender();
 		username = user.getUsername();
 		causes = user.getCauses();
 		roles = user.getRoles();
