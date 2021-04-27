@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,12 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.com.grupocesw.easyong.services.impl.PictureServiceImpl;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 @RequestMapping(value = "/api/pictures")
 @RestController
 public class PictureController {
 
-	@Autowired private PictureServiceImpl service;
+	private PictureServiceImpl service;
 
 	@ResponseBody
 	@PostMapping(value = "upload", produces = { MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })

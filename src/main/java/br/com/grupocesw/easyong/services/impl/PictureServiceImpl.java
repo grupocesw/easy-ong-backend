@@ -11,7 +11,6 @@ import java.util.Optional;
 import javax.persistence.EntityNotFoundException;
 
 import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -24,13 +23,15 @@ import br.com.grupocesw.easyong.services.PictureService;
 import br.com.grupocesw.easyong.services.exceptions.DatabaseException;
 import br.com.grupocesw.easyong.services.exceptions.ResourceNotFoundException;
 import br.com.grupocesw.easyong.utils.PictureUtil;
+import lombok.AllArgsConstructor;
 
 @Service
+@AllArgsConstructor
 public class PictureServiceImpl implements PictureService {
 
 	public final String storageDirectoryPath = "storage/pictures/";
 	
-	@Autowired private PictureRepository repository;
+	private PictureRepository repository;
 
 	@Override
 	public List<Picture> findAll() {

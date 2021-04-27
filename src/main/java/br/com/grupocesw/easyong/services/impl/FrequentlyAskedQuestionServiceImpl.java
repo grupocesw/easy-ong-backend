@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -17,11 +16,13 @@ import br.com.grupocesw.easyong.repositories.FrequentlyAskedQuestionRepository;
 import br.com.grupocesw.easyong.services.FrequentlyAskedQuestionService;
 import br.com.grupocesw.easyong.services.exceptions.DatabaseException;
 import br.com.grupocesw.easyong.services.exceptions.ResourceNotFoundException;
+import lombok.AllArgsConstructor;
 
 @Service
+@AllArgsConstructor
 public class FrequentlyAskedQuestionServiceImpl implements FrequentlyAskedQuestionService {
 
-	@Autowired private FrequentlyAskedQuestionRepository repository;
+	private FrequentlyAskedQuestionRepository repository;
 
 	@Override
 	public List<FrequentlyAskedQuestion> findAll() {

@@ -147,10 +147,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public String login(String username, String password) {
+		
+		Optional<User> user = Optional.ofNullable(
+				repository.findByUsernameOptional(username).orElseThrow(
+						() -> new UserNotExistException()
+		));
 
-		User user = repository.findByUsername(username);
-
-		if (user.getCheckedAt() == null) {
+		if (user.get().getCheckedAt() == null) {
 			throw new UserNotCheckedException();
 		}
 
@@ -183,12 +186,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	
 	@Override
     public UserDetails loadUserByUsername(String username) {
-        User user = repository.findByUsername(username);
-        
-        if (user == null)
-        	new User();
-        
-        return user;
+        return repository.findByUsernameOptional(username)
+        		.map(user -> user)
+        		.orElse(new User());
     }
 
 	@Transactional
@@ -196,14 +196,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	public boolean enable(String username) {
 		log.info("retrieving user {}", username);
 		
-		User user = repository.findByUsername(username);
+		Optional<User> userOptional = Optional.ofNullable(
+				repository.findByUsernameOptional(username).orElseThrow(
+						() -> new UserNotExistException()
+		));
 		
-		if (user == null)
-			throw new UserNotExistException();
-		
+		User user = userOptional.get();
 		user.setCheckedAt(LocalDateTime.now());
+		
 		repository.save(user);
-			
+
 		return true;
 	}
 

@@ -23,7 +23,7 @@ spring:
     username: sa
     password: 
     initialization-mode: ALWAYS
-    data: classpath:/database/initial-data.sql, classpath:/database/initial-data-dev.sql, classpath:/database/update-sequence.sql
+    data: classpath:/database/initial-data.sql, classpath:/database/initial-data-dev.sql
   
   jpa:
     hibernate:

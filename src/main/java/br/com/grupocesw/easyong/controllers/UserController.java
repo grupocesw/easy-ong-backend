@@ -2,7 +2,6 @@ package br.com.grupocesw.easyong.controllers;
 
 import java.net.URI;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -28,13 +27,15 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import lombok.AllArgsConstructor;
 import springfox.documentation.annotations.ApiIgnore;
 
+@AllArgsConstructor
 @RequestMapping(value = "/api/users")
 @RestController
 public class UserController {
 
-	@Autowired private UserService service;
+	private UserService service;
 
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Retorna a lista de usuário"),
 			@ApiResponse(code = 401, message = "Credencial inválida para acessar este recurso"),

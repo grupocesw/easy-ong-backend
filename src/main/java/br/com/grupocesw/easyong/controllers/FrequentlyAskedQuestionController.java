@@ -2,7 +2,6 @@ package br.com.grupocesw.easyong.controllers;
 
 import java.net.URI;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -27,12 +26,14 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 @RequestMapping(value = "/api/faqs")
 @RestController
 public class FrequentlyAskedQuestionController {
 
-	@Autowired private FrequentlyAskedQuestionService service;
+	private FrequentlyAskedQuestionService service;
 	
 	@ApiResponses(value = {
 	    @ApiResponse(code = 200, message = "Retorna a lista de Pergunta Frequente"),

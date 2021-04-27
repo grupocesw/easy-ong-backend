@@ -20,7 +20,7 @@ spring:
     name: Easy ONG
 
   profiles:
-    active: dev    
+    active: test    
     include:
       - application-test
       - application-dev

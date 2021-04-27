@@ -2,7 +2,6 @@ package br.com.grupocesw.easyong.dtos;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
 
 import br.com.grupocesw.easyong.entities.Role;
@@ -10,10 +9,14 @@ import br.com.grupocesw.easyong.entities.SocialCause;
 import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.enums.GenderEnum;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -27,8 +30,8 @@ public class UserDTO implements Serializable {
 	private LocalDate birthday;
 	private GenderEnum gender;
 	private String username;
-	private Set<SocialCause> causes = new HashSet<>();
-	private Set<Role> roles = new HashSet<>();
+	private Set<SocialCause> causes;
+	private Set<Role> roles;
 	private PictureDTO picture;
 
 	public UserDTO(User user) {

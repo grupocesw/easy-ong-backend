@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -16,11 +15,12 @@ import br.com.grupocesw.easyong.repositories.NgoRepository;
 import br.com.grupocesw.easyong.services.NgoService;
 import br.com.grupocesw.easyong.services.exceptions.DatabaseException;
 import br.com.grupocesw.easyong.services.exceptions.ResourceNotFoundException;
+import lombok.AllArgsConstructor;
 
 @Service
+@AllArgsConstructor
 public class NgoServiceImpl implements NgoService {
 
-	@Autowired
 	private NgoRepository repository;
 
 	@Override
