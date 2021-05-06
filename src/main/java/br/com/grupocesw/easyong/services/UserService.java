@@ -8,16 +8,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.com.grupocesw.easyong.entities.User;
-import br.com.grupocesw.easyong.payloads.UserRequest;
 
 @Service
 public interface UserService {
 
-	public User create(UserRequest request);
+	public User create(User user);
 	
 	public User retrieve(Long id);
 
-	public User update(Long id, UserRequest userRequest);
+	public User update(Long id, User user);
+	
+	public User updateMe(User user);
 	
 	public void delete(Long id);
 	
@@ -25,19 +26,19 @@ public interface UserService {
 	
 	public Page<User> findCheckedAll(Pageable pageable);
 	
-	public User findCheckedById(Long id);
-	
-	public Optional<User> findByUsernameOptional(String username);
+	public User findById(Long id);
 	
 	public void favorite(Long ngoId);
 	
 	public User getMe();
 	
-	public boolean enable(String username);
-	
     public String login(String username, String password);
+    
+    public User changePassword(User user);
      
-    public User findByUsername(String username);
+    public Optional<User> findByUsername(String username);
     
     public Boolean existsByUsername(String username);
+
+	public void enableUser(User user);
 }

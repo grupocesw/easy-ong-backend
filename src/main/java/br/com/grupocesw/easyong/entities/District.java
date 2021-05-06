@@ -1,7 +1,5 @@
 package br.com.grupocesw.easyong.entities;
 
-import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -21,6 +19,7 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,10 +31,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 @ToString
-public class District implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class District {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,7 +46,7 @@ public class District implements Serializable {
 	
 	@JsonIgnore
 	@OneToMany(targetEntity=Street.class, mappedBy="district", cascade=CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-	private Set<Street> streets = new HashSet<>();
+	private Set<Street> streets;
 	
 	@JsonIgnore
 	@ManyToOne

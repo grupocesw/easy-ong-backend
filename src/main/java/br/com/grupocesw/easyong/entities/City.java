@@ -1,7 +1,5 @@
 package br.com.grupocesw.easyong.entities;
 
-import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -19,6 +17,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,10 +29,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 @ToString
-public class City implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class City {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,7 +43,7 @@ public class City implements Serializable {
 	private String name;
 	
 	@OneToMany(targetEntity=District.class, mappedBy="city",cascade=CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-	private Set<District> districts = new HashSet<>();
+	private Set<District> districts;
 	
 	@ManyToOne
 	@JoinColumn(name="state_id")

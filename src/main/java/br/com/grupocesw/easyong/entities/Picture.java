@@ -1,7 +1,5 @@
 package br.com.grupocesw.easyong.entities;
 
-import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -20,6 +18,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,10 +30,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 @ToString
-public class Picture implements Serializable {
-	
-	private static final long serialVersionUID = 1L;
+public class Picture {
 	
 	private static final String path = "/api/pictures/";
 	
@@ -53,27 +51,22 @@ public class Picture implements Serializable {
 	
 	@JsonIgnore
 	@ManyToMany(mappedBy = "pictures")
-	private Set<Ngo> ngos = new HashSet<>();
+	private Set<Ngo> ngos;
 	
 	public Picture (String name) {
 		this.name = name;
 	}
 	
 	public String getUrl() {
+		
+		String pictureName = (name == null) ? noImage : name;
+		
 		return ServletUriComponentsBuilder
-		.fromCurrentContextPath()
-		.build()
-		.toUriString()
-		.concat(path)
-		.concat(this.getName());
+			.fromCurrentContextPath()
+			.build()
+			.toUriString()
+			.concat(path)
+			.concat(pictureName);
 	}
-	
-	public static String getNoImageUrl() {
-		return ServletUriComponentsBuilder
-		.fromCurrentContextPath()
-		.build()
-		.toUriString()
-		.concat(path)
-		.concat(noImage);
-	}
+
 }

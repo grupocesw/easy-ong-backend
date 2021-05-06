@@ -41,15 +41,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Data
-@Builder
 @Entity
+@Data
 @Table(name = "users")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @EqualsAndHashCode
+@Builder
 @ToString
 public class User implements UserDetails {
 
@@ -58,12 +58,12 @@ public class User implements UserDetails {
 	public User(User user) {
 		this.id = user.id;
 		this.username = user.username;
+		this.password = user.password;
 		this.setPerson(user.person);
 		this.causes = user.causes;
 		this.roles = user.roles;
 		this.createdAt = user.getCreatedAt();
 		this.updatedAt = user.getUpdatedAt();
-		this.checkedAt = user.getCheckedAt();
 	}
 
 	public User(String username, String password, Person person) {
@@ -96,25 +96,27 @@ public class User implements UserDetails {
 	@Column(name = "updated_at", columnDefinition = "TIMESTAMP")
 	private LocalDateTime updatedAt;
 
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-	@Column(name = "checked_at", columnDefinition = "TIMESTAMP", nullable = true)
-	private LocalDateTime checkedAt;
-	
 	@Builder.Default
 	@Column(name = "locked")
 	private Boolean locked = false;
+
+	@Builder.Default
+	@Column(name = "enabled")
+	private Boolean enabled = false;
 
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	private Picture picture;
 
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	private Person person;
-	
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+
+	@ManyToMany(fetch = FetchType.EAGER)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles;
-	
+
 	@OneToMany(targetEntity = ConfirmationToken.class, mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Set<ConfirmationToken> tokens;
 
 	@ManyToMany
@@ -133,6 +135,7 @@ public class User implements UserDetails {
 	private Set<Notification> notifications;
 
 	@OneToMany(targetEntity = NgoSuggestion.class, mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Set<NgoSuggestion> NgoSuggestions;
 
 	@Override
@@ -152,14 +155,11 @@ public class User implements UserDetails {
 
 	@Override
 	public boolean isEnabled() {
-		return checkedAt != null;
+		return enabled;
 	}
-	
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRoles()
-            .stream()
-            .map(role -> new SimpleGrantedAuthority(role.getName()))
-            .collect(Collectors.toSet());
-    }
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toSet());
+	}
 }

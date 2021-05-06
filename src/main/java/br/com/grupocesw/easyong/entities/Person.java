@@ -1,6 +1,5 @@
 package br.com.grupocesw.easyong.entities;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 
 import javax.persistence.CascadeType;
@@ -37,9 +36,7 @@ import lombok.ToString;
 @Setter
 @EqualsAndHashCode
 @ToString
-public class Person implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class Person {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

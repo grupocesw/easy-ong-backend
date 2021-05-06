@@ -8,7 +8,7 @@ spring:
   config:
     use-legacy-processing: true
     activate:
-      on-profile: dev
+      on-profile: staging
 
 ---
 

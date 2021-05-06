@@ -1,7 +1,5 @@
 package br.com.grupocesw.easyong.entities;
 
-import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -17,6 +15,7 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,10 +27,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 @ToString
-public class SocialCause implements Serializable {
-	
-	private static final long serialVersionUID = 1L;
+public class SocialCause {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,7 +42,7 @@ public class SocialCause implements Serializable {
 	
 	@JsonIgnore
 	@ManyToMany(mappedBy = "causes")
-	private Set<User> users = new HashSet<>();
+	private Set<User> users;
 	
 	@JsonIgnore
 	@ManyToMany(mappedBy = "causes")

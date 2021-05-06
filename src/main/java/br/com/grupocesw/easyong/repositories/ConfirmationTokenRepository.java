@@ -18,6 +18,9 @@ public interface ConfirmationTokenRepository
         extends JpaRepository<ConfirmationToken, Long> {
 
     Optional<ConfirmationToken> findByToken(String token);
+    
+    @Query("SELECT ct FROM ConfirmationToken ct, User u WHERE u.username = :username ORDER BY ct.id DESC")
+    Optional<ConfirmationToken> findDistinctFirstByUsername(@Param("username") String username);
 
     @Transactional
     @Modifying

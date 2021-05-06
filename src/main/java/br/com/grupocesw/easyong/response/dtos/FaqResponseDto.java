@@ -1,8 +1,8 @@
-package br.com.grupocesw.easyong.dtos;
+package br.com.grupocesw.easyong.response.dtos;
 
 import java.io.Serializable;
 
-import br.com.grupocesw.easyong.entities.FrequentlyAskedQuestion;
+import br.com.grupocesw.easyong.entities.Faq;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class FrequentlyAskedQuestionDTO implements Serializable {
+public class FaqResponseDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -20,7 +20,7 @@ public class FrequentlyAskedQuestionDTO implements Serializable {
 	private String question;
 	private String answer;
 
-	public FrequentlyAskedQuestionDTO(FrequentlyAskedQuestion faq) {
+	public FaqResponseDto(Faq faq) {
 		id = faq.getId();
 		question = faq.getQuestion();
 		answer = faq.getAnswer();

@@ -1,6 +1,5 @@
 package br.com.grupocesw.easyong.entities;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -44,9 +43,7 @@ import lombok.ToString;
 @Setter
 @Builder
 @ToString
-public class Ngo implements Serializable {
-	
-	private static final long serialVersionUID = 1L;
+public class Ngo {
 	
 	public Ngo(Ngo ngoDTO) {
 		id = ngoDTO.getId();
@@ -94,20 +91,20 @@ public class Ngo implements Serializable {
 	private Address address;
 	
 	@JsonProperty(required = true)
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinTable(name = "ngo_contacts", joinColumns= @JoinColumn(name = "ngo_id"), inverseJoinColumns = @JoinColumn(name = "contact_id"))
 	private Set<Contact> contacts;
 	
-	@OneToMany(targetEntity=NgoMoreInformation.class, mappedBy="ngo",cascade=CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	@OneToMany(targetEntity=NgoMoreInformation.class, mappedBy="ngo",cascade=CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	private Set<NgoMoreInformation> moreInformations;
 	
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinTable(name = "ngo_social_causes", joinColumns= @JoinColumn(name = "ngo_id"), inverseJoinColumns = @JoinColumn(name = "social_cause_id"))
 	private Set<SocialCause> causes;
 	
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinTable(name = "ngo_pictures", joinColumns= @JoinColumn(name = "ngo_id"), inverseJoinColumns = @JoinColumn(name = "picture_id"))
 	private Set<Picture> pictures;

@@ -12,6 +12,8 @@ public interface ConfirmationTokenService {
     public void saveConfirmationToken(ConfirmationToken token);
 
     public Optional<ConfirmationToken> getToken(String token);
+    
+    public Optional<ConfirmationToken> findByUsername(String username);
 
     public Integer setConfirmedAt(String token);
 }

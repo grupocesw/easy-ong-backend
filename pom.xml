@@ -29,7 +29,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>11</java.version>
 	</properties>
 	<dependencies>
@@ -129,18 +129,18 @@
 
 	<profiles>
 		<profile>
-			<id>dev</id>
+			<id>test</id>
 			<properties>
-				<activatedProperties>dev</activatedProperties>
+				<activatedProperties>test</activatedProperties>
 			</properties>
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
 		</profile>
 		<profile>
-			<id>staging</id>
+			<id>dev</id>
 			<properties>
-				<activatedProperties>staging</activatedProperties>
+				<activatedProperties>dev</activatedProperties>
 			</properties>
 		</profile>
 		<profile>

@@ -1,3 +1,17 @@
+# Gera automaticamente o script do banco de dados
+#spring:
+#  jpa:
+#    properties:
+#      javax:
+#        persistence:
+#          schema-generation:
+#            create-source: metadata
+#            scripts:
+#              action: create
+#              create: create.sql
+
+---
+
 server:
   port: 8080
   error:
@@ -8,14 +22,14 @@ spring:
   config:
     use-legacy-processing: true
     activate:
-      on-profile: test
+      on-profile: dev
 
 ---
 
 spring:
   datasource:
     platform: postgresql
-    url: jdbc:postgresql://localhost:25432/easyong
+    url: jdbc:postgresql://localhost:5432/easyong
     username: postgres
     password: postgres
     initialization-mode: ALWAYS
@@ -24,7 +38,7 @@ spring:
   jpa:
     open-in-view: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: none
       
     properties:
       hibernate:

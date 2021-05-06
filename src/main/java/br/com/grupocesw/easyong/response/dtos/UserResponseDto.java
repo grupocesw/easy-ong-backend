@@ -1,4 +1,4 @@
-package br.com.grupocesw.easyong.dtos;
+package br.com.grupocesw.easyong.response.dtos;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -9,20 +9,14 @@ import br.com.grupocesw.easyong.entities.SocialCause;
 import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.enums.GenderEnum;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
-public class UserDTO implements Serializable {
-
+public class UserResponseDto implements Serializable {
+    
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
@@ -32,9 +26,9 @@ public class UserDTO implements Serializable {
 	private String username;
 	private Set<SocialCause> causes;
 	private Set<Role> roles;
-	private PictureDTO picture;
+	private PictureResponseDto picture;
 
-	public UserDTO(User user) {
+	public UserResponseDto(User user) {
 		id = user.getId();
 		name = user.getPerson().getName();
 		birthday = user.getPerson().getBirthday();
@@ -42,6 +36,7 @@ public class UserDTO implements Serializable {
 		username = user.getUsername();
 		causes = user.getCauses();
 		roles = user.getRoles();
-		picture = new PictureDTO(user.getPicture());
+		picture = new PictureResponseDto(user.getPicture());
 	}
+	
 }

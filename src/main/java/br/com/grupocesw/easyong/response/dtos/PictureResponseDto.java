@@ -1,4 +1,4 @@
-package br.com.grupocesw.easyong.dtos;
+package br.com.grupocesw.easyong.response.dtos;
 
 import java.io.Serializable;
 
@@ -12,13 +12,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class PictureDTO implements Serializable {
+public class PictureResponseDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
 	private String url;
 
-	public PictureDTO(Picture picture) {
-		url = (picture == null) ? Picture.getNoImageUrl() : picture.getUrl();
+	public PictureResponseDto(Picture picture) {
+		url = picture.getUrl();
 	}
 }

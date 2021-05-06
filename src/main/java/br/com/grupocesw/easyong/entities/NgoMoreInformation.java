@@ -1,7 +1,5 @@
 package br.com.grupocesw.easyong.entities;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -28,9 +26,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class NgoMoreInformation implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class NgoMoreInformation {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,6 +1,5 @@
 package br.com.grupocesw.easyong.entities;
 
-import java.io.Serializable;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -26,17 +25,15 @@ import lombok.ToString;
 
 @Entity
 @Data
-@Builder
 @Table(name = "roles")
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(exclude="users")
 @Getter
 @Setter
+@Builder
 @ToString
-public class Role implements Serializable {
-	
-	private static final long serialVersionUID = 1L;
+public class Role {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

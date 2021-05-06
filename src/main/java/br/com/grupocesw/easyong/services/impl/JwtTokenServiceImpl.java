@@ -123,7 +123,7 @@ public class JwtTokenServiceImpl extends OncePerRequestFilter implements JwtToke
             String username = claims.getSubject();
 
             UsernamePasswordAuthenticationToken auth =
-                    userService.findByUsernameOptional(username)
+                    userService.findByUsername(username)
                             .map(User::new)
                             .map(userDetails -> {
                                 UsernamePasswordAuthenticationToken authentication =

@@ -31,4 +31,9 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService {
         return confirmationTokenRepository.updateConfirmedAt(
                 token, LocalDateTime.now());
     }
+
+	@Override
+	public Optional<ConfirmationToken> findByUsername(String username) {
+		return confirmationTokenRepository.findDistinctFirstByUsername(username);
+	}
 }

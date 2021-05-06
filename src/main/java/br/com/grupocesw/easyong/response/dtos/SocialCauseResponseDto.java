@@ -1,4 +1,4 @@
-package br.com.grupocesw.easyong.dtos;
+package br.com.grupocesw.easyong.response.dtos;
 
 import java.io.Serializable;
 
@@ -12,14 +12,14 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class SocialCauseDTO implements Serializable {
+public class SocialCauseResponseDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
 	private String name;
 
-	public SocialCauseDTO(SocialCause cause) {
+	public SocialCauseResponseDto(SocialCause cause) {
 		id = cause.getId();
 		name = cause.getName();
 	}
