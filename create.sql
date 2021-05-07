@@ -48,7 +48,7 @@ create sequence confirmation_token_sequence start 1 increment 1;
         primary key (id)
     );
 
-    create table frequently_asked_questions (
+    create table faqs (
        id  bigserial not null,
         answer varchar(255) not null,
         question varchar(255) not null,

@@ -34,7 +34,7 @@ public class NgoCreateRequestDto implements Serializable {
 	@NotNull(message = "Address required")
 	private AddressCreateRequestDto address;
 	
-	@NotNull(message = "At least one contact required.")
+	@NotNull(message = "At least one contact required")
 	private Set<ContactCreateRequestDto> contacts;
 	
 	private Set<NgoMoreInformationCreateRequestDto> moreInformations;

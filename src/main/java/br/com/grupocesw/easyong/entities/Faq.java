@@ -17,7 +17,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "frequently_asked_questions")
+@Table(name = "faqs")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
