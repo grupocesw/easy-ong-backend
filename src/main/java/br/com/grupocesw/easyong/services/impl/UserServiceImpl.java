@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 import br.com.grupocesw.easyong.entities.Ngo;
 import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.repositories.UserRepository;
+import br.com.grupocesw.easyong.request.dtos.UserPasswordRequestDto;
+import br.com.grupocesw.easyong.response.dtos.UserResponseDto;
 import br.com.grupocesw.easyong.services.JwtTokenService;
 import br.com.grupocesw.easyong.services.NgoService;
 import br.com.grupocesw.easyong.services.RoleService;
@@ -173,13 +175,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	}
 	
 	@Override
-	public User changePassword(User userRequest) {
+	public UserResponseDto changePassword(UserPasswordRequestDto userDto) {
 		try {
 			User user = getMe();
 			
-			user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+			user.setPassword(passwordEncoder.encode(userDto.build().getPassword()));
 
-			return repository.save(user);
+			return new UserResponseDto(repository.save(user));
 		} catch (EntityNotFoundException e) {
 			throw new UserNotExistException();
 		}

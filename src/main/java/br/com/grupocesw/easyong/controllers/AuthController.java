@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.grupocesw.easyong.entities.User;
-import br.com.grupocesw.easyong.request.dtos.AuthChangePasswordRequestDto;
+import br.com.grupocesw.easyong.request.dtos.UserPasswordRequestDto;
 import br.com.grupocesw.easyong.request.dtos.LoginRequestDto;
 import br.com.grupocesw.easyong.request.dtos.UserUpdateRequestDto;
 import br.com.grupocesw.easyong.response.dtos.ApiResponseDto;
@@ -58,11 +58,11 @@ public class AuthController {
 	}
 	
 	@PutMapping(value = "/change-password")
-	public ResponseEntity<?> changePassword(@RequestBody @Valid AuthChangePasswordRequestDto request, Errors errors) {
+	public ResponseEntity<?> changePassword(@RequestBody @Valid UserPasswordRequestDto request, Errors errors) {
 		try {
-			User user = userService.changePassword(request.build());
+			UserResponseDto userDto = userService.changePassword(request);
 			return ResponseEntity.ok().body(
-				new ApiResponseDto(true, "Password changed. Username: " + user.getUsername())
+				new ApiResponseDto(true, "Password changed. Username: " + userDto.getUsername())
 			);
 		} catch (UserNotExistException e) {
 			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));

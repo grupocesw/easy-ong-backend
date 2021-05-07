@@ -1,9 +1,3 @@
-INSERT INTO frequently_asked_questions (id, answer, question) VALUES
-(1, 'Vocês tem vinculos com alguma ONG?', 'Não, somos totalmente independentes.'),
-(2, 'O app é gratuito?', 'Sim, o app é totalmente gratuíto.'),
-(3, 'Tem opção para IOS?', 'Somente para plataforma android inicialmente.'),
-(4, 'É possível logar com minhas redes sociais?', 'Sim, o app possuí essa funcionalidade que agiliza o cadastro.');
-
 INSERT INTO social_causes (id, name) VALUES
 (1, 'Educação'),
 (2, 'Proteção Animal'),

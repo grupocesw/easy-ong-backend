@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.com.grupocesw.easyong.entities.User;
+import br.com.grupocesw.easyong.request.dtos.UserPasswordRequestDto;
+import br.com.grupocesw.easyong.response.dtos.UserResponseDto;
 
 @Service
 public interface UserService {
@@ -34,7 +36,7 @@ public interface UserService {
 	
     public String login(String username, String password);
     
-    public User changePassword(User user);
+    public UserResponseDto changePassword(UserPasswordRequestDto passwordDto);
      
     public Optional<User> findByUsername(String username);
     
