@@ -2,13 +2,16 @@
 #spring:
 #  jpa:
 #    properties:
+#      hibernate:
+#        hbm2ddl:
+#          delimiter: ;
 #      javax:
 #        persistence:
 #          schema-generation:
 #            create-source: metadata
 #            scripts:
 #              action: create
-#              create: create.sql
+#              create-target: create.sql
 
 ---
 
@@ -32,11 +35,11 @@ spring:
     url: jdbc:postgresql://localhost:5432/easyong
     username: postgres
     password: postgres
-    initialization-mode: ALWAYS
-    data: classpath:/database/initial-data.sql, classpath:/database/initial-data-dev.sql, classpath:/database/update-sequence.sql
+    initialization-mode: never
+#    data: classpath:/database/initial-data.sql, classpath:/database/initial-data-dev.sql, classpath:/database/update-sequence.sql
   
   jpa:
-    open-in-view: true
+    open-in-view: false
     hibernate:
       ddl-auto: none
       

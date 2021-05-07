@@ -30,7 +30,7 @@ spring:
     banner-mode: CONSOLE
     
   jpa:
-    open-in-view: false
+    open-in-view: false 
     
   data:
     web:
