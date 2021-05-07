@@ -55,8 +55,7 @@ public class FaqController {
 	
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<FaqResponseDto> retrieve(@PathVariable Long id) {
-		FaqResponseDto faqDto = service.retrieve(id);
-		return ResponseEntity.ok(faqDto);
+		return ResponseEntity.ok(service.retrieve(id));
 	}
 	
 	@PutMapping(value = "/{id}")

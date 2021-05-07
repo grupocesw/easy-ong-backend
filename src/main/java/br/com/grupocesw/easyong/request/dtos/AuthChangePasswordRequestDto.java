@@ -7,12 +7,10 @@ import javax.validation.constraints.Size;
 
 import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.services.RoleService;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-@AllArgsConstructor
-public class AuthRequestDto implements Serializable {
+public class AuthChangePasswordRequestDto implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	

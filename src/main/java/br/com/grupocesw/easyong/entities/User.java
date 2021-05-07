@@ -48,7 +48,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(of = {"id", "username"})
 @Builder
 @ToString
 public class User implements UserDetails {
@@ -119,17 +119,17 @@ public class User implements UserDetails {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Set<ConfirmationToken> tokens;
 
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinTable(name = "user_social_causes", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "social_cause_id"))
 	private Set<SocialCause> causes;
 
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinTable(name = "user_favorite_ngos", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "ngo_id"))
 	private Set<Ngo> favoriteNgos;
 
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinTable(name = "user_notifications", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "notification_id"))
 	private Set<Notification> notifications;

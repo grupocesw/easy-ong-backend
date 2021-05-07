@@ -1,4 +1,4 @@
-package br.com.grupocesw.easyong.payloads;
+package br.com.grupocesw.easyong.request.dtos;
 
 import java.time.LocalDate;
 
@@ -14,7 +14,7 @@ import br.com.grupocesw.easyong.enums.GenderEnum;
 import lombok.Data;
 
 @Data
-public class RegistrationRequest {
+public class RegistrationRequestDto {
 
 	@NotEmpty(message = "Name required")
 	@Size(min = 3, max = 100, message = "Name must contain between 3 and 100 characters")

@@ -16,6 +16,16 @@ public enum ContactTypeEmun {
 	public void setCode(Integer code) {
 		this.code = code;
 	}
+	
+	public static boolean exists(Integer code) {
+		for(GenderEnum value : GenderEnum.values()) {
+			if(value.getCode() == code) {
+				return true;
+			}
+		}
+		
+		throw new IllegalArgumentException("Invalid contact type code");
+	}
 
 	public static GenderEnum fromString(Integer code) {
 		for(GenderEnum value : GenderEnum.values()) {

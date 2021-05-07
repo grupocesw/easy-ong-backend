@@ -1,11 +1,11 @@
-package br.com.grupocesw.easyong.payloads;
+package br.com.grupocesw.easyong.request.dtos;
 
 import javax.validation.constraints.NotBlank;
 
 import lombok.Data;
 
 @Data
-public class LoginRequest {
+public class LoginRequestDto {
 
     @NotBlank
     private String username;

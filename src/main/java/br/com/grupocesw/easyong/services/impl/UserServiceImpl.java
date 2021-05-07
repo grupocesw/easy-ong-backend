@@ -195,7 +195,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	@Override
 	public void favorite(Long ngoId) {
 		User userAuth = this.getMe();
-		Ngo ngo = ngoService.retrieve(ngoId);
+		Ngo ngo = ngoService.findById(ngoId);
 
 		if (userAuth.getFavoriteNgos().contains(ngo)) {
 			userAuth.getFavoriteNgos().remove(ngo);

@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.grupocesw.easyong.entities.User;
-import br.com.grupocesw.easyong.payloads.JwtAuthenticationResponse;
-import br.com.grupocesw.easyong.payloads.LoginRequest;
-import br.com.grupocesw.easyong.request.dtos.AuthRequestDto;
+import br.com.grupocesw.easyong.request.dtos.AuthChangePasswordRequestDto;
+import br.com.grupocesw.easyong.request.dtos.LoginRequestDto;
 import br.com.grupocesw.easyong.request.dtos.UserUpdateRequestDto;
 import br.com.grupocesw.easyong.response.dtos.ApiResponseDto;
+import br.com.grupocesw.easyong.response.dtos.JwtAuthenticationResponseDto;
 import br.com.grupocesw.easyong.response.dtos.UserResponseDto;
 import br.com.grupocesw.easyong.services.UserService;
 import br.com.grupocesw.easyong.services.exceptions.ResourceNotFoundException;
@@ -45,7 +45,7 @@ public class AuthController {
 		}
 	}
 	
-	@PutMapping(value = "/update-me")
+	@PutMapping(value = "/me/update")
 	public ResponseEntity<?> updateProfile(@RequestBody @Valid UserUpdateRequestDto request, Errors errors) {
 		try {
 			User user = userService.updateMe(request.build());
@@ -58,7 +58,7 @@ public class AuthController {
 	}
 	
 	@PutMapping(value = "/change-password")
-	public ResponseEntity<?> changePassword(@RequestBody @Valid AuthRequestDto request, Errors errors) {
+	public ResponseEntity<?> changePassword(@RequestBody @Valid AuthChangePasswordRequestDto request, Errors errors) {
 		try {
 			User user = userService.changePassword(request.build());
 			return ResponseEntity.ok().body(
@@ -72,10 +72,10 @@ public class AuthController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
+	public ResponseEntity<?> login(@Valid @RequestBody LoginRequestDto loginRequest) {
 		try {
 			String token = userService.login(loginRequest.getUsername(), loginRequest.getPassword());
-			return ResponseEntity.ok(new JwtAuthenticationResponse(token));
+			return ResponseEntity.ok(new JwtAuthenticationResponseDto(token));
 		} catch (UserNotExistException e) {
 			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
 		} catch (UserNotConfirmedException e) {
@@ -85,7 +85,7 @@ public class AuthController {
 		}
 	}
 
-	@PutMapping(value = "{ngoId}/favorite")
+	@PutMapping(value = "/ngo/{ngoId}/favorite")
 	public ResponseEntity<?> favorite(@PathVariable Long ngoId) {
 		try {
 			userService.favorite(ngoId);

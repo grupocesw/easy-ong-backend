@@ -3,15 +3,9 @@ package br.com.grupocesw.easyong.response.dtos;
 import java.io.Serializable;
 
 import br.com.grupocesw.easyong.entities.Picture;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
+@Data
 public class PictureResponseDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -19,6 +13,9 @@ public class PictureResponseDto implements Serializable {
 	private String url;
 
 	public PictureResponseDto(Picture picture) {
-		url = picture.getUrl();
+		if(picture != null)
+			url = picture.getUrl();
+		else
+			url = (new Picture()).getUrl();
 	}
 }

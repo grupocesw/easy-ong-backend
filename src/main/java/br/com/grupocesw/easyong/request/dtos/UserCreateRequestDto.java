@@ -8,6 +8,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import br.com.grupocesw.easyong.entities.Person;
@@ -15,16 +17,14 @@ import br.com.grupocesw.easyong.entities.SocialCause;
 import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.enums.GenderEnum;
 import br.com.grupocesw.easyong.services.RoleService;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-@AllArgsConstructor
 public class UserCreateRequestDto implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private final RoleService roleService;
+	@Autowired private final RoleService roleService;
 	
 	@Email(message = "Invalid email format")
 	@NotEmpty(message = "Username required")

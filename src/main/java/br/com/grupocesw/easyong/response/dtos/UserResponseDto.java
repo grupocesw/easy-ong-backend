@@ -8,13 +8,9 @@ import br.com.grupocesw.easyong.entities.Role;
 import br.com.grupocesw.easyong.entities.SocialCause;
 import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.enums.GenderEnum;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class UserResponseDto implements Serializable {
     
 	private static final long serialVersionUID = 1L;
