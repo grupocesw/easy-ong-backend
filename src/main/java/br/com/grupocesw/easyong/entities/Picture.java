@@ -1,7 +1,5 @@
 package br.com.grupocesw.easyong.entities;
 
-import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -13,86 +11,62 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
-import javax.validation.constraints.NotEmpty;
+import javax.persistence.Table;
+
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 @Entity
-public class Picture implements Serializable {
+@Table(name = "pictures")
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@Builder
+@ToString
+public class Picture {
 	
-	private static final long serialVersionUID = 1L;
+	private static final String path = "/api/pictures/";
+	
+	public static final String noImage = "no_image.png";
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@NotEmpty(message="Name required")
 	@Column(name = "name", nullable = false)
 	private String name;
-	
-	@OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+
+	@OneToOne(mappedBy = "picture", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "picture_id")
 	private User user;
 	
 	@JsonIgnore
 	@ManyToMany(mappedBy = "pictures")
-	private Set<Ngo> ngos = new HashSet<>();
+	private Set<Ngo> ngos;
 	
-	public Picture() {}
-	
-	public Picture(Long id, String name) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.ngos = new HashSet<>();
-	}
-	
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-	
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
+	public Picture (String name) {
 		this.name = name;
 	}
 	
-	public Set<Ngo> getNgos() {
-		return ngos;
-	}
-	
-	public User getUser() {
-		return user;
+	public String getUrl() {
+		
+		String pictureName = (name == null) ? noImage : name;
+		
+		return ServletUriComponentsBuilder
+			.fromCurrentContextPath()
+			.build()
+			.toUriString()
+			.concat(path)
+			.concat(pictureName);
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Picture other = (Picture) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
-	}
 }
