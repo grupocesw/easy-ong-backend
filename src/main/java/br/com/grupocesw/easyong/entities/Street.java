@@ -9,12 +9,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -39,17 +36,14 @@ public class Street {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@NotEmpty(message = "Name required")
-	@Size(min = 3, max = 255, message = "Name must contain between 3 and 255 characters")
 	@Column(name = "name", nullable = false, length = 255)
 	private String name;
 	
-	@ManyToOne
-	@JoinColumn(name="zip_code_id")
+	@ManyToOne(targetEntity = ZipCode.class, cascade = CascadeType.ALL)
 	private ZipCode zipCode;
 	
-	@ManyToOne
-	@JoinColumn(name="district_id")
+	@JsonIgnore
+	@ManyToOne(targetEntity = District.class, cascade = CascadeType.ALL)
 	private District district;
 	
 	@JsonIgnore

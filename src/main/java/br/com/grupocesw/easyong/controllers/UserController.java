@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,9 +38,10 @@ import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
 import springfox.documentation.annotations.ApiIgnore;
 
-@AllArgsConstructor
-@RequestMapping(value = "/api/users")
 @RestController
+@RequestMapping(value = "/api/users")
+@AllArgsConstructor
+@PreAuthorize("hasAuthority('ADMIN')")
 public class UserController {
 
 	private UserService service;

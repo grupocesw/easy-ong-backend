@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,6 +55,7 @@ public class NgoController {
 	}
 	
 	@PostMapping
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<?> create(@Valid @RequestBody NgoCreateRequestDto request) {
 		try {
 			NgoResponseDto ngoDto = service.create(request);
@@ -73,6 +75,7 @@ public class NgoController {
 	}
 	
 	@PutMapping(value = "/{id}")
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid NgoUpdateRequestDto request, Errors errors) {		
 		try {
 			return ResponseEntity.ok().body(service.update(id, request));
@@ -84,6 +87,7 @@ public class NgoController {
 	}
 	
 	@DeleteMapping(value = "/{id}")
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 		try {
 			service.delete(id);

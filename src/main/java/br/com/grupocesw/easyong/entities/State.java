@@ -9,12 +9,13 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -50,7 +51,7 @@ public class State {
 	@OneToMany(targetEntity = City.class, mappedBy = "state", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	private Set<City> cities;
 
-	@ManyToOne
-	@JoinColumn(name = "country_id")
+	@JsonIgnore
+	@ManyToOne(targetEntity = Country.class, cascade = CascadeType.ALL)
 	private Country country;
 }

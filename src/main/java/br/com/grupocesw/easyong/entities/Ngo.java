@@ -94,6 +94,8 @@ public class Ngo {
 	private Set<Contact> contacts;
 	
 	@OneToMany(targetEntity = NgoMoreInformation.class, cascade=CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@JoinColumn(name="ngo_id")
 	private Set<NgoMoreInformation> moreInformations;
 	
 	@ManyToMany(fetch = FetchType.EAGER)

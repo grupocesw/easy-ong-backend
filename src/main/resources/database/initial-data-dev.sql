@@ -48,7 +48,7 @@ INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES
 (1, 5);
 
 INSERT INTO people (id, name, birthday, gender) VALUES
-(1, 'Astrobilobaldo Paixão', '1990-09-22', 0),
+(1, 'Administrator', '2000-01-01', 2),
 (2, 'Biri Jean', '1983-07-23', 0),
 (3, 'Paul Stronger', '1998-05-04', 0),
 (4, 'Sander Jay', '1996-11-29', 0),
@@ -57,16 +57,16 @@ INSERT INTO people (id, name, birthday, gender) VALUES
 (7, 'Tricia Marcos', '1984-12-25', 2);
 
 INSERT INTO users (id, username, password, locked, enabled, person_id, picture_id, created_at, updated_at) VALUES
-(1, 'astrobilobaldo@test.com', '$2a$10$RfwrevwuOvdxyw8v7x1eN.AhJbE7V4g/rhuPeEhiOujIgxvNmA.HK', false, true, 1, 4, '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
-(2, 'birijean@test.com', '$2a$10$RfwrevwuOvdxyw8v7x1eN.AhJbE7V4g/rhuPeEhiOujIgxvNmA.HK', false, true, 2, null, '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
-(3, 'paulstronger@test.com', '$2a$10$RfwrevwuOvdxyw8v7x1eN.AhJbE7V4g/rhuPeEhiOujIgxvNmA.HK', false, true, 3, null, '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
-(4, 'sanderjay@test.com', '$2a$10$RfwrevwuOvdxyw8v7x1eN.AhJbE7V4g/rhuPeEhiOujIgxvNmA.HK', false, true, 4, null, '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
-(5, 'jumahaskov@test.com', '$2a$10$RfwrevwuOvdxyw8v7x1eN.AhJbE7V4g/rhuPeEhiOujIgxvNmA.HK', false, true, 5, null, '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
-(6, 'mirnakyle@test.com', '$2a$10$RfwrevwuOvdxyw8v7x1eN.AhJbE7V4g/rhuPeEhiOujIgxvNmA.HK', false, true, 6, null, '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
-(7, 'triciamarcos@test.com', '$2a$10$RfwrevwuOvdxyw8v7x1eN.AhJbE7V4g/rhuPeEhiOujIgxvNmA.HK', false, true, 7, null, '2021-01-01 00:00:00', '2021-01-01 00:00:00');
+(1, 'admin@easyong.com.br', '$2a$10$8ipYZW1YCciTvy57AA91sumd6E9NiSwRPXeSFp9AxIqRg949bct5e', false, true, 1, 4, '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
+(2, 'birijean@easyong.com.br', '$2a$10$RfwrevwuOvdxyw8v7x1eN.AhJbE7V4g/rhuPeEhiOujIgxvNmA.HK', false, true, 2, null, '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
+(3, 'paulstronger@easyong.com.br', '$2a$10$RfwrevwuOvdxyw8v7x1eN.AhJbE7V4g/rhuPeEhiOujIgxvNmA.HK', false, true, 3, null, '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
+(4, 'sanderjay@easyong.com.br', '$2a$10$RfwrevwuOvdxyw8v7x1eN.AhJbE7V4g/rhuPeEhiOujIgxvNmA.HK', false, true, 4, null, '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
+(5, 'jumahaskov@easyong.com.br', '$2a$10$RfwrevwuOvdxyw8v7x1eN.AhJbE7V4g/rhuPeEhiOujIgxvNmA.HK', false, true, 5, null, '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
+(6, 'mirnakyle@easyong.com.br', '$2a$10$RfwrevwuOvdxyw8v7x1eN.AhJbE7V4g/rhuPeEhiOujIgxvNmA.HK', false, true, 6, null, '2021-01-01 00:00:00', '2021-01-01 00:00:00'),
+(7, 'triciamarcos@easyong.com.br', '$2a$10$RfwrevwuOvdxyw8v7x1eN.AhJbE7V4g/rhuPeEhiOujIgxvNmA.HK', false, true, 7, null, '2021-01-01 00:00:00', '2021-01-01 00:00:00');
 
 INSERT INTO user_roles (user_id, role_id) VALUES
-(1, 3),
+(1, 1),
 (2, 3),
 (3, 3),
 (4, 3),
@@ -75,15 +75,15 @@ INSERT INTO user_roles (user_id, role_id) VALUES
 (7, 3);
 
 INSERT INTO user_social_causes (user_id, social_cause_id) VALUES
-(1, 6),
-(1, 2),
+(2, 6),
+(2, 2),
 (2, 3),
 (3, 4),
 (4, 6);
 
 INSERT INTO user_favorite_ngos (user_id, ngo_id) VALUES
-(1, 1),
-(1, 2),
+(2, 1),
+(2, 3),
 (2, 2),
 (3, 3),
 (4, 1);

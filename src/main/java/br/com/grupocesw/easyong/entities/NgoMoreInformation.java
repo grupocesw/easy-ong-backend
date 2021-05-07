@@ -1,5 +1,6 @@
 package br.com.grupocesw.easyong.entities;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -35,6 +36,6 @@ public class NgoMoreInformation {
 	private String information;
 
 	@JsonIgnore
-	@ManyToOne(targetEntity = Ngo.class)
+	@ManyToOne(targetEntity = Ngo.class, cascade = CascadeType.ALL)
 	private Ngo ngo;
 }

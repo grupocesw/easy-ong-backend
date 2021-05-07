@@ -11,8 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -37,8 +35,6 @@ public class ZipCode {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@NotEmpty(message = "Number required")
-	@Size(min = 8, max = 8, message = "Number must contain 8 digits")
 	@Column(name = "number", nullable = false, length = 8)
 	private String number;
 	

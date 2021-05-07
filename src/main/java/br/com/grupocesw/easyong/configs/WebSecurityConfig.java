@@ -50,9 +50,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     };
 	
 	private static final String[] ANONYMOUS_LIST = {
-		"/api/auth/login",
-		"/api/registration/**"
-    };
+			"/api/auth/login",
+			"/api/registration/**"
+	    };
     
     private JwtTokenService jwtTokenService;
 

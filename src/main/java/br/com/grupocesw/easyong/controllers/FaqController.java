@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,6 +44,7 @@ public class FaqController {
 	}
 	
 	@PostMapping
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<FaqResponseDto> create(@RequestBody @Valid FaqCreateRequestDto request) {
 		
 		FaqResponseDto faqDTO = service.create(request);
@@ -59,12 +61,14 @@ public class FaqController {
 	}
 	
 	@PutMapping(value = "/{id}")
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<FaqResponseDto> update(@PathVariable Long id, @RequestBody @Valid FaqUpdateRequestDto request) {
 		FaqResponseDto faqDto = service.update(id, request);
 		return ResponseEntity.ok().body(faqDto);
 	}
 	
 	@DeleteMapping(value = "/{id}")
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 		try {
 			service.delete(id);

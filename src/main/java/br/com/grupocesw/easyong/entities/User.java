@@ -26,6 +26,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -43,6 +44,7 @@ import lombok.ToString;
 
 @Entity
 @Data
+@PreAuthorize("hasRole('ADMIN')")
 @Table(name = "users")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -160,6 +162,8 @@ public class User implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toSet());
+		return getRoles().stream()
+				.map(role -> new SimpleGrantedAuthority(role.getName()))
+				.collect(Collectors.toSet());
 	}
 }
