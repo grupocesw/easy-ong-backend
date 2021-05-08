@@ -63,6 +63,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 			user.setPassword(passwordEncoder.encode(user.getPassword()));
 			user.setRoles(roleService.getDefaultRoles());
 			
+			// TODO remove after implements service e-mail in prod
+			user.setEnabled(true);
+			
 			return repository.save(user);
 		} catch (DataIntegrityViolationException e) {
 			throw new DatabaseException(e.getMessage());
