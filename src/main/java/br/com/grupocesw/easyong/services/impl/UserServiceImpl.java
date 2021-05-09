@@ -1,13 +1,17 @@
 package br.com.grupocesw.easyong.services.impl;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +26,7 @@ import br.com.grupocesw.easyong.entities.Ngo;
 import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.repositories.UserRepository;
 import br.com.grupocesw.easyong.request.dtos.UserPasswordRequestDto;
+import br.com.grupocesw.easyong.response.dtos.NgoResponseDto;
 import br.com.grupocesw.easyong.response.dtos.UserResponseDto;
 import br.com.grupocesw.easyong.services.JwtTokenService;
 import br.com.grupocesw.easyong.services.NgoService;
@@ -227,6 +232,32 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	@Override
 	public Boolean existsByUsername(String username) {
 		return repository.existsByUsername(username);
+	}
+
+	@Override
+	public Page<NgoResponseDto> getFavoriteNgos(Pageable pageable) {
+        int pageSize = pageable.getPageSize();
+        int currentPage = pageable.getPageNumber();
+        int startItem = currentPage * pageSize;
+        
+		List<NgoResponseDto> ngos = getMe().getFavoriteNgos().stream()
+				.map(ngo -> new NgoResponseDto(ngo))
+				.collect(Collectors.toList());
+
+        if (ngos.size() < startItem) {
+        	ngos = Collections.emptyList();
+        } else {
+            int toIndex = Math.min(startItem + pageSize, ngos.size());
+            ngos = ngos.subList(startItem, toIndex);
+        }
+		
+		Page<NgoResponseDto> page = new PageImpl<>(
+				ngos, 
+				PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()), 
+				ngos.size()
+			);
+		
+		return page;
 	}
 	
 }

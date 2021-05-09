@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.request.dtos.UserPasswordRequestDto;
+import br.com.grupocesw.easyong.response.dtos.NgoResponseDto;
 import br.com.grupocesw.easyong.response.dtos.UserResponseDto;
 
 @Service
@@ -43,4 +44,6 @@ public interface UserService {
     public Boolean existsByUsername(String username);
 
 	public void enableUser(User user);
+
+	public Page<NgoResponseDto> getFavoriteNgos(Pageable pageable);
 }

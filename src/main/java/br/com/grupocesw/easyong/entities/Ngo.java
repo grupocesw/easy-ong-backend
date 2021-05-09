@@ -110,6 +110,6 @@ public class Ngo {
 	
 	@JsonIgnore
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	@ManyToMany(mappedBy = "favoriteNgos")
+	@ManyToMany(mappedBy = "favoriteNgos", fetch = FetchType.EAGER, cascade=CascadeType.ALL)
 	private Set<User> users;
 }
