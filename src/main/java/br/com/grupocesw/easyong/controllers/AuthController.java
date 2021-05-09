@@ -91,7 +91,8 @@ public class AuthController {
 
 	@PutMapping(value = "/favorite-ngos/{ngoId}")
 	public ResponseEntity<?> favorite(@PathVariable Long ngoId) {
-		try {			
+		try {
+			userService.favorite(ngoId);			
 			return ResponseEntity.ok().body(new ApiResponseDto(true, String.format("Action applied Ngo. Id %d", ngoId)));
 		} catch (ResourceNotFoundException e) {
 			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
