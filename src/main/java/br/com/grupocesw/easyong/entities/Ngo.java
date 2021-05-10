@@ -62,14 +62,14 @@ public class Ngo {
 	@Column(name = "name", nullable = false, length = 100)
 	private String name;
 
-	@Column(name = "cnpj", nullable = false, length = 14)
+	@Column(name = "cnpj", nullable = true, length = 14, unique = true)
 	private String cnpj;
 	
-	@Column(name = "description", nullable = false, columnDefinition="TEXT")
+	@Column(name = "description", nullable = true, columnDefinition="TEXT")
 	private String description;
 	
 	@Builder.Default
-	@Column(name = "activated", nullable = false, columnDefinition="boolean default false")
+	@Column(name = "activated", nullable = false, columnDefinition="BOOLEAN DEFAULT true")
 	private Boolean activated = true;
 
 	@CreationTimestamp
@@ -82,7 +82,6 @@ public class Ngo {
 	@Column(name = "updated_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	private LocalDateTime updateAt;
 	
-	@JsonProperty(required = true)
 	@OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id", referencedColumnName = "id")
 	private Address address;

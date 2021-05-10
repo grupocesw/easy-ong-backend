@@ -39,9 +39,11 @@ public class NgoFullResponseDto implements Serializable {
 			
 			User authenticatedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			
-			for (User user: ngo.getUsers()) {
-				if (authenticatedUser.getUsername() == user.getUsername())
-					favorited = true;
+			if (ngo.getUsers() != null) {
+				for (User user: ngo.getUsers()) {
+					if (authenticatedUser.getUsername().equals(user.getUsername()))
+						favorited = true;
+				}
 			}
 		}
 		

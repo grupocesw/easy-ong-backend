@@ -20,8 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import br.com.grupocesw.easyong.request.dtos.FaqCreateRequestDto;
-import br.com.grupocesw.easyong.request.dtos.FaqUpdateRequestDto;
+import br.com.grupocesw.easyong.request.dtos.FaqRequestDto;
 import br.com.grupocesw.easyong.response.dtos.ApiResponseDto;
 import br.com.grupocesw.easyong.response.dtos.FaqResponseDto;
 import br.com.grupocesw.easyong.services.FaqService;
@@ -45,7 +44,7 @@ public class FaqController {
 	
 	@PostMapping
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<FaqResponseDto> create(@RequestBody @Valid FaqCreateRequestDto request) {
+	public ResponseEntity<FaqResponseDto> create(@RequestBody @Valid FaqRequestDto request) {
 		
 		FaqResponseDto faqDTO = service.create(request);
 		
@@ -62,7 +61,7 @@ public class FaqController {
 	
 	@PutMapping(value = "/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<FaqResponseDto> update(@PathVariable Long id, @RequestBody @Valid FaqUpdateRequestDto request) {
+	public ResponseEntity<FaqResponseDto> update(@PathVariable Long id, @RequestBody @Valid FaqRequestDto request) {
 		FaqResponseDto faqDto = service.update(id, request);
 		return ResponseEntity.ok().body(faqDto);
 	}

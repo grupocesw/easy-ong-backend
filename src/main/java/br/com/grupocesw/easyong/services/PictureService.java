@@ -6,22 +6,23 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import br.com.grupocesw.easyong.entities.Picture;
+import br.com.grupocesw.easyong.request.dtos.PictureRequestDto;
+import br.com.grupocesw.easyong.response.dtos.PictureResponseDto;
 
 @Service
 public interface PictureService {
 
-	public List<Picture> findAll();
-
-	public Picture findById(Long id);
-
-	public Picture insert(MultipartFile file);
-
-	public Picture update(Long id, Picture picture);
-
-	public void delete(Long id);
+	public PictureResponseDto create(MultipartFile file);
 	
-    public void upload(Picture picture, MultipartFile file);
+	public PictureResponseDto retrieve(Long id);
+
+	public PictureResponseDto update(Long id, PictureRequestDto request);
+
+	public void delete(Long id);	
+
+	public List<PictureResponseDto> findAll();
+	
+    public void upload(PictureRequestDto request, MultipartFile file);
 
     public byte[] getPicture(String name) throws IOException;
 }

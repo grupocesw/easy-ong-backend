@@ -36,10 +36,10 @@ spring:
     username: postgres
     password: postgres
     initialization-mode: never
-#    data: classpath:/database/initial-data.sql, classpath:/database/initial-data-dev.sql, classpath:/database/update-sequence.sql
+#    data: classpath:/database/initial-data.sql, classpath:/database/ngos.sql, classpath:/database/users.sql, classpath:/database/update-sequence.sql
   
   jpa:
-    open-in-view: false
+    open-in-view: true
     hibernate:
       ddl-auto: none
       

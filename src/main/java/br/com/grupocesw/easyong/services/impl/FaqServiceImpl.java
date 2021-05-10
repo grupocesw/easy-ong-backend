@@ -14,8 +14,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.grupocesw.easyong.entities.Faq;
 import br.com.grupocesw.easyong.repositories.FaqRepository;
-import br.com.grupocesw.easyong.request.dtos.FaqCreateRequestDto;
-import br.com.grupocesw.easyong.request.dtos.FaqUpdateRequestDto;
+import br.com.grupocesw.easyong.request.dtos.FaqRequestDto;
 import br.com.grupocesw.easyong.response.dtos.FaqResponseDto;
 import br.com.grupocesw.easyong.services.FaqService;
 import br.com.grupocesw.easyong.services.exceptions.DatabaseException;
@@ -39,9 +38,14 @@ public class FaqServiceImpl implements FaqService {
 	}
 	
 	@Override
-	public FaqResponseDto create(FaqCreateRequestDto faqDto) {		
+	public FaqResponseDto create(FaqRequestDto request) {		
 		try {
-			return new FaqResponseDto(repository.save(faqDto.build()));
+			Faq faq = Faq.builder()
+				.question(request.getQuestion())
+				.answer(request.getAnswer())
+				.build();
+
+			return new FaqResponseDto(repository.save(faq));
 		} catch (DataIntegrityViolationException e) {
 			throw new DatabaseException(e.getMessage());
 		}
@@ -56,15 +60,15 @@ public class FaqServiceImpl implements FaqService {
 	}
 
 	@Override
-	public FaqResponseDto update(Long id, FaqUpdateRequestDto faqDto) {
+	public FaqResponseDto update(Long id, FaqRequestDto request) {
 		try {
 			Optional<Faq> optional = repository.findById(id);
 			optional.orElseThrow(() -> new ResourceNotFoundException(id));
 			
 			Faq faq = optional.get();
 			
-			faq.setQuestion(faqDto.getQuestion());
-			faq.setAnswer(faqDto.getAnswer());
+			faq.setQuestion(request.getQuestion());
+			faq.setAnswer(request.getAnswer());
 
 			return new FaqResponseDto(repository.save(faq));
 		} catch (EntityNotFoundException e) {

@@ -25,15 +25,16 @@ public class NgoResponseDto implements Serializable {
 		name = ngo.getName();
 		description = ngo.getDescription();
 		
-		
 		if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser")) {
 			
 			User authenticatedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			
-			for (User user: ngo.getUsers()) {
-				if (authenticatedUser.getUsername() == user.getUsername())
-					favorited = true;
-			}
+			if (ngo.getUsers() != null) {
+				for (User user: ngo.getUsers()) {
+					if (authenticatedUser.getUsername().equals(user.getUsername()))
+						favorited = true;
+				}
+			}			
 		}
 
 		if (!ngo.getPictures().isEmpty() && ngo.getPictures().size() > 0)

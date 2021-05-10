@@ -38,6 +38,20 @@ public class AuthController {
 
 	private final UserService userService;
 
+	@PostMapping("/login")
+	public ResponseEntity<?> login(@Valid @RequestBody LoginRequestDto loginRequest) {
+		try {
+			String token = userService.login(loginRequest.getUsername(), loginRequest.getPassword());
+			return ResponseEntity.ok(new JwtAuthenticationResponseDto(token));
+		} catch (UserNotExistException e) {
+			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
+		} catch (UserNotConfirmedException e) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponseDto(false, e.getMessage()));
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
+		}
+	}
+
 	@GetMapping(value = "/me")
 	public ResponseEntity<?> me() {		
 		try {
@@ -70,20 +84,6 @@ public class AuthController {
 			);
 		} catch (UserNotExistException e) {
 			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
-		} catch (Exception e) {
-			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
-		}
-	}
-
-	@PostMapping("/login")
-	public ResponseEntity<?> login(@Valid @RequestBody LoginRequestDto loginRequest) {
-		try {
-			String token = userService.login(loginRequest.getUsername(), loginRequest.getPassword());
-			return ResponseEntity.ok(new JwtAuthenticationResponseDto(token));
-		} catch (UserNotExistException e) {
-			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
-		} catch (UserNotConfirmedException e) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponseDto(false, e.getMessage()));
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
 		}

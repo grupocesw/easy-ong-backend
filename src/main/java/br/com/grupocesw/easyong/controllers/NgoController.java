@@ -21,8 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import br.com.grupocesw.easyong.request.dtos.NgoCreateRequestDto;
-import br.com.grupocesw.easyong.request.dtos.NgoUpdateRequestDto;
+import br.com.grupocesw.easyong.request.dtos.NgoRequestDto;
 import br.com.grupocesw.easyong.response.dtos.ApiResponseDto;
 import br.com.grupocesw.easyong.response.dtos.NgoFullResponseDto;
 import br.com.grupocesw.easyong.response.dtos.NgoResponseDto;
@@ -56,7 +55,7 @@ public class NgoController {
 	
 	@PostMapping
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<?> create(@Valid @RequestBody NgoCreateRequestDto request) {
+	public ResponseEntity<?> create(@Valid @RequestBody NgoRequestDto request) {
 		try {
 			NgoResponseDto ngoDto = service.create(request);
 			
@@ -76,7 +75,7 @@ public class NgoController {
 	
 	@PutMapping(value = "/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid NgoUpdateRequestDto request, Errors errors) {		
+	public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid NgoRequestDto request, Errors errors) {		
 		try {
 			return ResponseEntity.ok().body(service.update(id, request));
 		} catch (ResourceNotFoundException e) {

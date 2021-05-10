@@ -10,12 +10,15 @@ public class PictureResponseDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
+	private Long id;
 	private String url;
 
 	public PictureResponseDto(Picture picture) {
-		if(picture != null)
+		if(picture != null) {
+			id = picture.getId();
 			url = picture.getUrl();
-		else
+		} else {
 			url = (new Picture()).getUrl();
+		}			
 	}
 }

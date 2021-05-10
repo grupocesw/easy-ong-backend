@@ -28,7 +28,7 @@ public class PictureController {
 	@ResponseBody
 	@PostMapping(value = "upload", produces = { MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })
 	public ResponseEntity<Void> uploadImage(@RequestPart(required = true) MultipartFile file) {
-		service.insert(file);
+		service.create(file);
 		return ResponseEntity.noContent().build();
 	}
 

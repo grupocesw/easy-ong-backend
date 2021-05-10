@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -19,6 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import br.com.grupocesw.easyong.entities.Picture;
 import br.com.grupocesw.easyong.repositories.PictureRepository;
+import br.com.grupocesw.easyong.request.dtos.PictureRequestDto;
+import br.com.grupocesw.easyong.response.dtos.PictureResponseDto;
 import br.com.grupocesw.easyong.services.PictureService;
 import br.com.grupocesw.easyong.services.exceptions.DatabaseException;
 import br.com.grupocesw.easyong.services.exceptions.ResourceNotFoundException;
@@ -34,45 +37,39 @@ public class PictureServiceImpl implements PictureService {
 	private PictureRepository repository;
 
 	@Override
-	public List<Picture> findAll() {
-		return repository.findAll();
-	}
-
-	@Override
-	public Picture findById(Long id) {
-		Optional<Picture> optional = repository.findById(id);
-
-		return optional.orElseThrow(() -> new ResourceNotFoundException(id));
-	}
-
-	@Override
-	public Picture insert(MultipartFile file) {		
+	public PictureResponseDto create(MultipartFile file) {		
 		try {
 			String fileName = StringUtils.cleanPath(file.getOriginalFilename());			
 			Picture picture = repository.save(new Picture(fileName));
 			
-			this.upload(picture, file);
+			picture.setUrl(fileName);
 			
-			return picture;
+			return new PictureResponseDto(picture);
 		} catch (DataIntegrityViolationException e) {
 			throw new DatabaseException(e.getMessage());
 		}
 	}
-
+	
 	@Override
-	public Picture update(Long id, Picture picture) {
-		try {
-			Picture entity = repository.getOne(id);
-			this.updateData(entity, picture);
-
-			return repository.save(entity);
+	public PictureResponseDto retrieve(Long id) {
+		try {			
+			Picture picture = findById(id);
+			return new PictureResponseDto(repository.save(picture));
 		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException(id);
 		}		
 	}
 
-	private void updateData(Picture entity, Picture picture) {
-		entity.setName(picture.getName());
+	@Override
+	public PictureResponseDto update(Long id, PictureRequestDto request) {
+		try {			
+			Picture picture = findById(id);
+			picture.setUrl(request.getUrl());
+
+			return new PictureResponseDto(repository.save(picture));
+		} catch (EntityNotFoundException e) {
+			throw new ResourceNotFoundException(id);
+		}		
 	}
 
 	@Override
@@ -87,7 +84,20 @@ public class PictureServiceImpl implements PictureService {
 	}
 	
 	@Override
-    public void upload(Picture picture, MultipartFile file) {
+	public List<PictureResponseDto> findAll() {
+		return repository.findAll().stream()
+			.map(obj -> new PictureResponseDto(obj))
+			.collect(Collectors.toList());
+	}
+	
+	public Picture findById(Long id) {
+		Optional<Picture> optional = repository.findById(id);
+
+		return optional.orElseThrow(() -> new ResourceNotFoundException(id));
+	}
+	
+	@Override
+    public void upload(PictureRequestDto request, MultipartFile file) {
 
         Path storageDirectory = Paths.get(storageDirectoryPath);
 
@@ -99,7 +109,7 @@ public class PictureServiceImpl implements PictureService {
             }
         }
 
-        Path destination = Paths.get(storageDirectory.toString().concat("/").concat(picture.getName()));
+        Path destination = Paths.get(storageDirectory.toString().concat("/").concat(request.getUrl()));
 
         try {
             Files.copy(file.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
@@ -109,11 +119,11 @@ public class PictureServiceImpl implements PictureService {
     }
 
 	@Override
-    public byte[] getPicture(String name) throws IOException {
+    public byte[] getPicture(String url) throws IOException {
     	try {           	
     		Path destination = Paths.get(
     			storageDirectoryPath.concat(
-    				PictureUtil.getFileNameWithExtension(storageDirectoryPath, name)
+    				PictureUtil.getFileNameWithExtension(storageDirectoryPath, url)
     			)
     		);
             

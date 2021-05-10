@@ -37,7 +37,7 @@ public interface UserService {
 	
     public String login(String username, String password);
     
-    public UserResponseDto changePassword(UserPasswordRequestDto passwordDto);
+    public UserResponseDto changePassword(UserPasswordRequestDto request);
      
     public Optional<User> findByUsername(String username);
     

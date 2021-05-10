@@ -3,10 +3,13 @@ create sequence confirmation_token_sequence start 1 increment 1;
     create table addresses (
        id  bigserial not null,
         complement varchar(255),
+        district varchar(255),
         latitude varchar(12),
         longitude varchar(12),
         number int4,
-        street_id int8,
+        street varchar(255),
+        zip_code varchar(8),
+        city_id int8,
         primary key (id)
     );
 
@@ -38,13 +41,6 @@ create sequence confirmation_token_sequence start 1 increment 1;
        id  bigserial not null,
         abbreviation varchar(3) not null,
         name varchar(255) not null,
-        primary key (id)
-    );
-
-    create table districts (
-       id  bigserial not null,
-        name varchar(255) not null,
-        city_id int8,
         primary key (id)
     );
 
@@ -89,12 +85,12 @@ create sequence confirmation_token_sequence start 1 increment 1;
 
     create table ngos (
        id  bigserial not null,
-        activated boolean default false not null,
-        cnpj varchar(14) not null,
-        created_at TIMESTAMP,
-        description TEXT not null,
+        activated BOOLEAN DEFAULT true not null,
+        cnpj varchar(14),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        description TEXT,
         name varchar(100) not null,
-        updated_at TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         address_id int8,
         primary key (id)
     );
@@ -116,7 +112,7 @@ create sequence confirmation_token_sequence start 1 increment 1;
 
     create table pictures (
        id  bigserial not null,
-        name varchar(255) not null,
+        url TEXT not null,
         primary key (id)
     );
 
@@ -137,14 +133,6 @@ create sequence confirmation_token_sequence start 1 increment 1;
         abbreviation varchar(2) not null,
         name varchar(255) not null,
         country_id int8,
-        primary key (id)
-    );
-
-    create table streets (
-       id  bigserial not null,
-        name varchar(255) not null,
-        district_id int8,
-        zip_code_id int8,
         primary key (id)
     );
 
@@ -174,30 +162,27 @@ create sequence confirmation_token_sequence start 1 increment 1;
 
     create table users (
        id  bigserial not null,
-        created_at TIMESTAMP,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         enabled boolean,
         locked boolean,
         password varchar(100),
-        updated_at TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         username varchar(100) not null,
         person_id int8,
         picture_id int8,
         primary key (id)
     );
 
-    create table zip_codes (
-       id  bigserial not null,
-        number varchar(8) not null,
-        primary key (id)
-    );
+    alter table ngos 
+       add constraint UK_5ltyk2kh9aqwtdmweyyeayj5c unique (cnpj);
 
     alter table users 
        add constraint UK_r43af9ap4edm43mmtq01oddj6 unique (username);
 
     alter table addresses 
-       add constraint FK1os4rpeeaugj76t9ak612wtj8 
-       foreign key (street_id) 
-       references streets;
+       add constraint FK9fkb8qaj71tiyr9htkmn7r8y5 
+       foreign key (city_id) 
+       references cities;
 
     alter table cities 
        add constraint FKsu54e1tlhaof4oklvv7uphsli 
@@ -209,11 +194,6 @@ create sequence confirmation_token_sequence start 1 increment 1;
        foreign key (user_id) 
        references users 
        on delete cascade;
-
-    alter table districts 
-       add constraint FK3g7x8w4lc7qxth7ibrr5j73mn 
-       foreign key (city_id) 
-       references cities;
 
     alter table ngo_contacts 
        add constraint FKf3n40noaya6w31bv4n5sguf47 
@@ -266,16 +246,6 @@ create sequence confirmation_token_sequence start 1 increment 1;
        add constraint FKskkdphjml9vjlrqn4m5hi251y 
        foreign key (country_id) 
        references countries;
-
-    alter table streets 
-       add constraint FK51kinwuua6bbmqx9jhbgukrjd 
-       foreign key (district_id) 
-       references districts;
-
-    alter table streets 
-       add constraint FKh0qg5kag1q601pqh9thagfhyw 
-       foreign key (zip_code_id) 
-       references zip_codes;
 
     alter table user_favorite_ngos 
        add constraint FK5sumkl57mi1m8wff3vmhgljf4 

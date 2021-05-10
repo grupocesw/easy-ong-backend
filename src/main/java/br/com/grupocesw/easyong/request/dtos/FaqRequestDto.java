@@ -8,7 +8,7 @@ import javax.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class FaqUpdateRequestDto implements Serializable {
+public class FaqRequestDto implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -19,5 +19,4 @@ public class FaqUpdateRequestDto implements Serializable {
 	@NotEmpty(message = "Answer required")
 	@Size(min = 3, max = 255, message = "Answer must contain between 3 and 255 characters")
 	private String answer;
-
 }
