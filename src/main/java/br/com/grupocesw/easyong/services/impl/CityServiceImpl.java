@@ -94,7 +94,7 @@ public class CityServiceImpl implements CityService {
 	
 	@Override
 	public Page<CityResponseDto> findByName(String name, Pageable pageable) {
-		Page<City> result = repository.findByNameContaining(name, pageable);
+		Page<City> result = repository.findByNameContainingIgnoreCase(name, pageable);
 		return result.map(obj -> new CityResponseDto(obj));		
 	}
 

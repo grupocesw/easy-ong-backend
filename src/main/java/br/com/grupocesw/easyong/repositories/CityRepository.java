@@ -9,5 +9,5 @@ import br.com.grupocesw.easyong.entities.City;
 
 @Repository
 public interface CityRepository extends JpaRepository<City, Long> {
-	public Page<City> findByNameContaining(String name, Pageable pageable);
+	public Page<City> findByNameContainingIgnoreCase(String name, Pageable pageable);
 }

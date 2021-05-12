@@ -14,7 +14,7 @@ import br.com.grupocesw.easyong.entities.User;
 public interface UserRepository extends JpaRepository<User, Long> {
     Page<User> findAll(Pageable pageable);	
     Optional<User> findById(Long id);
-	Optional<User> findByUsername(String username);
+	Optional<User> findByUsernameIgnoreCase(String username);
 	List<User> findAll();
-    Boolean existsByUsername(String username);
+    Boolean existsByUsernameIgnoreCase(String username);
 }

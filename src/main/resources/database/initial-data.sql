@@ -1,7 +1,7 @@
 INSERT INTO social_causes (id, name) VALUES
 (1, 'Educação'),
 (2, 'Proteção Animal'),
-(3, 'Direitos Humanos'),
+(3, 'Luta Contra as Drogas'),
 (4, 'Esporte e Cultura'),
 (5, 'Meio Ambiente'),
 (6, 'Luta Contra Fome e Pobreza'),

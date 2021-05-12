@@ -93,7 +93,7 @@ public class SocialCauseServiceImpl implements SocialCauseService {
 	
 	@Override
 	public Page<SocialCauseResponseDto> findByName(String name, Pageable pageable) {
-		Page<SocialCause> result = repository.findByNameContaining(name, pageable);
+		Page<SocialCause> result = repository.findByNameContainingIgnoreCase(name, pageable);
 		return result.map(obj -> new SocialCauseResponseDto(obj));		
 	}
 

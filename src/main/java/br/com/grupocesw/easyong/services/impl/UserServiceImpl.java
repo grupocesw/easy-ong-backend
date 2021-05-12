@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	@Override
 	public User create(User user) {
 		try {
-			boolean userExists = repository.existsByUsername(user.getUsername());
+			boolean userExists = repository.existsByUsernameIgnoreCase(user.getUsername());
 			
 			if (userExists) {
 				log.warn("username {} already exists.", user.getUsername());
@@ -168,7 +168,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	public String login(String username, String password) {
 		
 		Optional<User> user = Optional.ofNullable(
-			repository.findByUsername(username).orElseThrow(
+			repository.findByUsernameIgnoreCase(username).orElseThrow(
 				() -> new UserNotExistException()
 		));
 
@@ -199,7 +199,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	public Optional<User> findByUsername(String username) {
 		log.info("retrieving user {}", username);
 		
-		return repository.findByUsername(username);
+		return repository.findByUsernameIgnoreCase(username);
 	}
 
 	@Override
@@ -231,7 +231,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public Boolean existsByUsername(String username) {
-		return repository.existsByUsername(username);
+		return repository.existsByUsernameIgnoreCase(username);
 	}
 
 	@Override

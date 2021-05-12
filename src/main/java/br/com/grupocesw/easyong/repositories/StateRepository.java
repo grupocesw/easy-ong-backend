@@ -10,5 +10,5 @@ import br.com.grupocesw.easyong.entities.State;
 
 @Repository
 public interface StateRepository extends JpaRepository<State, Long> {
-	public List<State> findByNameContainingOrAbbreviationContaining(String name, String abbreviation, Pageable pageable);
+	public List<State> findByNameContainingOrAbbreviationContainingIgnoreCase(String name, String abbreviation, Pageable pageable);
 }
