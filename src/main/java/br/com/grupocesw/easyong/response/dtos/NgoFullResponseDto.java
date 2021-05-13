@@ -34,7 +34,7 @@ public class NgoFullResponseDto implements Serializable {
 		cnpj = ngo.getCnpj();
 		description = ngo.getDescription();
 		address = ngo.getAddress();
-		
+
 		if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser")) {
 			
 			User authenticatedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

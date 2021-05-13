@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -38,14 +39,18 @@ public class NgoController {
 
 	private NgoService service;
 	
-	@GetMapping(value = "/full")
-	public Page<NgoFullResponseDto> fullList(@ApiIgnore final Pageable pageable) {
-		return service.findByActivatedFull(pageable);
+	@GetMapping
+	public Page<NgoResponseDto> list(
+			@RequestParam(required = false) String filter,
+			@ApiIgnore final Pageable pageable) {
+			return service.findByActivated(filter, pageable);
 	}
 	
-	@GetMapping
-	public Page<NgoResponseDto> list(@ApiIgnore final Pageable pageable) {
-		return service.findByActivated(pageable);
+	@GetMapping(value = "/full")
+	public Page<NgoFullResponseDto> fullList(
+			@RequestParam(required = false) String filter,
+			@ApiIgnore final Pageable pageable) {
+		return service.findByActivatedFull(filter, pageable);
 	}
 	
 	@GetMapping(value = "/suggested")

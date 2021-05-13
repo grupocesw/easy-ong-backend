@@ -206,16 +206,28 @@ public class NgoServiceImpl implements NgoService {
 	}
 	
 	@Override
-	public Page<NgoFullResponseDto> findByActivatedFull(Pageable pageable) {
-		Page<NgoFullResponseDto> ngos = repository.findByActivated(pageable)
+	public Page<NgoFullResponseDto> findByActivatedFull(String filter, Pageable pageable) {
+		Page<NgoFullResponseDto> ngos;
+		
+		if (filter != null)
+			ngos = repository.findWithFilter(filter, pageable)
+				.map(ngo -> new NgoFullResponseDto(ngo));
+		else 
+			ngos = repository.findByActivatedTrueOrderByName(pageable)
 				.map(ngo -> new NgoFullResponseDto(ngo));
 		
 		return ngos;
 	}
 	
 	@Override
-	public Page<NgoResponseDto> findByActivated(Pageable pageable) {
-		Page<NgoResponseDto> ngos = repository.findByActivated(pageable)
+	public Page<NgoResponseDto> findByActivated(String filter, Pageable pageable) {
+		Page<NgoResponseDto> ngos;
+		
+		if (filter != null)
+			ngos = repository.findWithFilter(filter, pageable)
+				.map(ngo -> new NgoResponseDto(ngo));
+		else 
+			ngos = repository.findByActivatedTrueOrderByName(pageable)
 				.map(ngo -> new NgoResponseDto(ngo));
 		
 		return ngos;

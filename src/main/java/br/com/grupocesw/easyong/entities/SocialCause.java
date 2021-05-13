@@ -2,6 +2,7 @@ package br.com.grupocesw.easyong.entities;
 
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -37,10 +38,10 @@ public class SocialCause {
 	private String name;
 	
 	@JsonIgnore
-	@ManyToMany(mappedBy = "causes")
+	@ManyToMany(mappedBy = "causes", cascade = CascadeType.ALL)
 	private Set<User> users;
 	
 	@JsonIgnore
-	@ManyToMany(mappedBy = "causes")
+	@ManyToMany(mappedBy = "causes", cascade = CascadeType.ALL)
 	private Set<Ngo> ngos;
 }
