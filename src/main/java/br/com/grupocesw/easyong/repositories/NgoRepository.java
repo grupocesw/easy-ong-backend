@@ -17,7 +17,7 @@ public interface NgoRepository extends JpaRepository<Ngo, Long> {
     		+ " WHERE CONCAT(LOWER(n.name), ' ', LOWER(n.description), ' ', LOWER(sc.name)) "
     		+ " LIKE CONCAT('%', LOWER(:filter), '%') "
     		+ " AND n.activated = TRUE "
-    		+ " GROUP BY n.name, n.description, sc.name "
+    		+ " GROUP BY n.id, n.name, n.description, sc.name "
     		+ " ORDER BY n.name ")
     Page<Ngo> findWithFilter(String filter, Pageable pageable);
 	

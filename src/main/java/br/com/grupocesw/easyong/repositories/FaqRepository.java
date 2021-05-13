@@ -16,6 +16,6 @@ public interface FaqRepository extends JpaRepository<Faq, Long> {
 			+ " WHERE "
 			+ " CONCAT(LOWER(faq.question), ' ', LOWER(faq.answer)) "
 			+ " LIKE CONCAT('%', LOWER(:filter), '%') "
-			+ " GROUP BY faq.question, faq.answer ")
+			+ " GROUP BY faq.id, faq.question, faq.answer ")
 	Page<Faq> findByQuestionAndAnswer(@Param("filter") String filter, Pageable pageable);
 }
