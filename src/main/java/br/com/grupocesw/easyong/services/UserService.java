@@ -8,36 +8,36 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.com.grupocesw.easyong.entities.User;
+import br.com.grupocesw.easyong.request.dtos.UserCreateRequestDto;
 import br.com.grupocesw.easyong.request.dtos.UserPasswordRequestDto;
+import br.com.grupocesw.easyong.request.dtos.UserUpdateRequestDto;
 import br.com.grupocesw.easyong.response.dtos.NgoResponseDto;
 import br.com.grupocesw.easyong.response.dtos.UserResponseDto;
 
 @Service
 public interface UserService {
 
-	public User create(User user);
+	public UserResponseDto create(UserCreateRequestDto request);
 	
-	public User retrieve(Long id);
+	public UserResponseDto retrieve(Long id);
 
-	public User update(Long id, User user);
+	public UserResponseDto update(Long id, UserUpdateRequestDto request);
 	
-	public User updateMe(User user);
+	public UserResponseDto updateMe(UserUpdateRequestDto request);
 	
 	public void delete(Long id);
 	
-	public List<User> findAll();
+	public List<UserResponseDto> findAll();
 	
-	public Page<User> findCheckedAll(Pageable pageable);
-	
-	public User findById(Long id);
+	public Page<UserResponseDto> findCheckedAll(Pageable pageable);
 	
 	public void favorite(Long ngoId);
 	
-	public User getMe();
+	public UserResponseDto getMe();
 	
     public String login(String username, String password);
     
-    public UserResponseDto changePassword(UserPasswordRequestDto request);
+    public void changePassword(UserPasswordRequestDto request);
      
     public Optional<User> findByUsername(String username);
     

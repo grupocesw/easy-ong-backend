@@ -10,6 +10,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.grupocesw.easyong.entities.ConfirmationToken;
 import br.com.grupocesw.easyong.entities.User;
+import br.com.grupocesw.easyong.request.dtos.UserCreateRequestDto;
+import br.com.grupocesw.easyong.response.dtos.UserResponseDto;
 import br.com.grupocesw.easyong.services.ConfirmationTokenService;
 import br.com.grupocesw.easyong.services.EmailSenderService;
 import br.com.grupocesw.easyong.services.RegistrationService;
@@ -29,32 +31,32 @@ public class RegistrationServiceImpl implements RegistrationService {
     private final EmailSenderService mailSenderService;
     
 	@Override
-	public Boolean register(User user) {
-		log.info("Registering user {}", user.getUsername());
+	public Boolean register(UserCreateRequestDto request) {
+		log.info("Registering user {}", request.getUsername());
 		
-		boolean userExists = userService.existsByUsername(user.getUsername());
+		boolean userExists = userService.existsByUsername(request.getUsername());
 		
 		if (userExists) {
-			log.warn("Username {} already exists.", user.getUsername());
+			log.warn("Username {} already exists.", request.getUsername());
 
 			throw new UsernameAlreadyExistsException(
-				String.format("Username %s already exists", user.getUsername()));
+				String.format("Username %s already exists", request.getUsername()));
 		}
 
-		User userRegisted = userService.create(user);		
+		UserResponseDto userDtoRegisted = userService.create(request);		
 		String token = getToken();
 
         ConfirmationToken confirmationToken = new ConfirmationToken(
             token,
             LocalDateTime.now(),
             LocalDateTime.now().plusMinutes(15),
-            userRegisted
+            User.builder().id(userDtoRegisted.getId()).build()
         );
 
         confirmationTokenService.saveConfirmationToken(confirmationToken);
         
 		try {
-			mailSenderService.sendUserRegister(userRegisted, getLink(token));
+			mailSenderService.sendUserRegister(userDtoRegisted, getLink(token));
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 		}
@@ -131,18 +133,20 @@ public class RegistrationServiceImpl implements RegistrationService {
         if (expiredAt.isBefore(LocalDateTime.now())) {
             throw new IllegalStateException("Token expired.");
         }
+        
+        UserResponseDto userDto = new UserResponseDto(ct.getUser());
 
         ConfirmationToken confirmationToken = new ConfirmationToken(
             token,
             LocalDateTime.now(),
             LocalDateTime.now().plusMinutes(15),
-            ct.getUser()
+            User.builder().id(userDto.getId()).build()
         );
 
         confirmationTokenService.saveConfirmationToken(confirmationToken);
         
 		try {
-			mailSenderService.sendUserRegister(ct.getUser(), getLink(token));
+			mailSenderService.sendUserRegister(userDto, getLink(token));
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 		}

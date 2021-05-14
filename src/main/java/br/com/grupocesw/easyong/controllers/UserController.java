@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.request.dtos.UserCreateRequestDto;
 import br.com.grupocesw.easyong.request.dtos.UserUpdateRequestDto;
 import br.com.grupocesw.easyong.response.dtos.ApiResponseDto;
@@ -58,25 +57,23 @@ public class UserController {
 			@ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", value = "Number of records per page."),
 			@ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
 					+ "Default sort order is ascending. " + "Multiple sort criteria are supported.") })
-	public Page<UserResponseDto> list(@ApiIgnore final Pageable pageable) {
-		final Page<User> users = service.findCheckedAll(pageable);
-
-		return users.map(user -> new UserResponseDto(user));
+	public ResponseEntity<Page<UserResponseDto>> list(@ApiIgnore final Pageable pageable) {
+		return ResponseEntity.ok().body(service.findCheckedAll(pageable));
 	}
 
 	@ResponseBody
 	@PostMapping
 	public ResponseEntity<?> create(@RequestBody @Valid UserCreateRequestDto request) {
 		try {
-			UserResponseDto userDTO = new UserResponseDto(service.create(request.build()));
+			UserResponseDto userDto = service.create(request);
 	
 			URI uri = ServletUriComponentsBuilder
 					.fromCurrentRequest()
 					.path("/{id}")
-					.buildAndExpand(userDTO.getId())
+					.buildAndExpand(userDto.getId())
 					.toUri();
 	
-			return ResponseEntity.created(uri).body(userDTO);
+			return ResponseEntity.created(uri).body(userDto);
 		} catch (UsernameAlreadyExistsException e) {
 			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
 		}
@@ -85,7 +82,7 @@ public class UserController {
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<?> retrieve(@PathVariable Long id) {		
 		try {
-			return ResponseEntity.ok(new UserResponseDto(service.findById(id)));
+			return ResponseEntity.ok().body(service.retrieve(id));
 		} catch (ResourceNotFoundException e) {
 			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
 		} catch (Exception e) {
@@ -94,10 +91,9 @@ public class UserController {
 	}
 
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid UserUpdateRequestDto userRequest, Errors errors) {
+	public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid UserUpdateRequestDto request, Errors errors) {
 		try {
-			User user = service.update(id, userRequest.build());
-			return ResponseEntity.ok().body(new UserResponseDto(user));
+			return ResponseEntity.ok().body(service.update(id, request));
 		} catch (ResourceNotFoundException e) {
 			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
 		} catch (Exception e) {

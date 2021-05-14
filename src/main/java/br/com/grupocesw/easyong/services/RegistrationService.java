@@ -2,12 +2,12 @@ package br.com.grupocesw.easyong.services;
 
 import org.springframework.stereotype.Service;
 
-import br.com.grupocesw.easyong.entities.User;
+import br.com.grupocesw.easyong.request.dtos.UserCreateRequestDto;
 
 @Service
 public interface RegistrationService {
 
-	public Boolean register(User user);
+	public Boolean register(UserCreateRequestDto request);
 	
 	public Boolean confirmToken(String token);
 

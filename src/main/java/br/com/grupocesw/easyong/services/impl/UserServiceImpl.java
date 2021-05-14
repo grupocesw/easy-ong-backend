@@ -25,7 +25,9 @@ import org.springframework.stereotype.Service;
 import br.com.grupocesw.easyong.entities.Ngo;
 import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.repositories.UserRepository;
+import br.com.grupocesw.easyong.request.dtos.UserCreateRequestDto;
 import br.com.grupocesw.easyong.request.dtos.UserPasswordRequestDto;
+import br.com.grupocesw.easyong.request.dtos.UserUpdateRequestDto;
 import br.com.grupocesw.easyong.response.dtos.NgoResponseDto;
 import br.com.grupocesw.easyong.response.dtos.UserResponseDto;
 import br.com.grupocesw.easyong.services.JwtTokenService;
@@ -54,16 +56,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	private final JwtTokenService jwtTokenService;
 
 	@Override
-	public User create(User user) {
+	public UserResponseDto create(UserCreateRequestDto request) {
 		try {
-			boolean userExists = repository.existsByUsernameIgnoreCase(user.getUsername());
+			boolean userExists = repository.existsByUsernameIgnoreCase(request.getUsername());
 			
 			if (userExists) {
-				log.warn("username {} already exists.", user.getUsername());
+				log.warn("username {} already exists.", request.getUsername());
 
 				throw new UsernameAlreadyExistsException(
-					String.format("Username %s already exists", user.getUsername()));
+					String.format("Username %s already exists", request.getUsername()));
 			}
+			
+			User user = request.build();			
 
 			user.setPassword(passwordEncoder.encode(user.getPassword()));
 			user.setRoles(roleService.getDefaultRoles());
@@ -71,52 +75,52 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 			// TODO remove after implements service e-mail in prod
 			user.setEnabled(true);
 			
-			return repository.save(user);
+			return new UserResponseDto(repository.save(user));
 		} catch (DataIntegrityViolationException e) {
 			throw new DatabaseException(e.getMessage());
 		}
 	}
 
 	@Override
-	public User retrieve(Long id) {
+	public UserResponseDto retrieve(Long id) {
 		Optional<User> optional = repository.findById(id);
-
-		return optional.orElseThrow(() -> new ResourceNotFoundException(id));
+		return new UserResponseDto(
+				optional.orElseThrow(() -> new ResourceNotFoundException(id)));
 	}
 
 	@Override
-	public User update(Long id, User userRequest) {
+	public UserResponseDto update(Long id, UserUpdateRequestDto request) {
 		try {
 			User user = findById(id);
 			
-			user.getPerson().setName(userRequest.getPerson().getName());
-			user.getPerson().setBirthday(userRequest.getPerson().getBirthday());
-			user.getPerson().setGender(userRequest.getPerson().getGender());
+			user.getPerson().setName(request.getName());
+			user.getPerson().setBirthday(request.getBirthday());
+			user.getPerson().setGender(request.getGender());
 			
 			user.getCauses().clear();
 			
-			user.getCauses().addAll(userRequest.getCauses());
+			user.getCauses().addAll(request.getCauses());
 
-			return repository.save(user);
+			return new UserResponseDto(repository.save(user));
 		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException(id);
 		}
 	}
 	
 	@Override
-	public User updateMe(User userRequest) {
+	public UserResponseDto updateMe(UserUpdateRequestDto request) {
 		try {
-			User user = getMe();
+			User user = getAuthUser();
 			
-			user.getPerson().setName(userRequest.getPerson().getName());
-			user.getPerson().setBirthday(userRequest.getPerson().getBirthday());
-			user.getPerson().setGender(userRequest.getPerson().getGender());
+			user.getPerson().setName(request.getName());
+			user.getPerson().setBirthday(request.getBirthday());
+			user.getPerson().setGender(request.getGender());
 			
 			user.getCauses().clear();
 			
-			user.getCauses().addAll(userRequest.getCauses());
+			user.getCauses().addAll(request.getCauses());
 
-			return repository.save(user);
+			return new UserResponseDto(repository.save(user));
 		} catch (EntityNotFoundException e) {
 			throw new UserNotExistException();
 		}
@@ -134,17 +138,24 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	}
 
 	@Override
-	public List<User> findAll() {
-		return repository.findAll();
+	public List<UserResponseDto> findAll() {
+		return repository.findAll().stream()
+				.map(user -> new UserResponseDto(user))
+				.collect(Collectors.toList());
 	}
 
 	@Override
-	public Page<User> findCheckedAll(Pageable pageable) {
-		return repository.findAll(pageable);
+	public Page<UserResponseDto> findCheckedAll(Pageable pageable) {
+		return repository.findAll(pageable)
+				.map(user -> new UserResponseDto(user));
 	}
 	
 	@Override
-	public User getMe() {
+	public UserResponseDto getMe() {
+		return new UserResponseDto(getAuthUser());
+	}
+
+	public User getAuthUser() {
 		if (SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser"))
 			throw new UnauthenticatedUserException();
 		
@@ -154,10 +165,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		if (!user.isEnabled()) 
 			throw new UnauthenticatedUserException();
 		
-		return findByUsername(authenticatedUser.getUsername()).get();
+		return findByUsername(authenticatedUser.getUsername()).get(); 
 	}
-
-	@Override
+	
 	public User findById(Long id) {
 		return repository.findById(id)
     		.map(user -> user)
@@ -165,8 +175,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	}
 
 	@Override
-	public String login(String username, String password) {
-		
+	public String login(String username, String password) {		
 		Optional<User> user = Optional.ofNullable(
 			repository.findByUsernameIgnoreCase(username).orElseThrow(
 				() -> new UserNotExistException()
@@ -183,13 +192,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	}
 	
 	@Override
-	public UserResponseDto changePassword(UserPasswordRequestDto userDto) {
+	public void changePassword(UserPasswordRequestDto userDto) {
 		try {
-			User user = getMe();
-			
+			User user = getAuthUser();			
 			user.setPassword(passwordEncoder.encode(userDto.build().getPassword()));
 
-			return new UserResponseDto(repository.save(user));
+			repository.save(user);
 		} catch (EntityNotFoundException e) {
 			throw new UserNotExistException();
 		}
@@ -204,7 +212,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public void favorite(Long ngoId) {
-		User userAuth = this.getMe();
+		User userAuth = getAuthUser();
 		Ngo ngo = ngoService.findById(ngoId);
 
 		if (userAuth.getFavoriteNgos().contains(ngo)) {
@@ -240,7 +248,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         int currentPage = pageable.getPageNumber();
         int startItem = currentPage * pageSize;
         
-		List<NgoResponseDto> ngos = getMe().getFavoriteNgos().stream()
+		List<NgoResponseDto> ngos = getAuthUser().getFavoriteNgos().stream()
 				.map(ngo -> new NgoResponseDto(ngo))
 				.collect(Collectors.toList());
 

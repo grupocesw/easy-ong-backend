@@ -28,9 +28,10 @@ public class RegistrationController {
 	@PostMapping
 	public ResponseEntity<?> register(@RequestBody @Valid UserCreateRequestDto request) {
 		try {	        
-	        registrationService.register(request.build());
+	        registrationService.register(request);
 	        
-			return ResponseEntity.status(201).body(new ApiResponseDto(true, "Registered User. Please confirm your email."));
+			return ResponseEntity.status(201).body(
+					new ApiResponseDto(true, "Registered User. Please confirm your email"));
 		} catch (UsernameAlreadyExistsException e) {
 			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
 		}
@@ -40,11 +41,11 @@ public class RegistrationController {
 	public ResponseEntity<?> resendConfirmation(@PathVariable String username) {
 		try {
 			registrationService.resendConfirmation(username);
-			return ResponseEntity.ok().body(new ApiResponseDto(true, "Confirmation sent. Please confirm your email."));
+			return ResponseEntity.ok().body(new ApiResponseDto(true, "Confirmation sent. Please confirm your email"));
 		} catch (UsernameAlreadyExistsException|UserNotExistException e) {
 			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
 		} catch (NonUniqueResultException e) {
-			return ResponseEntity.badRequest().body(new ApiResponseDto(false, "User already confirmed."));
+			return ResponseEntity.badRequest().body(new ApiResponseDto(false, "User already confirmed"));
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
 		}

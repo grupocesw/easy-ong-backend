@@ -17,13 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.request.dtos.LoginRequestDto;
 import br.com.grupocesw.easyong.request.dtos.UserPasswordRequestDto;
 import br.com.grupocesw.easyong.request.dtos.UserUpdateRequestDto;
 import br.com.grupocesw.easyong.response.dtos.ApiResponseDto;
 import br.com.grupocesw.easyong.response.dtos.JwtAuthenticationResponseDto;
-import br.com.grupocesw.easyong.response.dtos.UserResponseDto;
 import br.com.grupocesw.easyong.services.UserService;
 import br.com.grupocesw.easyong.services.exceptions.ResourceNotFoundException;
 import br.com.grupocesw.easyong.services.exceptions.UnauthenticatedUserException;
@@ -55,7 +53,7 @@ public class AuthController {
 	@GetMapping(value = "/me")
 	public ResponseEntity<?> me() {		
 		try {
-			return ResponseEntity.ok(new UserResponseDto(userService.getMe()));
+			return ResponseEntity.ok(userService.getMe());
 		} catch (UnauthenticatedUserException e) {
 			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
 		} catch (Exception e) {
@@ -66,8 +64,7 @@ public class AuthController {
 	@PutMapping(value = "/me/update")
 	public ResponseEntity<?> updateProfile(@RequestBody @Valid UserUpdateRequestDto request, Errors errors) {
 		try {
-			User user = userService.updateMe(request.build());
-			return ResponseEntity.ok().body(new UserResponseDto(user));
+			return ResponseEntity.ok().body(userService.updateMe(request));
 		} catch (UserNotExistException e) {
 			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
 		} catch (Exception e) {
@@ -78,10 +75,9 @@ public class AuthController {
 	@PutMapping(value = "/change-password")
 	public ResponseEntity<?> changePassword(@RequestBody @Valid UserPasswordRequestDto request, Errors errors) {
 		try {
-			UserResponseDto userDto = userService.changePassword(request);
-			return ResponseEntity.ok().body(
-				new ApiResponseDto(true, "Password changed. Username: " + userDto.getUsername())
-			);
+			userService.changePassword(request);
+			
+			return ResponseEntity.ok().body(new ApiResponseDto(true, "Password changed."));
 		} catch (UserNotExistException e) {
 			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
 		} catch (Exception e) {

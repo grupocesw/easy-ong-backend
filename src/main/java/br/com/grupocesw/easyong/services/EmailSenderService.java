@@ -6,10 +6,10 @@ import javax.mail.MessagingException;
 
 import org.springframework.stereotype.Service;
 
-import br.com.grupocesw.easyong.entities.User;
+import br.com.grupocesw.easyong.response.dtos.UserResponseDto;
 
 @Service
 public interface EmailSenderService {
     
-	public void sendUserRegister(User user, String link) throws MessagingException, IOException;  
+	public void sendUserRegister(UserResponseDto user, String link) throws MessagingException, IOException;  
 }

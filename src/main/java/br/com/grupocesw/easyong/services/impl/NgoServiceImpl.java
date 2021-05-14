@@ -237,7 +237,7 @@ public class NgoServiceImpl implements NgoService {
 	public Page<NgoResponseDto> findSuggested(Pageable pageable) {
 		
 		Page<NgoResponseDto> ngos = repository.findSuggested(pageable)
-				.map(ngo -> new NgoResponseDto(ngo));
+			.map(ngo -> new NgoResponseDto(ngo));
 		
 		return ngos;
 	}
