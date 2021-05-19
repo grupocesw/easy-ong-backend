@@ -17,33 +17,33 @@ import br.com.grupocesw.easyong.response.dtos.UserResponseDto;
 @Service
 public interface UserService {
 
-	public UserResponseDto create(UserCreateRequestDto request);
+	UserResponseDto create(UserCreateRequestDto request);
 	
-	public UserResponseDto retrieve(Long id);
+	UserResponseDto retrieve(Long id);
 
-	public UserResponseDto update(Long id, UserUpdateRequestDto request);
+	UserResponseDto update(Long id, UserUpdateRequestDto request);
 	
-	public UserResponseDto updateMe(UserUpdateRequestDto request);
+	UserResponseDto updateMe(UserUpdateRequestDto request);
 	
-	public void delete(Long id);
+	void delete(Long id);
 	
-	public List<UserResponseDto> findAll();
+	List<UserResponseDto> findAll();
 	
-	public Page<UserResponseDto> findCheckedAll(Pageable pageable);
+	Page<UserResponseDto> findCheckedAll(Pageable pageable);
 	
-	public void favorite(Long ngoId);
+	void favorite(Long ngoId);
 	
-	public UserResponseDto getMe();
+	UserResponseDto getMe();
 	
-    public String login(String username, String password);
+    String login(String username, String password);
     
-    public void changePassword(UserPasswordRequestDto request);
+    void changePassword(UserPasswordRequestDto request);
      
-    public Optional<User> findByUsername(String username);
+    Optional<User> findByUsername(String username);
     
-    public Boolean existsByUsername(String username);
+    Boolean existsByUsername(String username);
 
-	public void enableUser(User user);
+	void enableUser(User user);
 
-	public Page<NgoResponseDto> getFavoriteNgos(Pageable pageable);
+	Page<NgoResponseDto> getFavoriteNgos(Pageable pageable);
 }

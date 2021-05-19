@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import br.com.grupocesw.easyong.entities.Person;
 import br.com.grupocesw.easyong.entities.SocialCause;
 import br.com.grupocesw.easyong.entities.User;
-import br.com.grupocesw.easyong.enums.GenderEnum;
+import br.com.grupocesw.easyong.enums.Gender;
 import br.com.grupocesw.easyong.services.RoleService;
 import lombok.Data;
 
@@ -42,7 +42,7 @@ public class UserCreateRequestDto implements Serializable {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private final LocalDate birthday;
 	
-    private final GenderEnum gender;
+    private final Gender gender;
     
     private final Set<SocialCause> causes;
     
@@ -53,14 +53,12 @@ public class UserCreateRequestDto implements Serializable {
 			.gender(gender)
 			.build();
 		
-		User user = User.builder()
+		return User.builder()
 			.username(username)
 			.password(password)
 			.causes(causes)
 			.person(person)
 			.build();
-    	
-		return user;
     }
 
 }

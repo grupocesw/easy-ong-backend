@@ -12,7 +12,7 @@ import br.com.grupocesw.easyong.entities.SocialCause;
 
 @Repository
 public interface SocialCauseRepository extends JpaRepository<SocialCause, Long> {
-	public Page<SocialCause> findByNameContainingIgnoreCase(String name, Pageable pageable);
-	public Optional<SocialCause> findById(Long id);
-	public Set<SocialCause> findByIdIn(Set<Long> ids);
+	Page<SocialCause> findByNameContainingIgnoreCase(String name, Pageable pageable);
+	Optional<SocialCause> findById(Long id);
+	Set<SocialCause> findByIdIn(Set<Long> ids);
 }

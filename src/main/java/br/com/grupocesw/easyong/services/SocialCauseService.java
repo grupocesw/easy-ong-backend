@@ -15,21 +15,21 @@ import br.com.grupocesw.easyong.response.dtos.SocialCauseResponseDto;
 @Service
 public interface SocialCauseService {
 
-	public SocialCauseResponseDto create(SocialCauseRequestDto request);
+	SocialCauseResponseDto create(SocialCauseRequestDto request);
 
-	public SocialCauseResponseDto retrieve(Long id);
+	SocialCauseResponseDto retrieve(Long id);
 
-	public SocialCauseResponseDto update(Long id, SocialCauseRequestDto request);
+	SocialCauseResponseDto update(Long id, SocialCauseRequestDto request);
 
-	public void delete(Long id);
+	void delete(Long id);
 	
-	public List<SocialCauseResponseDto> findAll();
+	List<SocialCauseResponseDto> findAll();
 	
-	public Page<SocialCauseResponseDto> findAll(Pageable pageable);
+	Page<SocialCauseResponseDto> findAll(Pageable pageable);
 	
-	public Page<SocialCauseResponseDto> findByName(String name, Pageable pageable);
+	Page<SocialCauseResponseDto> findByName(String name, Pageable pageable);
 	
-	public Optional<SocialCause> findById(Long Id);
+	Optional<SocialCause> findById(Long Id);
 
-	public Set<SocialCause> findByIds(Set<Long> ids);
+	Set<SocialCause> findByIds(Set<Long> ids);
 }

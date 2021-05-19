@@ -32,7 +32,7 @@ import lombok.AllArgsConstructor;
 @RestController
 public class SocialCauseController {
 
-	private SocialCauseService service;
+	private final SocialCauseService service;
 	
 	@GetMapping
 	public Page<SocialCauseResponseDto> list(@RequestParam(required = false) String filter, Pageable pageable) {

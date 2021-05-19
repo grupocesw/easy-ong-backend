@@ -7,7 +7,7 @@ import java.util.Set;
 import br.com.grupocesw.easyong.entities.Role;
 import br.com.grupocesw.easyong.entities.SocialCause;
 import br.com.grupocesw.easyong.entities.User;
-import br.com.grupocesw.easyong.enums.GenderEnum;
+import br.com.grupocesw.easyong.enums.Gender;
 import lombok.Data;
 
 @Data
@@ -18,7 +18,7 @@ public class UserResponseDto implements Serializable {
 	private Long id;
 	private String name;
 	private LocalDate birthday;
-	private GenderEnum gender;
+	private Gender gender;
 	private String username;
 	private Set<SocialCause> causes;
 	private Set<Role> roles;

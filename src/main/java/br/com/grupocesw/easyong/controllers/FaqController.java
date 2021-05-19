@@ -32,7 +32,7 @@ import lombok.AllArgsConstructor;
 @RestController
 public class FaqController {
 
-	private FaqService service;
+	private final FaqService service;
 	
 	@GetMapping
 	public Page<FaqResponseDto> list(@RequestParam(required = false) String filter, Pageable pageable) {

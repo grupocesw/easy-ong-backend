@@ -40,7 +40,7 @@ public class State {
 
 	@NotEmpty(message = "Name required")
 	@Size(min = 3, max = 255, message = "Name must contain between 3 and 255 characters")
-	@Column(name = "name", nullable = false, length = 255)
+	@Column(name = "name", nullable = false)
 	private String name;
 
 	@NotEmpty(message = "Abbreviation required")

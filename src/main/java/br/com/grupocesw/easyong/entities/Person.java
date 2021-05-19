@@ -14,7 +14,7 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import br.com.grupocesw.easyong.enums.GenderEnum;
+import br.com.grupocesw.easyong.enums.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -44,11 +44,11 @@ public class Person {
 	private String name;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-	@Column(name = "birthday", nullable = true)
+	@Column(name = "birthday")
 	private LocalDate birthday;
 
-	@Column(name = "gender", nullable = true)
-	private GenderEnum gender;
+	@Column(name = "gender")
+	private Gender gender;
 	
 	@OneToOne(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "person_id")
@@ -61,7 +61,7 @@ public class Person {
 		this.gender = person.gender;
 	}
 
-	public Person(String name, LocalDate birthday, GenderEnum gender) {
+	public Person(String name, LocalDate birthday, Gender gender) {
 		this.name = name;
 		this.birthday = birthday;
 		this.gender = gender;

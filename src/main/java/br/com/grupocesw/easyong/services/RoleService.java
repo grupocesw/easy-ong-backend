@@ -9,7 +9,7 @@ import br.com.grupocesw.easyong.entities.Role;
 @Service
 public interface RoleService {
 	
-	public Role findByName(String name);
+	Role findByName(String name);
 
-	public Set<Role> getDefaultRoles();
+	Set<Role> getDefaultRoles();
 }

@@ -12,17 +12,17 @@ import br.com.grupocesw.easyong.response.dtos.FaqResponseDto;
 @Service
 public interface FaqService {
 
-	public FaqResponseDto create(FaqRequestDto request);
+	FaqResponseDto create(FaqRequestDto request);
 
-	public FaqResponseDto retrieve(Long id);
+	FaqResponseDto retrieve(Long id);
 
-	public FaqResponseDto update(Long id, FaqRequestDto request);
+	FaqResponseDto update(Long id, FaqRequestDto request);
 
-	public void delete(Long id);
+	void delete(Long id);
 	
-	public List<FaqResponseDto> findAll();
+	List<FaqResponseDto> findAll();
 
-	public Page<FaqResponseDto> findAll(Pageable pageable);
+	Page<FaqResponseDto> findAll(Pageable pageable);
 
-	public Page<FaqResponseDto> findByQuestionAndAnswer(String filter, Pageable pageable);
+	Page<FaqResponseDto> findByQuestionAndAnswer(String filter, Pageable pageable);
 }

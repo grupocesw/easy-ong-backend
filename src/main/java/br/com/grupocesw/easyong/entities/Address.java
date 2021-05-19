@@ -33,25 +33,25 @@ public class Address {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "number", nullable = true, length = 7)
+	@Column(name = "number", length = 7)
 	private Integer number;
 	
-	@Column(name = "street", nullable = true, length = 255)
+	@Column(name = "street")
 	private String street;
 	
-	@Column(name = "complement", nullable = true, length = 255)
+	@Column(name = "complement")
 	private String complement;
 	
-	@Column(name = "zip_code", nullable = true, length = 8)
+	@Column(name = "zip_code", length = 8)
 	private String zipCode;
 
-	@Column(name = "latitude", nullable = true, length = 12)
+	@Column(name = "latitude", length = 12)
 	private String latitude;
 
-	@Column(name = "longitude", nullable = true, length = 12)
+	@Column(name = "longitude", length = 12)
 	private String longitude;
 
-	@Column(name = "district", nullable = true, length = 255)
+	@Column(name = "district")
 	private String district;
 	
 	@JsonIgnore

@@ -15,7 +15,7 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import br.com.grupocesw.easyong.enums.ContactTypeEmun;
+import br.com.grupocesw.easyong.enums.ContactType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -39,11 +39,11 @@ public class Contact {
 
 	@NotNull(message = "Type required")
 	@Column(name = "type", nullable = false)
-	private ContactTypeEmun type;
+	private ContactType type;
 
 	@NotEmpty(message = "Content required")
 	@Size(min = 3, max = 255, message = "Content must contain between 3 and 255 characters")
-	@Column(name = "content", nullable = false, length = 255)
+	@Column(name = "content", nullable = false)
 	private String content;
 
 	@JsonIgnore

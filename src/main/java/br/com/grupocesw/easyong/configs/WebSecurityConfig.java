@@ -26,7 +26,9 @@ import lombok.AllArgsConstructor;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @AllArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    
+
+    private final JwtTokenService jwtTokenService;
+
 	private static final String[] BLACK_LIST = {};
 
 	private static final String[] WHITE_LIST = {
@@ -53,8 +55,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		"/api/auth/login",
 		"/api/registration/**"
     };
-    
-    private JwtTokenService jwtTokenService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {

@@ -43,7 +43,7 @@ import springfox.documentation.annotations.ApiIgnore;
 @PreAuthorize("hasAuthority('ADMIN')")
 public class UserController {
 
-	private UserService service;
+	private final UserService service;
 
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Retorna a lista de usuário"),
 			@ApiResponse(code = 401, message = "Credencial inválida para acessar este recurso"),

@@ -30,7 +30,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 	  HttpHeaders headers, 
 	  HttpStatus status, 
 	  WebRequest request) {
-	    List<String> errors = new ArrayList<String>();
+	    List<String> errors = new ArrayList<>();
 	    for (FieldError error : ex.getBindingResult().getFieldErrors()) {
 	        errors.add(error.getField() + ": " + error.getDefaultMessage());
 	    }
@@ -52,14 +52,14 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 	    
 	    ApiErrorResponseDto apiError = 
 	      new ApiErrorResponseDto(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), error);
-	    return new ResponseEntity<Object>(
+	    return new ResponseEntity<>(
 	      apiError, new HttpHeaders(), apiError.getStatus());
 	}
 	
 	@ExceptionHandler({ ConstraintViolationException.class })
 	public ResponseEntity<Object> handleConstraintViolation(
 	  ConstraintViolationException ex, WebRequest request) {
-	    List<String> errors = new ArrayList<String>();
+	    List<String> errors = new ArrayList<>();
 	    for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
 	        errors.add(violation.getRootBeanClass().getName() + " " + 
 	          violation.getPropertyPath() + ": " + violation.getMessage());
@@ -67,7 +67,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 
 	    ApiErrorResponseDto apiError = 
 	      new ApiErrorResponseDto(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors);
-	    return new ResponseEntity<Object>(
+	    return new ResponseEntity<>(
 	      apiError, new HttpHeaders(), apiError.getStatus());
 	}
 	
@@ -79,7 +79,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 
 	    ApiErrorResponseDto apiError = 
 	      new ApiErrorResponseDto(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), error);
-	    return new ResponseEntity<Object>(
+	    return new ResponseEntity<>(
 	      apiError, new HttpHeaders(), apiError.getStatus());
 	}
 }

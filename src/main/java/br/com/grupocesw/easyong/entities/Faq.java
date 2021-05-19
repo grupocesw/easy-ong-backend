@@ -32,11 +32,11 @@ public class Faq {
 
 	@NotEmpty(message = "Question required")
 	@Size(min = 3, max = 255, message = "Question must contain between 3 and 255 characters")
-	@Column(name = "question", nullable = false, length = 255)
+	@Column(name = "question", nullable = false)
 	private String question;
 
 	@NotEmpty(message = "Answer required")
 	@Size(min = 3, max = 255, message = "Answer must contain between 3 and 255 characters")
-	@Column(name = "answer", nullable = false, length = 255)
+	@Column(name = "answer", nullable = false)
 	private String answer;
 }

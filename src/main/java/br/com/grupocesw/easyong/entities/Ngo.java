@@ -62,10 +62,10 @@ public class Ngo {
 	@Column(name = "name", nullable = false, length = 100)
 	private String name;
 
-	@Column(name = "cnpj", nullable = true, length = 14, unique = true)
+	@Column(name = "cnpj", length = 14, unique = true)
 	private String cnpj;
 	
-	@Column(name = "description", nullable = true, columnDefinition="TEXT")
+	@Column(name = "description", columnDefinition="TEXT")
 	private String description;
 	
 	@Builder.Default

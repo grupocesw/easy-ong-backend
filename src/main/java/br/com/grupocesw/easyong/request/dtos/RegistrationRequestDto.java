@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import br.com.grupocesw.easyong.enums.GenderEnum;
+import br.com.grupocesw.easyong.enums.Gender;
 import lombok.Data;
 
 @Data
@@ -32,9 +32,9 @@ public class RegistrationRequestDto {
     private String password;
     
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-	@Column(name = "birthday", nullable = true)
+	@Column(name = "birthday")
 	private LocalDate birthday;
 
-	@Column(name = "gender", nullable = true)
-	private GenderEnum gender = GenderEnum.UNINFORMED;
+	@Column(name = "gender")
+	private Gender gender = Gender.UNINFORMED;
 }

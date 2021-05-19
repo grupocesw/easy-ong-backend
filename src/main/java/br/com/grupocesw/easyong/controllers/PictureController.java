@@ -23,7 +23,7 @@ import lombok.AllArgsConstructor;
 @RestController
 public class PictureController {
 
-	private PictureServiceImpl service;
+	private final PictureServiceImpl service;
 
 	@ResponseBody
 	@PostMapping(value = "upload", produces = { MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })

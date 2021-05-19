@@ -9,11 +9,11 @@ import br.com.grupocesw.easyong.entities.ConfirmationToken;
 @Service
 public interface ConfirmationTokenService {
 
-    public void saveConfirmationToken(ConfirmationToken token);
+    void saveConfirmationToken(ConfirmationToken token);
 
-    public Optional<ConfirmationToken> getToken(String token);
+    Optional<ConfirmationToken> getToken(String token);
     
-    public Optional<ConfirmationToken> findByUsername(String username);
+    Optional<ConfirmationToken> findByUsername(String username);
 
-    public Integer setConfirmedAt(String token);
+    Integer setConfirmedAt(String token);
 }

@@ -31,7 +31,7 @@ public class NgoMoreInformation {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "information", nullable = false, length = 255)
+	@Column(name = "information", nullable = false)
 	private String information;
 
 	@JsonIgnore

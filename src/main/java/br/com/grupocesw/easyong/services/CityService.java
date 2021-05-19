@@ -14,19 +14,19 @@ import br.com.grupocesw.easyong.response.dtos.CityResponseDto;
 @Service
 public interface CityService {
 
-	public CityResponseDto create(CityRequestDto request);
+	CityResponseDto create(CityRequestDto request);
 
-	public CityResponseDto retrieve(Long id);
+	CityResponseDto retrieve(Long id);
 
-	public CityResponseDto update(Long id, CityRequestDto request);
+	CityResponseDto update(Long id, CityRequestDto request);
 
-	public void delete(Long id);
+	void delete(Long id);
 	
-	public List<CityResponseDto> findAll();
+	List<CityResponseDto> findAll();
 	
-	public Page<CityResponseDto> findAll(Pageable pageable);
+	Page<CityResponseDto> findAll(Pageable pageable);
 	
-	public Page<CityResponseDto> findByName(String name, Pageable pageable);
+	Page<CityResponseDto> findByName(String name, Pageable pageable);
 	
-	public Optional<City> findById(Long Id);
+	Optional<City> findById(Long Id);
 }

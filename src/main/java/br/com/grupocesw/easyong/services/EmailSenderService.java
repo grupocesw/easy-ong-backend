@@ -11,5 +11,5 @@ import br.com.grupocesw.easyong.response.dtos.UserResponseDto;
 @Service
 public interface EmailSenderService {
     
-	public void sendUserRegister(UserResponseDto user, String link) throws MessagingException, IOException;  
+	void sendUserRegister(UserResponseDto user, String link) throws MessagingException, IOException;
 }

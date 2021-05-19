@@ -12,17 +12,17 @@ import br.com.grupocesw.easyong.response.dtos.PictureResponseDto;
 @Service
 public interface PictureService {
 
-	public PictureResponseDto create(MultipartFile file);
+	PictureResponseDto create(MultipartFile file);
 	
-	public PictureResponseDto retrieve(Long id);
+	PictureResponseDto retrieve(Long id);
 
-	public PictureResponseDto update(Long id, PictureRequestDto request);
+	PictureResponseDto update(Long id, PictureRequestDto request);
 
-	public void delete(Long id);	
+	void delete(Long id);
 
-	public List<PictureResponseDto> findAll();
+	List<PictureResponseDto> findAll();
 	
-    public void upload(PictureRequestDto request, MultipartFile file);
+    void upload(PictureRequestDto request, MultipartFile file);
 
-    public byte[] getPicture(String name) throws IOException;
+    byte[] getPicture(String name) throws IOException;
 }

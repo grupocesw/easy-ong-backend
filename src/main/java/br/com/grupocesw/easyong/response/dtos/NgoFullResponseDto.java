@@ -23,10 +23,10 @@ public class NgoFullResponseDto implements Serializable {
 	private String description;
 	private boolean favorited;
 	private Address address;
-	private Set<SocialCauseResponseDto> causes = new HashSet<>();
-	private Set<ContactResponseDto> contacts = new HashSet<>();
-	private Set<NgoMoreInformationResponseDto> moreInformations = new HashSet<>();
-	private Set<PictureResponseDto> pictures = new HashSet<>();
+	private Set<SocialCauseResponseDto> causes;
+	private Set<ContactResponseDto> contacts;
+	private Set<NgoMoreInformationResponseDto> moreInformations;
+	private Set<PictureResponseDto> pictures;
 
 	public NgoFullResponseDto(Ngo ngo) {
 		id = ngo.getId();

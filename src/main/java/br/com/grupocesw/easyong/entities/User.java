@@ -106,7 +106,7 @@ public class User implements UserDetails {
 	@Column(name = "enabled")
 	private Boolean enabled = false;
 
-	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	private Picture picture;
 
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)

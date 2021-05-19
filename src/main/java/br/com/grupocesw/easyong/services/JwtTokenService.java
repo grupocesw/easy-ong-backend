@@ -17,19 +17,19 @@ import io.jsonwebtoken.Claims;
 @Service
 public interface JwtTokenService {
 
-    public String generateToken(Authentication authentication);
+    String generateToken(Authentication authentication);
 
-    public Claims getClaimsFromJWT(String token);
+    Claims getClaimsFromJWT(String token);
     
-    public Claims getAllClaimsFromToken(String token);
+    Claims getAllClaimsFromToken(String token);
     
-    public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver);
+    <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver);
     
-    public Date getExpirationDateFromToken(String token);
+    Date getExpirationDateFromToken(String token);
     
-    public Boolean isTokenExpired(String token);
+    Boolean isTokenExpired(String token);
 
-    public boolean validateToken(String authToken);
+    boolean validateToken(String authToken);
 
-    abstract void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException;
+    void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException;
 }

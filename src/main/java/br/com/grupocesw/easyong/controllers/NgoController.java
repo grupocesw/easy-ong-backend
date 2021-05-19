@@ -37,7 +37,7 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 public class NgoController {
 
-	private NgoService service;
+	private final NgoService service;
 	
 	@GetMapping
 	public Page<NgoResponseDto> list(

@@ -12,19 +12,19 @@ import br.com.grupocesw.easyong.response.dtos.NgoResponseDto;
 @Service
 public interface NgoService {
 
-	public NgoResponseDto create(NgoRequestDto request);
+	NgoResponseDto create(NgoRequestDto request);
 	
-	public NgoFullResponseDto retrieve(Long id);
+	NgoFullResponseDto retrieve(Long id);
 
-	public NgoResponseDto update(Long id, NgoRequestDto request) throws Exception;
+	NgoResponseDto update(Long id, NgoRequestDto request) throws Exception;
 	
-	public Ngo findById(Long id);
+	Ngo findById(Long id);
 
-	public void delete(Long id);
+	void delete(Long id);
 	
-	public Page<NgoFullResponseDto> findByActivatedFull(String filter, Pageable pageable);
+	Page<NgoFullResponseDto> findByActivatedFull(String filter, Pageable pageable);
 
-	public Page<NgoResponseDto> findByActivated(String filter, Pageable pageable);
+	Page<NgoResponseDto> findByActivated(String filter, Pageable pageable);
 
-	public Page<NgoResponseDto> findSuggested(Pageable pageable);
+	Page<NgoResponseDto> findSuggested(Pageable pageable);
 }
