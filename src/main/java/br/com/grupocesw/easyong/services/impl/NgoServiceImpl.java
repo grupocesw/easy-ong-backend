@@ -35,9 +35,9 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class NgoServiceImpl implements NgoService {
 
-	private NgoRepository repository;
-	private CityService cityService;
-	private SocialCauseService socialCauseService;
+	private final NgoRepository repository;
+	private final CityService cityService;
+	private final SocialCauseService socialCauseService;
 
 	@Override
 	public NgoResponseDto create(NgoRequestDto request) {
@@ -235,11 +235,9 @@ public class NgoServiceImpl implements NgoService {
 
 	@Override
 	public Page<NgoResponseDto> findSuggested(Pageable pageable) {
-		
-		Page<NgoResponseDto> ngos = repository.findSuggested(pageable)
+
+		return repository.findSuggested(pageable)
 			.map(ngo -> new NgoResponseDto(ngo));
-		
-		return ngos;
 	}
 
 	@Override
