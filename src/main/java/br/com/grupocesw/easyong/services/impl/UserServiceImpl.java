@@ -78,7 +78,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 				user.setCauses(causes);
 			}
 
-			user.setPassword(passwordEncoder.encode(user.getPassword()));
+			user.setUsername(user.getUsername().trim().toLowerCase());
+			user.setPassword(passwordEncoder.encode(user.getPassword().trim()));
 			user.setRoles(roleService.getDefaultRoles());
 			
 			// TODO remove after implements service e-mail in prod
@@ -185,7 +186,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	}
 
 	@Override
-	public String login(String username, String password) {		
+	public String login(String username, String password) {
+		username = username.trim().toLowerCase();
+		password = password.trim();
+
 		Optional<User> user = Optional.ofNullable(
 			repository.findByUsernameIgnoreCase(username).orElseThrow(
 				() -> new UserNotExistException()
@@ -216,8 +220,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	@Override
 	public Optional<User> findByUsername(String username) {
 		log.info("retrieving user {}", username);
-		
-		return repository.findByUsernameIgnoreCase(username);
+
+		return Optional.ofNullable(
+				repository.findByUsernameIgnoreCase(username).orElseThrow(
+						() -> new UserNotExistException()
+				));
 	}
 
 	@Override
