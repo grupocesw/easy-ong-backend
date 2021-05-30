@@ -9,9 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -37,12 +34,9 @@ public class Contact {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotNull(message = "Type required")
 	@Column(name = "type", nullable = false)
 	private ContactType type;
 
-	@NotEmpty(message = "Content required")
-	@Size(min = 3, max = 255, message = "Content must contain between 3 and 255 characters")
 	@Column(name = "content", nullable = false)
 	private String content;
 

@@ -46,7 +46,7 @@ public class NgoServiceImpl implements NgoService {
 			Optional<City> optionalCity = cityService.findById(request.getAddress().getCityId());
 			optionalCity.orElseThrow(() -> new BadRequestException("City not exists"));
 			
-			Set<SocialCause> causes = socialCauseService.findByIds(request.getCauseIds());
+			Set<SocialCause> causes = socialCauseService.findByIdIn(request.getCauseIds());
 			
 			if (causes.size() < 1)
 				throw new IllegalArgumentException("At least one cause required");
@@ -177,7 +177,7 @@ public class NgoServiceImpl implements NgoService {
 			}		
 			
 			if (request.getCauseIds().size() > 0) {
-				Set<SocialCause> causes = socialCauseService.findByIds(request.getCauseIds());
+				Set<SocialCause> causes = socialCauseService.findByIdIn(request.getCauseIds());
 
 				if (causes.size() < 1)
 					throw new IllegalArgumentException("At least one cause required");

@@ -1,5 +1,6 @@
 package br.com.grupocesw.easyong.entities;
 
+import java.util.Locale;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -11,9 +12,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
 
+import br.com.grupocesw.easyong.entities.validators.CountryValidator;
+import br.com.grupocesw.easyong.entities.validators.FaqValidator;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,7 +27,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
 @Builder
 @ToString
 public class Country {
@@ -35,16 +35,20 @@ public class Country {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotEmpty(message = "Name required")
-	@Size(min = 3, max = 255, message = "Name must contain between 3 and 255 characters")
 	@Column(name = "name", nullable = false)
 	private String name;
 
-	@NotEmpty(message = "Abbreviation required")
-	@Size(min = 3, max = 3, message = "Abbreviation must contain 3 characters")
 	@Column(name = "abbreviation", nullable = false, length = 3)
 	private String abbreviation;
 	
 	@OneToMany(targetEntity = State.class, mappedBy = "country", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	private Set<State> states;
+
+	public Country(Long id, String name, String abbreviation) {
+		CountryValidator.validate(id, name, abbreviation);
+
+		this.id = id;
+		this.name = name;
+		this.abbreviation = abbreviation.toUpperCase();
+	}
 }

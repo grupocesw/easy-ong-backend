@@ -92,19 +92,15 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
     
     private String getLink(String token) {
-		String link = ServletUriComponentsBuilder
+		return ServletUriComponentsBuilder
 			.fromCurrentContextPath()
 			.build()
 			.toUriString()
 			.concat("/api/registration/confirm/" + token);
-		
-		return link;
     }
     
     private String getToken() {
-    	String token = UUID.randomUUID().toString();
-    	
-    	return token;
+    	return UUID.randomUUID().toString();
     }
 
 	@Override

@@ -44,6 +44,7 @@ public class Picture {
 
 	@OneToOne(mappedBy = "picture")
 	@JoinColumn(name = "picture_id")
+	@ToString.Exclude
 	private User user;
 	
 	@JsonIgnore

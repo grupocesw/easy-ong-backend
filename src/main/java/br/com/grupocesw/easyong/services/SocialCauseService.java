@@ -31,5 +31,5 @@ public interface SocialCauseService {
 	
 	Optional<SocialCause> findById(Long Id);
 
-	Set<SocialCause> findByIds(Set<Long> ids);
+	Set<SocialCause> findByIdIn(Set<Long> ids);
 }

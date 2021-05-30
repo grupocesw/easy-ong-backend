@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import br.com.grupocesw.easyong.entities.Person;
-import br.com.grupocesw.easyong.entities.SocialCause;
 import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.enums.Gender;
 import br.com.grupocesw.easyong.services.RoleService;
@@ -43,8 +42,8 @@ public class UserCreateRequestDto implements Serializable {
     private final LocalDate birthday;
 	
     private final Gender gender;
-    
-    private final Set<SocialCause> causes;
+
+	private final Set<Long> causeIds;
     
     public User build() {
     	Person person = Person.builder()
@@ -56,7 +55,6 @@ public class UserCreateRequestDto implements Serializable {
 		return User.builder()
 			.username(username)
 			.password(password)
-			.causes(causes)
 			.person(person)
 			.build();
     }

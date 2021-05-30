@@ -49,9 +49,10 @@ public class Person {
 
 	@Column(name = "gender")
 	private Gender gender;
-	
+
 	@OneToOne(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "person_id")
+	@ToString.Exclude
 	private User user;
 	
 	public Person(Person person) {

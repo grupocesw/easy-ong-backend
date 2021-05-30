@@ -3,10 +3,13 @@ package br.com.grupocesw.easyong.services.impl;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
+import br.com.grupocesw.easyong.entities.SocialCause;
+import br.com.grupocesw.easyong.services.*;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -30,10 +33,6 @@ import br.com.grupocesw.easyong.request.dtos.UserPasswordRequestDto;
 import br.com.grupocesw.easyong.request.dtos.UserUpdateRequestDto;
 import br.com.grupocesw.easyong.response.dtos.NgoResponseDto;
 import br.com.grupocesw.easyong.response.dtos.UserResponseDto;
-import br.com.grupocesw.easyong.services.JwtTokenService;
-import br.com.grupocesw.easyong.services.NgoService;
-import br.com.grupocesw.easyong.services.RoleService;
-import br.com.grupocesw.easyong.services.UserService;
 import br.com.grupocesw.easyong.services.exceptions.DatabaseException;
 import br.com.grupocesw.easyong.services.exceptions.ResourceNotFoundException;
 import br.com.grupocesw.easyong.services.exceptions.UnauthenticatedUserException;
@@ -50,6 +49,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	private final UserRepository repository;
 	private final NgoService ngoService;
+	private final SocialCauseService socialCauseService;
 	private final RoleService roleService;
 	private final PasswordEncoder passwordEncoder;
 	private final AuthenticationManager authenticationManager;
@@ -66,8 +66,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 				throw new UsernameAlreadyExistsException(
 					String.format("Username %s already exists", request.getUsername()));
 			}
-			
-			User user = request.build();			
+
+			User user = request.build();
+
+			if (request.getCauseIds() != null && request.getCauseIds().size() > 0) {
+				Set<SocialCause> causes = socialCauseService.findByIdIn(request.getCauseIds());
+
+				if (causes.isEmpty())
+					throw new IllegalArgumentException("Social causes not found");
+
+				user.setCauses(causes);
+			}
 
 			user.setPassword(passwordEncoder.encode(user.getPassword()));
 			user.setRoles(roleService.getDefaultRoles());
@@ -92,14 +101,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	public UserResponseDto update(Long id, UserUpdateRequestDto request) {
 		try {
 			User user = findById(id);
-			
 			user.getPerson().setName(request.getName());
 			user.getPerson().setBirthday(request.getBirthday());
 			user.getPerson().setGender(request.getGender());
-			
-			user.getCauses().clear();
-			
-			user.getCauses().addAll(request.getCauses());
+
+			if (request.getCauseIds() != null && request.getCauseIds().size() > 0) {
+				user.getCauses().clear();
+				user.getCauses().addAll(socialCauseService.findByIdIn(request.getCauseIds()));
+			}
 
 			return new UserResponseDto(repository.save(user));
 		} catch (EntityNotFoundException e) {
@@ -115,10 +124,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 			user.getPerson().setName(request.getName());
 			user.getPerson().setBirthday(request.getBirthday());
 			user.getPerson().setGender(request.getGender());
-			
-			user.getCauses().clear();
-			
-			user.getCauses().addAll(request.getCauses());
+
+			if (request.getCauseIds() != null && request.getCauseIds().size() > 0) {
+				user.getCauses().clear();
+				user.getCauses().addAll(socialCauseService.findByIdIn(request.getCauseIds()));
+			}
 
 			return new UserResponseDto(repository.save(user));
 		} catch (EntityNotFoundException e) {

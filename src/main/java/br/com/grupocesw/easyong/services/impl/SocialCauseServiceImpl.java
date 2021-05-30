@@ -21,9 +21,11 @@ import br.com.grupocesw.easyong.services.SocialCauseService;
 import br.com.grupocesw.easyong.services.exceptions.DatabaseException;
 import br.com.grupocesw.easyong.services.exceptions.ResourceNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
+@Transactional
 public class SocialCauseServiceImpl implements SocialCauseService {
 
 	private SocialCauseRepository repository;
@@ -103,7 +105,7 @@ public class SocialCauseServiceImpl implements SocialCauseService {
 	}
 
 	@Override
-	public Set<SocialCause> findByIds(Set<Long> ids) {
+	public Set<SocialCause> findByIdIn(Set<Long> ids) {
 		return repository.findByIdIn(ids);
 	}
 

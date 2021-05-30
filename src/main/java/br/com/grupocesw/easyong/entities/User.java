@@ -78,14 +78,10 @@ public class User implements UserDetails {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Email(message = "Invalid email format")
-	@NotEmpty(message = "Username required")
-	@Size(min = 3, max = 100, message = "Username must contain between 3 and 100 characters")
 	@Column(name = "username", nullable = false, length = 100, unique = true)
 	private String username;
 
-	@NotEmpty(message = "Password required")
-	@Size(min = 6, max = 100, message = "Password must contain between 6 and 100 characters")
+	@Column(name = "password", nullable = false, length = 100)
 	private String password;
 
 	@CreationTimestamp

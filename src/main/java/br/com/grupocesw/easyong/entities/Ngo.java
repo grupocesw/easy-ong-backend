@@ -89,7 +89,7 @@ public class Ngo {
 	@JsonProperty(required = true)
 	@ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	@JoinTable(name = "ngo_contacts",  joinColumns= @JoinColumn(name = "ngo_id"), inverseJoinColumns = @JoinColumn(name = "contact_id"))
+	@JoinTable(name = "ngo_contacts", joinColumns= @JoinColumn(name = "ngo_id"), inverseJoinColumns = @JoinColumn(name = "contact_id"))
 	private Set<Contact> contacts;
 	
 	@OneToMany(targetEntity = NgoMoreInformation.class, cascade=CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
@@ -97,7 +97,7 @@ public class Ngo {
 	@JoinColumn(name="ngo_id")
 	private Set<NgoMoreInformation> moreInformations;
 	
-	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@ManyToMany(fetch = FetchType.EAGER)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinTable(name = "ngo_social_causes", joinColumns= @JoinColumn(name = "ngo_id"), inverseJoinColumns = @JoinColumn(name = "social_cause_id"))
 	private Set<SocialCause> causes;
