@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -31,6 +33,7 @@ public class SocialCauseServiceImpl implements SocialCauseService {
 	private SocialCauseRepository repository;
 	
 	@Override
+	@CacheEvict(value = "socialCauses", allEntries = true)
 	public SocialCauseResponseDto create(SocialCauseRequestDto request) {		
 		try {
 			SocialCause cause = SocialCause.builder()
@@ -44,6 +47,7 @@ public class SocialCauseServiceImpl implements SocialCauseService {
 	}
 	
 	@Override
+	@Cacheable(value = "socialCauses", key = "#id")
 	public SocialCauseResponseDto retrieve(Long id) {
 		Optional<SocialCause> optional = repository.findById(id);
 		optional.orElseThrow(() -> new ResourceNotFoundException(id));
@@ -52,6 +56,7 @@ public class SocialCauseServiceImpl implements SocialCauseService {
 	}
 
 	@Override
+	@CacheEvict(value = "socialCauses", allEntries = true)
 	public SocialCauseResponseDto update(Long id, SocialCauseRequestDto request) {
 		try {
 			Optional<SocialCause> optional = repository.findById(id);
@@ -67,6 +72,7 @@ public class SocialCauseServiceImpl implements SocialCauseService {
 	}
 
 	@Override
+	@CacheEvict(value = "socialCauses", allEntries = true)
 	public void delete(Long id) {
 		try {
 			repository.deleteById(id);
@@ -88,6 +94,7 @@ public class SocialCauseServiceImpl implements SocialCauseService {
 	}
 
 	@Override
+	@Cacheable(value = "socialCauses", key = "#pageable.pageSize")
 	public Page<SocialCauseResponseDto> findAll(Pageable pageable) {		
 		Page<SocialCause> result = repository.findAll(pageable);
 		return result.map(obj -> new SocialCauseResponseDto(obj));

@@ -30,6 +30,16 @@ spring:
 ---
 
 spring:
+  cache:
+    type: redis
+    redis:
+      cache-null-values: false
+
+  redis:
+    host: localhost
+    password:
+    port: 6379
+
   datasource:
     platform: postgresql
     url: jdbc:postgresql://localhost:5432/easyong

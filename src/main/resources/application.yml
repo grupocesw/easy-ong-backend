@@ -19,6 +19,11 @@ spring:
   application:
     name: Easy ONG
 
+  cache:
+    type: redis
+    redis:
+      cache-null-values: false
+
   profiles:
     active: ${APP_PROFILE:test}    
     include:

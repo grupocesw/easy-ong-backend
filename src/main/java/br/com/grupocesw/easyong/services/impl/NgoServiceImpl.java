@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -40,25 +42,26 @@ public class NgoServiceImpl implements NgoService {
 	private final SocialCauseService socialCauseService;
 
 	@Override
+	@CacheEvict(value = {"ngos", "ngosFull"}, allEntries = true)
 	public NgoResponseDto create(NgoRequestDto request) {
 		try {
-			
+
 			Optional<City> optionalCity = cityService.findById(request.getAddress().getCityId());
 			optionalCity.orElseThrow(() -> new BadRequestException("City not exists"));
-			
+
 			Set<SocialCause> causes = socialCauseService.findByIdIn(request.getCauseIds());
-			
+
 			if (causes.size() < 1)
 				throw new IllegalArgumentException("At least one cause required");
-			
+
 			if (request.getPictures() != null) {
 				request.getPictures().stream()
 					.forEach(obj -> {
 						if (obj.getUrl().isEmpty())
 							throw new IllegalArgumentException("URL can't empty");
 					});
-			}			
-			
+			}
+
 	    	Address address = Address.builder()
         		.number(request.getAddress().getNumber())
         		.street(request.getAddress().getStreet())
@@ -69,14 +72,14 @@ public class NgoServiceImpl implements NgoService {
         		.district(request.getAddress().getDistrict())
         		.city(optionalCity.get())
     			.build();
-	    	
+
 			Ngo ngo = Ngo.builder().name(request.getName())
 	    		.cnpj(request.getCnpj())
 	    		.description(request.getDescription())
 	    		.activated(request.getActivated())
 	    		.address(address)
 	    		.contacts(request.getContacts().stream()
-    				.map(obj -> 
+    				.map(obj ->
 	    				Contact.builder()
 		    	    		.type(obj.getType())
 		    	    		.content(obj.getContent())
@@ -90,20 +93,21 @@ public class NgoServiceImpl implements NgoService {
     				).collect(Collectors.toSet()))
 	    		.causes(causes)
 	    		.pictures(request.getPictures().stream()
-    				.map(obj ->     						
+    				.map(obj ->
     					Picture.builder()
     						.url(obj.getUrl())
-    						.build()    				
+    						.build()
     				).collect(Collectors.toSet()))
 	    		.build();
-			
+
 			return new NgoResponseDto(repository.save(ngo));
 		} catch (DataIntegrityViolationException e) {
 			throw new DatabaseException(e.getMessage());
 		}
 	}
-	
+
 	@Override
+	@Cacheable(value = "ngosFull", key = "#id")
 	public NgoFullResponseDto retrieve(Long id) {
 		Optional<Ngo> optional = repository.findById(id);
 		optional.orElseThrow(() -> new ResourceNotFoundException(id));
@@ -112,13 +116,14 @@ public class NgoServiceImpl implements NgoService {
 	}
 
 	@Override
+	@CacheEvict(value = {"ngos", "ngosFull"}, allEntries = true)
 	public NgoResponseDto update(Long id, NgoRequestDto request) throws Exception {
 		try {
 			Optional<Ngo> optional = repository.findById(id);
 			optional.orElseThrow(() -> new ResourceNotFoundException(id));
-			
+
 			Ngo ngo = optional.get();
-			
+
 			ngo.setName(request.getName());
 			ngo.setCnpj(request.getCnpj());
 			ngo.setDescription(request.getDescription());
@@ -128,7 +133,7 @@ public class NgoServiceImpl implements NgoService {
 				ngo.getContacts().clear();
 				ngo.getContacts().addAll(
 					request.getContacts().stream()
-						.map(obj -> 
+						.map(obj ->
 							Contact.builder()
 			    	    		.type(obj.getType())
 			    	    		.content(obj.getContent())
@@ -136,7 +141,7 @@ public class NgoServiceImpl implements NgoService {
 						).collect(Collectors.toSet())
 				);
 			}
-			
+
 			if (request.getAddress() != null) {
 				ngo.getAddress().setNumber(request.getAddress().getNumber());
 				ngo.getAddress().setStreet(request.getAddress().getStreet());
@@ -145,15 +150,15 @@ public class NgoServiceImpl implements NgoService {
 				ngo.getAddress().setLatitude(request.getAddress().getLatitude());
 				ngo.getAddress().setLongitude(request.getAddress().getLongitude());
 				ngo.getAddress().setDistrict(request.getAddress().getDistrict());
-				
+
 				if (request.getAddress().getCityId() != null) {
 					Optional<City> optionalCity = cityService.findById(request.getAddress().getCityId());
 					optionalCity.orElseThrow(() -> new BadRequestException("City not exists"));
-					
+
 					ngo.getAddress().setCity(optionalCity.get());
 				}
 			}
-			
+
 			if (request.getPictures() != null) {
 				ngo.getPictures().clear();
 				ngo.getPictures().addAll(request.getPictures().stream()
@@ -163,25 +168,25 @@ public class NgoServiceImpl implements NgoService {
     						.build()
     				).collect(Collectors.toSet()));
 			}
-			
+
 			if (request.getMoreInformations() != null) {
 				ngo.getMoreInformations().clear();
 				ngo.getMoreInformations().addAll(
 						request.getMoreInformations().stream()
-						.map(obj -> 
+						.map(obj ->
 							NgoMoreInformation.builder()
 	    						.information(obj.getInformation())
 	    						.build()
     					).collect(Collectors.toSet())
 				);
-			}		
-			
+			}
+
 			if (request.getCauseIds().size() > 0) {
 				Set<SocialCause> causes = socialCauseService.findByIdIn(request.getCauseIds());
 
 				if (causes.size() < 1)
 					throw new IllegalArgumentException("At least one cause required");
-				
+
 				ngo.getCauses().clear();
 				ngo.getCauses().addAll(causes);
 			}
@@ -195,6 +200,7 @@ public class NgoServiceImpl implements NgoService {
 	}
 
 	@Override
+	@CacheEvict(value = {"ngos", "ngosFull"}, allEntries = true)
 	public void delete(Long id) {
 		try {
 			repository.deleteById(id);
@@ -204,33 +210,31 @@ public class NgoServiceImpl implements NgoService {
 			throw new DatabaseException(e.getMessage());
 		}
 	}
-	
+
 	@Override
-	public Page<NgoFullResponseDto> findByActivatedFull(String filter, Pageable pageable) {
-		Page<NgoFullResponseDto> ngos;
-		
-		if (filter != null)
-			ngos = repository.findWithFilter(filter, pageable)
+	@Cacheable(value = "ngosFull", key = "#pageable.pageSize")
+	public Page<NgoFullResponseDto> findByActivatedFull(Pageable pageable) {
+		return repository.findByActivatedTrueOrderByName(pageable)
 				.map(ngo -> new NgoFullResponseDto(ngo));
-		else 
-			ngos = repository.findByActivatedTrueOrderByName(pageable)
-				.map(ngo -> new NgoFullResponseDto(ngo));
-		
-		return ngos;
 	}
-	
+
 	@Override
-	public Page<NgoResponseDto> findByActivated(String filter, Pageable pageable) {
-		Page<NgoResponseDto> ngos;
-		
-		if (filter != null)
-			ngos = repository.findWithFilter(filter, pageable)
+	public Page<NgoFullResponseDto> findByActivatedFullWithFilter(String filter, Pageable pageable) {
+		return repository.findWithFilter(filter, pageable)
+					.map(ngo -> new NgoFullResponseDto(ngo));
+	}
+
+	@Override
+	@Cacheable(value = "ngos", key = "#pageable.pageSize")
+	public Page<NgoResponseDto> findByActivated(Pageable pageable) {
+		return repository.findByActivatedTrueOrderByName(pageable)
 				.map(ngo -> new NgoResponseDto(ngo));
-		else 
-			ngos = repository.findByActivatedTrueOrderByName(pageable)
-				.map(ngo -> new NgoResponseDto(ngo));
-		
-		return ngos;
+	}
+
+	@Override
+	public Page<NgoResponseDto> findByActivatedWithFilter(String filter, Pageable pageable) {
+		return repository.findWithFilter(filter, pageable)
+					.map(ngo -> new NgoResponseDto(ngo));
 	}
 
 	@Override

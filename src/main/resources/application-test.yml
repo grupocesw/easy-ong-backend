@@ -13,6 +13,16 @@ spring:
 ---
 
 spring:
+  cache:
+    type: redis
+    redis:
+      cache-null-values: false
+
+  redis:
+    host: localhost
+    password:
+    port: 6379
+
   h2:
     console:
       enabled: true
@@ -24,7 +34,7 @@ spring:
     password: 
     initialization-mode: ALWAYS
     data: classpath:/database/initial-data.sql, classpath:/database/ngos.sql, classpath:/database/users.sql
-  
+
   jpa:
     hibernate:
       ddl-auto: update

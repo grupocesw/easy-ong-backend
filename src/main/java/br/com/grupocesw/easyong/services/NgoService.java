@@ -22,9 +22,13 @@ public interface NgoService {
 
 	void delete(Long id);
 	
-	Page<NgoFullResponseDto> findByActivatedFull(String filter, Pageable pageable);
+	Page<NgoFullResponseDto> findByActivatedFull(Pageable pageable);
 
-	Page<NgoResponseDto> findByActivated(String filter, Pageable pageable);
+	Page<NgoFullResponseDto> findByActivatedFullWithFilter(String filter, Pageable pageable);
+
+	Page<NgoResponseDto> findByActivated(Pageable pageable);
+
+	Page<NgoResponseDto> findByActivatedWithFilter(String filter, Pageable pageable);
 
 	Page<NgoResponseDto> findSuggested(Pageable pageable);
 }

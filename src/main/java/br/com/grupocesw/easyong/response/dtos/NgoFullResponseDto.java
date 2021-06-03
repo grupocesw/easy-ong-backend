@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import br.com.grupocesw.easyong.entities.Address;
 import br.com.grupocesw.easyong.entities.Ngo;
 import br.com.grupocesw.easyong.entities.User;
 import lombok.Data;
@@ -21,7 +20,7 @@ public class NgoFullResponseDto implements Serializable {
 	private String cnpj;
 	private String description;
 	private boolean favorited;
-	private Address address;
+	private AddressResponseDto address;
 	private Set<SocialCauseResponseDto> causes;
 	private Set<ContactResponseDto> contacts;
 	private Set<NgoMoreInformationResponseDto> moreInformations;
@@ -32,7 +31,7 @@ public class NgoFullResponseDto implements Serializable {
 		name = ngo.getName();
 		cnpj = ngo.getCnpj();
 		description = ngo.getDescription();
-		address = ngo.getAddress();
+		address = new AddressResponseDto(ngo.getAddress());
 
 		if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser")) {
 			
@@ -45,7 +44,7 @@ public class NgoFullResponseDto implements Serializable {
 				}
 			}
 		}
-		
+
 		causes = ngo.getCauses().stream()
 				.map(obj -> new SocialCauseResponseDto(obj))
 				.collect(Collectors.toSet());

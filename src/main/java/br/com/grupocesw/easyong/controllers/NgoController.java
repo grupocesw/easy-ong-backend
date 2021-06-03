@@ -43,14 +43,22 @@ public class NgoController {
 	public Page<NgoResponseDto> list(
 			@RequestParam(required = false) String filter,
 			@ApiIgnore final Pageable pageable) {
-			return service.findByActivated(filter, pageable);
+
+		if (filter != null)
+			return service.findByActivatedWithFilter(filter, pageable);
+		else
+			return service.findByActivated(pageable);
 	}
-	
+
 	@GetMapping(value = "/full")
 	public Page<NgoFullResponseDto> fullList(
 			@RequestParam(required = false) String filter,
 			@ApiIgnore final Pageable pageable) {
-		return service.findByActivatedFull(filter, pageable);
+
+		if (filter != null)
+			return service.findByActivatedFullWithFilter(filter, pageable);
+		else
+			return service.findByActivatedFull(pageable);
 	}
 	
 	@GetMapping(value = "/suggested")

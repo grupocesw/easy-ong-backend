@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -38,6 +40,7 @@ public class FaqServiceImpl implements FaqService {
 	}
 	
 	@Override
+	@CacheEvict(value = "faqs", allEntries = true)
 	public FaqResponseDto create(FaqRequestDto request) {		
 		try {
 			Faq faq = Faq.builder()
@@ -52,6 +55,7 @@ public class FaqServiceImpl implements FaqService {
 	}
 	
 	@Override
+	@Cacheable(value = "faqs", key = "#id")
 	public FaqResponseDto retrieve(Long id) {
 		Optional<Faq> optional = repository.findById(id);
 		optional.orElseThrow(() -> new ResourceNotFoundException(id));
@@ -60,6 +64,7 @@ public class FaqServiceImpl implements FaqService {
 	}
 
 	@Override
+	@CacheEvict(value = "faqs", allEntries = true)
 	public FaqResponseDto update(Long id, FaqRequestDto request) {
 		try {
 			Optional<Faq> optional = repository.findById(id);
@@ -77,6 +82,7 @@ public class FaqServiceImpl implements FaqService {
 	}
 
 	@Override
+	@CacheEvict(value = "faqs", allEntries = true)
 	public void delete(Long id) {
 		try {
 			repository.deleteById(id);
@@ -88,6 +94,7 @@ public class FaqServiceImpl implements FaqService {
 	}
 
 	@Override
+	@Cacheable(value = "faqs", key = "#pageable.pageSize")
 	public Page<FaqResponseDto> findAll(Pageable pageable) {		
 		Page<Faq> result = repository.findAll(pageable);
 		return result.map(obj -> new FaqResponseDto(obj));
