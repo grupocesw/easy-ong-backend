@@ -18,10 +18,7 @@ spring:
     redis:
       cache-null-values: false
 
-  redis:
-    host: localhost
-    password:
-    port: 6379
+  redis.url: ${REDIS_URL:redis://:@localhost:6379}
 
   h2:
     console:
@@ -46,10 +43,10 @@ spring:
     show-sql: true
 
   mail:
-    host: localhost
-    port: 1025
-    username: hello
-    password: hello
+    host: ${EMAIL_HOST:localhost}
+    port: ${EMAIL_PORT:1025}
+    username: ${EMAIL_USERNAME:hello}
+    password: ${EMAIL_PASSWORD:hello}
 
     properties:
       mail:
