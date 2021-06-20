@@ -23,8 +23,8 @@ import br.com.grupocesw.easyong.entities.Picture;
 import br.com.grupocesw.easyong.entities.SocialCause;
 import br.com.grupocesw.easyong.repositories.NgoRepository;
 import br.com.grupocesw.easyong.request.dtos.NgoRequestDto;
-import br.com.grupocesw.easyong.response.dtos.NgoFullResponseDto;
 import br.com.grupocesw.easyong.response.dtos.NgoResponseDto;
+import br.com.grupocesw.easyong.response.dtos.NgoSlimResponseDto;
 import br.com.grupocesw.easyong.services.CityService;
 import br.com.grupocesw.easyong.services.NgoService;
 import br.com.grupocesw.easyong.services.SocialCauseService;
@@ -42,8 +42,8 @@ public class NgoServiceImpl implements NgoService {
 	private final SocialCauseService socialCauseService;
 
 	@Override
-	@CacheEvict(value = {"ngos", "ngosFull"}, allEntries = true)
-	public NgoResponseDto create(NgoRequestDto request) {
+	@CacheEvict(value = "ngos", allEntries = true)
+	public NgoSlimResponseDto create(NgoRequestDto request) {
 		try {
 
 			Optional<City> optionalCity = cityService.findById(request.getAddress().getCityId());
@@ -100,24 +100,23 @@ public class NgoServiceImpl implements NgoService {
     				).collect(Collectors.toSet()))
 	    		.build();
 
-			return new NgoResponseDto(repository.save(ngo));
+			return new NgoSlimResponseDto(repository.save(ngo));
 		} catch (DataIntegrityViolationException e) {
 			throw new DatabaseException(e.getMessage());
 		}
 	}
 
 	@Override
-	@Cacheable(value = "ngosFull", key = "#id")
-	public NgoFullResponseDto retrieve(Long id) {
+	public NgoResponseDto retrieve(Long id) {
 		Optional<Ngo> optional = repository.findById(id);
 		optional.orElseThrow(() -> new ResourceNotFoundException(id));
 
-		return new NgoFullResponseDto(optional.get());
+		return new NgoResponseDto(optional.get());
 	}
 
 	@Override
-	@CacheEvict(value = {"ngos", "ngosFull"}, allEntries = true)
-	public NgoResponseDto update(Long id, NgoRequestDto request) throws Exception {
+	@CacheEvict(value = "ngos", allEntries = true)
+	public NgoSlimResponseDto update(Long id, NgoRequestDto request) throws Exception {
 		try {
 			Optional<Ngo> optional = repository.findById(id);
 			optional.orElseThrow(() -> new ResourceNotFoundException(id));
@@ -191,7 +190,7 @@ public class NgoServiceImpl implements NgoService {
 				ngo.getCauses().addAll(causes);
 			}
 
-			return new NgoResponseDto(repository.save(ngo));
+			return new NgoSlimResponseDto(repository.save(ngo));
 		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException(id);
 		} catch (Exception e) {
@@ -200,7 +199,7 @@ public class NgoServiceImpl implements NgoService {
 	}
 
 	@Override
-	@CacheEvict(value = {"ngos", "ngosFull"}, allEntries = true)
+	@CacheEvict(value = "ngos", allEntries = true)
 	public void delete(Long id) {
 		try {
 			repository.deleteById(id);
@@ -212,36 +211,23 @@ public class NgoServiceImpl implements NgoService {
 	}
 
 	@Override
-	@Cacheable(value = "ngosFull", key = "#pageable.pageSize")
-	public Page<NgoFullResponseDto> findByActivatedFull(Pageable pageable) {
-		return repository.findByActivatedTrueOrderByName(pageable)
-				.map(ngo -> new NgoFullResponseDto(ngo));
-	}
-
-	@Override
-	public Page<NgoFullResponseDto> findByActivatedFullWithFilter(String filter, Pageable pageable) {
-		return repository.findWithFilter(filter, pageable)
-					.map(ngo -> new NgoFullResponseDto(ngo));
-	}
-
-	@Override
 	@Cacheable(value = "ngos", key = "#pageable.pageSize")
-	public Page<NgoResponseDto> findByActivated(Pageable pageable) {
+	public Page<NgoSlimResponseDto> findByActivated(Pageable pageable) {
 		return repository.findByActivatedTrueOrderByName(pageable)
-				.map(ngo -> new NgoResponseDto(ngo));
+				.map(ngo -> new NgoSlimResponseDto(ngo));
 	}
 
 	@Override
-	public Page<NgoResponseDto> findByActivatedWithFilter(String filter, Pageable pageable) {
+	public Page<NgoSlimResponseDto> findByActivatedWithFilter(String filter, Pageable pageable) {
 		return repository.findWithFilter(filter, pageable)
-					.map(ngo -> new NgoResponseDto(ngo));
+					.map(ngo -> new NgoSlimResponseDto(ngo));
 	}
 
 	@Override
-	public Page<NgoResponseDto> findSuggested(Pageable pageable) {
+	public Page<NgoSlimResponseDto> findSuggested(Pageable pageable) {
 
 		return repository.findSuggested(pageable)
-			.map(ngo -> new NgoResponseDto(ngo));
+			.map(ngo -> new NgoSlimResponseDto(ngo));
 	}
 
 	@Override

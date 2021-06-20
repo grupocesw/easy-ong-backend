@@ -33,7 +33,7 @@ import br.com.grupocesw.easyong.repositories.UserRepository;
 import br.com.grupocesw.easyong.request.dtos.UserCreateRequestDto;
 import br.com.grupocesw.easyong.request.dtos.UserPasswordRequestDto;
 import br.com.grupocesw.easyong.request.dtos.UserUpdateRequestDto;
-import br.com.grupocesw.easyong.response.dtos.NgoResponseDto;
+import br.com.grupocesw.easyong.response.dtos.NgoSlimResponseDto;
 import br.com.grupocesw.easyong.response.dtos.UserResponseDto;
 import br.com.grupocesw.easyong.services.exceptions.DatabaseException;
 import br.com.grupocesw.easyong.services.exceptions.ResourceNotFoundException;
@@ -274,13 +274,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	}
 
 	@Override
-	public Page<NgoResponseDto> getFavoriteNgos(Pageable pageable) {
+	public Page<NgoSlimResponseDto> getFavoriteNgos(Pageable pageable) {
         int pageSize = pageable.getPageSize();
         int currentPage = pageable.getPageNumber();
         int startItem = currentPage * pageSize;
         
-		List<NgoResponseDto> ngos = getAuthUser().getFavoriteNgos().stream()
-				.map(ngo -> new NgoResponseDto(ngo))
+		List<NgoSlimResponseDto> ngos = getAuthUser().getFavoriteNgos().stream()
+				.map(ngo -> new NgoSlimResponseDto(ngo))
 				.collect(Collectors.toList());
 
         if (ngos.size() < startItem) {
@@ -290,7 +290,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             ngos = ngos.subList(startItem, toIndex);
         }
 		
-		Page<NgoResponseDto> page = new PageImpl<>(
+		Page<NgoSlimResponseDto> page = new PageImpl<>(
 				ngos, 
 				PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()), 
 				ngos.size()

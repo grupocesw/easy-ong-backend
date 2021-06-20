@@ -13,7 +13,7 @@ import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.request.dtos.UserCreateRequestDto;
 import br.com.grupocesw.easyong.request.dtos.UserPasswordRequestDto;
 import br.com.grupocesw.easyong.request.dtos.UserUpdateRequestDto;
-import br.com.grupocesw.easyong.response.dtos.NgoResponseDto;
+import br.com.grupocesw.easyong.response.dtos.NgoSlimResponseDto;
 import br.com.grupocesw.easyong.response.dtos.UserResponseDto;
 
 @Service
@@ -47,5 +47,5 @@ public interface UserService {
 
 	void enableUser(User user);
 
-	Page<NgoResponseDto> getFavoriteNgos(Pageable pageable);
+	Page<NgoSlimResponseDto> getFavoriteNgos(Pageable pageable);
 }

@@ -24,8 +24,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.grupocesw.easyong.request.dtos.NgoRequestDto;
 import br.com.grupocesw.easyong.response.dtos.ApiResponseDto;
-import br.com.grupocesw.easyong.response.dtos.NgoFullResponseDto;
 import br.com.grupocesw.easyong.response.dtos.NgoResponseDto;
+import br.com.grupocesw.easyong.response.dtos.NgoSlimResponseDto;
 import br.com.grupocesw.easyong.services.NgoService;
 import br.com.grupocesw.easyong.services.exceptions.BadRequestException;
 import br.com.grupocesw.easyong.services.exceptions.ResourceNotFoundException;
@@ -40,7 +40,7 @@ public class NgoController {
 	private final NgoService service;
 	
 	@GetMapping
-	public Page<NgoResponseDto> list(
+	public Page<NgoSlimResponseDto> list(
 			@RequestParam(required = false) String filter,
 			@ApiIgnore final Pageable pageable) {
 
@@ -49,20 +49,9 @@ public class NgoController {
 		else
 			return service.findByActivated(pageable);
 	}
-
-	@GetMapping(value = "/full")
-	public Page<NgoFullResponseDto> fullList(
-			@RequestParam(required = false) String filter,
-			@ApiIgnore final Pageable pageable) {
-
-		if (filter != null)
-			return service.findByActivatedFullWithFilter(filter, pageable);
-		else
-			return service.findByActivatedFull(pageable);
-	}
 	
 	@GetMapping(value = "/suggested")
-	public Page<NgoResponseDto> findSuggested(@PageableDefault(page = 0, size = 5) Pageable pageable) {
+	public Page<NgoSlimResponseDto> findSuggested(@PageableDefault(page = 0, size = 5) Pageable pageable) {
 		return service.findSuggested(pageable);
 	}
 	
@@ -70,7 +59,7 @@ public class NgoController {
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<?> create(@Valid @RequestBody NgoRequestDto request) {
 		try {
-			NgoResponseDto ngoDto = service.create(request);
+			NgoSlimResponseDto ngoDto = service.create(request);
 			
 			URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 					.buildAndExpand(ngoDto.getId()).toUri();
@@ -82,7 +71,7 @@ public class NgoController {
 	}
 	
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<NgoFullResponseDto> retrieve(@PathVariable Long id) {		
+	public ResponseEntity<NgoResponseDto> retrieve(@PathVariable Long id) {
 		return ResponseEntity.ok(service.retrieve(id));
 	}
 	
