@@ -23,6 +23,7 @@ public class AddressResponseDto implements Serializable {
 	public AddressResponseDto(Address address) {
 		id = address.getId();
 		number = address.getNumber();
+		street = address.getStreet();
 		complement = address.getComplement();
 		zipCode = address.getZipCode();
 		latitude = address.getLatitude();

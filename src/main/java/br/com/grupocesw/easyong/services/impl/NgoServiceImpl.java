@@ -220,7 +220,7 @@ public class NgoServiceImpl implements NgoService {
 	@Override
 	public Page<NgoSlimResponseDto> findByActivatedWithFilter(String filter, Pageable pageable) {
 		return repository.findWithFilter(filter, pageable)
-					.map(ngo -> new NgoSlimResponseDto(ngo));
+				.map(ngo -> new NgoSlimResponseDto(ngo));
 	}
 
 	@Override
