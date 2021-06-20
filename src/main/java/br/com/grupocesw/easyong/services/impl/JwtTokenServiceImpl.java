@@ -42,6 +42,7 @@ public class JwtTokenServiceImpl extends OncePerRequestFilter implements JwtToke
     public String generateToken(Authentication authentication) {
 
         Long now = System.currentTimeMillis();
+
         return Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim("authorities", authentication.getAuthorities().stream()

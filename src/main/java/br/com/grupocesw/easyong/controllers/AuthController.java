@@ -37,10 +37,9 @@ public class AuthController {
 	private final UserService userService;
 
 	@PostMapping("/login")
-	public ResponseEntity<?> login(@Valid @RequestBody LoginRequestDto loginRequest) {
+	public ResponseEntity<?> login(@Valid @RequestBody LoginRequestDto requestDto) {
 		try {
-			String token = userService.login(loginRequest.getUsername(), loginRequest.getPassword());
-			return ResponseEntity.ok(new JwtAuthenticationResponseDto(token));
+			return ResponseEntity.ok(userService.login(requestDto));
 		} catch (UserNotExistException e) {
 			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
 		} catch (UserNotConfirmedException e) {

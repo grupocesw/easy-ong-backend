@@ -1,15 +1,17 @@
 package br.com.grupocesw.easyong.services.impl;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
 import br.com.grupocesw.easyong.entities.SocialCause;
+import br.com.grupocesw.easyong.request.dtos.LoginRequestDto;
+import br.com.grupocesw.easyong.response.dtos.JwtAuthenticationResponseDto;
 import br.com.grupocesw.easyong.services.*;
+import io.jsonwebtoken.Claims;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -186,9 +188,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	}
 
 	@Override
-	public String login(String username, String password) {
-		username = username.trim().toLowerCase();
-		password = password.trim();
+	public JwtAuthenticationResponseDto login(LoginRequestDto requestDto) {
+		String username = requestDto.getUsername().trim().toLowerCase();
+		String password = requestDto.getPassword().trim();
 
 		Optional<User> user = Optional.ofNullable(
 			repository.findByUsernameIgnoreCase(username).orElseThrow(
@@ -202,7 +204,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		Authentication authentication = authenticationManager
 				.authenticate(new UsernamePasswordAuthenticationToken(username, password));
 
-		return jwtTokenService.generateToken(authentication);
+		String token = jwtTokenService.generateToken(authentication);
+		Claims claims = jwtTokenService.getClaimsFromJWT(token);
+
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		df.setTimeZone(TimeZone.getTimeZone("America/Sao_Paulo"));
+
+		return new JwtAuthenticationResponseDto()
+				.builder()
+				.username(claims.getSubject())
+				.accessToken(token)
+				.expiration(df.format(claims.getExpiration()))
+				.tokenType("Bearer")
+				.build();
 	}
 	
 	@Override
