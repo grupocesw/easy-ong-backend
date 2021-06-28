@@ -1,5 +1,6 @@
 package br.com.grupocesw.easyong.entities;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -21,7 +22,7 @@ import lombok.Setter;
 @Table(name = "confirmation_tokens")
 @Getter
 @Setter
-public class ConfirmationToken {
+public class ConfirmationToken implements Serializable {
 
 	@Id
 	@SequenceGenerator(name = "confirmation_token_sequence", sequenceName = "confirmation_token_sequence", allocationSize = 1)

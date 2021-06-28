@@ -1,5 +1,6 @@
 package br.com.grupocesw.easyong.entities;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -45,7 +46,7 @@ import lombok.ToString;
 @Proxy(lazy = false)
 @EqualsAndHashCode(of = {"id", "cnpj"})
 @ToString
-public class Ngo {
+public class Ngo implements Serializable {
 	
 	public Ngo(Ngo ngoDTO) {
 		id = ngoDTO.getId();

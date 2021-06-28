@@ -2,6 +2,8 @@ package br.com.grupocesw.easyong.response.dtos;
 
 import java.io.Serializable;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import br.com.grupocesw.easyong.entities.Ngo;
@@ -10,6 +12,8 @@ import br.com.grupocesw.easyong.entities.User;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class NgoSlimResponseDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;

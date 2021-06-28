@@ -6,9 +6,13 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 import br.com.grupocesw.easyong.entities.State;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class CityRequestDto implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

@@ -17,6 +17,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name = "ngo_more_informations")
 @AllArgsConstructor
@@ -25,7 +27,7 @@ import lombok.ToString;
 @Setter
 @Builder
 @ToString
-public class NgoMoreInformation {
+public class NgoMoreInformation implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

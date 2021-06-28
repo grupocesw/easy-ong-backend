@@ -8,6 +8,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -19,11 +21,13 @@ import br.com.grupocesw.easyong.services.RoleService;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserCreateRequestDto implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	@Autowired private final RoleService roleService;
+	private RoleService roleService;
 	
 	@Email(message = "Invalid email format")
 	@NotEmpty(message = "Username required")
@@ -36,14 +40,14 @@ public class UserCreateRequestDto implements Serializable {
 	
 	@NotEmpty(message = "Name required")
 	@Size(min = 3, max = 100, message = "Name must contain between 3 and 100 characters")
-    private final String name;
+    private String name;
 	
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private final LocalDate birthday;
+    private LocalDate birthday;
 	
-    private final Gender gender;
+    private Gender gender;
 
-	private final Set<Long> causeIds;
+	private Set<Long> causeIds;
     
     public User build() {
     	Person person = Person.builder()

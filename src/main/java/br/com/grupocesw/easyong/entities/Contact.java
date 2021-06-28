@@ -1,5 +1,6 @@
 package br.com.grupocesw.easyong.entities;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -28,7 +29,7 @@ import lombok.ToString;
 @Setter
 @Builder
 @ToString
-public class Contact {
+public class Contact implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

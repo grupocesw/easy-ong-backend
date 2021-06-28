@@ -1,5 +1,6 @@
 package br.com.grupocesw.easyong.entities;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -27,7 +28,7 @@ import lombok.ToString;
 @Setter
 @Builder
 @ToString
-public class Role {
+public class Role implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

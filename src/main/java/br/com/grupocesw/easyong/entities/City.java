@@ -18,6 +18,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name = "cities")
 @AllArgsConstructor
@@ -26,7 +28,7 @@ import lombok.ToString;
 @Setter
 @Builder
 @ToString
-public class City {
+public class City implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

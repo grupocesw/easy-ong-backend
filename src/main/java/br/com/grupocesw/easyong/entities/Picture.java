@@ -1,5 +1,6 @@
 package br.com.grupocesw.easyong.entities;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -30,7 +31,7 @@ import lombok.ToString;
 @Setter
 @Builder
 @ToString
-public class Picture {
+public class Picture implements Serializable {
 	
 	private static final String path = "/api/pictures/";	
 	public static final String noImage = "no_image.png";

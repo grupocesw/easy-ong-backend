@@ -12,23 +12,27 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import br.com.grupocesw.easyong.entities.Person;
 import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.enums.Gender;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserUpdateRequestDto implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
 	@NotEmpty(message = "Name required")
 	@Size(min = 3, max = 100, message = "Name must contain between 3 and 100 characters")
-    private final String name;
+    private String name;
 	
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private final LocalDate birthday;
+    private LocalDate birthday;
 	
-    private final Gender gender;
+    private Gender gender;
 
-	private final Set<Long> causeIds;
+	private Set<Long> causeIds;
     
     public User build() {
     	Person person = Person.builder()

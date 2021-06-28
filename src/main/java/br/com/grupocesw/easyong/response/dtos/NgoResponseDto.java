@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import br.com.grupocesw.easyong.mappers.AddressMapper;
+import br.com.grupocesw.easyong.mappers.ContactMapper;
 import br.com.grupocesw.easyong.mappers.SocialCauseMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -32,7 +34,8 @@ public class NgoResponseDto implements Serializable {
 		name = ngo.getName();
 		cnpj = ngo.getCnpj();
 		description = ngo.getDescription();
-		address = new AddressResponseDto(ngo.getAddress());
+		address = AddressMapper.INSTANCE.entityToResponseDto(ngo.getAddress());
+//		address = new AddressResponseDto(ngo.getAddress());
 
 		if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser")) {
 			
@@ -46,15 +49,16 @@ public class NgoResponseDto implements Serializable {
 			}
 		}
 
-		causes = ngo.getCauses().stream()
-				.map(obj -> SocialCauseMapper.INSTANCE.entityToResponseDto(obj))
-				.collect(Collectors.toSet());
+//		causes = ngo.getCauses().stream()
+//				.map(obj -> SocialCauseMapper.INSTANCE.entityToResponseDto(obj))
+//				.collect(Collectors.toSet());
 
-//		causes = SocialCauseMapper.INSTANCE.listToResponseDtoSet(ngo.getCauses());
-		
-		contacts = ngo.getContacts().stream()
-				.map(obj -> new ContactResponseDto(obj))
-				.collect(Collectors.toSet());
+		causes = SocialCauseMapper.INSTANCE.listToResponseDtoSet(ngo.getCauses());
+		contacts = ContactMapper.INSTANCE.listToResponseDtoSet(ngo.getContacts());
+
+//		contacts = ngo.getContacts().stream()
+//				.map(obj -> new ContactResponseDto(obj))
+//				.collect(Collectors.toSet());
 		
 		pictures = ngo.getPictures().stream()
 				.map(obj -> new PictureResponseDto(obj))

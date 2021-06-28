@@ -5,10 +5,13 @@ import java.io.Serializable;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-import br.com.grupocesw.easyong.entities.Country;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class StateRequestDto implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -22,6 +25,6 @@ public class StateRequestDto implements Serializable {
 	private String abbreviation;
 
 	@NotEmpty(message = "Country required")
-	private Country country;
+	private CountryRequestDto country;
 
 }

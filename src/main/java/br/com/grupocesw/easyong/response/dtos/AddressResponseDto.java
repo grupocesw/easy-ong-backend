@@ -1,11 +1,15 @@
 package br.com.grupocesw.easyong.response.dtos;
 
 import br.com.grupocesw.easyong.entities.Address;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class AddressResponseDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;

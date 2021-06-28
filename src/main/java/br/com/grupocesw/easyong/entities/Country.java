@@ -1,6 +1,7 @@
 package br.com.grupocesw.easyong.entities;
 
 
+import java.io.Serializable;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -28,7 +29,7 @@ import lombok.ToString;
 @Getter
 @Builder
 @ToString
-public class Country {
+public class Country implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
