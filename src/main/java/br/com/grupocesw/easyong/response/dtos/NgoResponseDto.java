@@ -4,9 +4,7 @@ import java.io.Serializable;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import br.com.grupocesw.easyong.mappers.AddressMapper;
-import br.com.grupocesw.easyong.mappers.ContactMapper;
-import br.com.grupocesw.easyong.mappers.SocialCauseMapper;
+import br.com.grupocesw.easyong.mappers.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import br.com.grupocesw.easyong.entities.Ngo;
@@ -55,17 +53,19 @@ public class NgoResponseDto implements Serializable {
 
 		causes = SocialCauseMapper.INSTANCE.listToResponseDtoSet(ngo.getCauses());
 		contacts = ContactMapper.INSTANCE.listToResponseDtoSet(ngo.getContacts());
+		moreInformations = NgoMoreInformationMapper.INSTANCE.listToResponseDtoSet(ngo.getMoreInformations());
+		pictures = PictureMapper.INSTANCE.listToResponseDtoSet(ngo.getPictures());
 
 //		contacts = ngo.getContacts().stream()
 //				.map(obj -> new ContactResponseDto(obj))
 //				.collect(Collectors.toSet());
 		
-		pictures = ngo.getPictures().stream()
-				.map(obj -> new PictureResponseDto(obj))
-				.collect(Collectors.toSet());
+//		pictures = ngo.getPictures().stream()
+//				.map(obj -> new PictureResponseDto(obj))
+//				.collect(Collectors.toSet());
 		
-		moreInformations = ngo.getMoreInformations().stream()
-				.map(obj -> new NgoMoreInformationResponseDto(obj))
-				.collect(Collectors.toSet());
+//		moreInformations = ngo.getMoreInformations().stream()
+//				.map(obj -> new NgoMoreInformationResponseDto(obj))
+//				.collect(Collectors.toSet());
 	}
 }
