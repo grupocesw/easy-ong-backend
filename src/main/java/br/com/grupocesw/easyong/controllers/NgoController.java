@@ -4,6 +4,7 @@ import java.net.URI;
 
 import javax.validation.Valid;
 
+import br.com.grupocesw.easyong.mappers.NgoMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -59,12 +60,14 @@ public class NgoController {
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<?> create(@Valid @RequestBody NgoRequestDto request) {
 		try {
-			NgoSlimResponseDto ngoDto = service.create(request);
-			
+			NgoSlimResponseDto dto = NgoMapper.INSTANCE.entityToSlimResponseDto(
+					service.create(NgoMapper.INSTANCE.requestDtoToEntity(request))
+			);
+
 			URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-					.buildAndExpand(ngoDto.getId()).toUri();
-			
-			return ResponseEntity.created(uri).body(ngoDto);
+					.buildAndExpand(dto.getId()).toUri();
+
+			return ResponseEntity.created(uri).body(dto);
 		} catch (BadRequestException|IllegalArgumentException e) {			
 			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
 		}		

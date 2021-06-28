@@ -12,7 +12,7 @@ import br.com.grupocesw.easyong.response.dtos.NgoSlimResponseDto;
 @Service
 public interface NgoService {
 
-	NgoSlimResponseDto create(NgoRequestDto request);
+	Ngo create(Ngo request);
 	
 	NgoResponseDto retrieve(Long id);
 

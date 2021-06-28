@@ -33,7 +33,10 @@ public class NgoResponseDto implements Serializable {
 		cnpj = ngo.getCnpj();
 		description = ngo.getDescription();
 		address = AddressMapper.INSTANCE.entityToResponseDto(ngo.getAddress());
-//		address = new AddressResponseDto(ngo.getAddress());
+		causes = SocialCauseMapper.INSTANCE.listToResponseDtoSet(ngo.getCauses());
+		contacts = ContactMapper.INSTANCE.listToResponseDtoSet(ngo.getContacts());
+		moreInformations = NgoMoreInformationMapper.INSTANCE.listToResponseDtoSet(ngo.getMoreInformations());
+		pictures = PictureMapper.INSTANCE.listToResponseDtoSet(ngo.getPictures());
 
 		if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser")) {
 			
@@ -47,25 +50,5 @@ public class NgoResponseDto implements Serializable {
 			}
 		}
 
-//		causes = ngo.getCauses().stream()
-//				.map(obj -> SocialCauseMapper.INSTANCE.entityToResponseDto(obj))
-//				.collect(Collectors.toSet());
-
-		causes = SocialCauseMapper.INSTANCE.listToResponseDtoSet(ngo.getCauses());
-		contacts = ContactMapper.INSTANCE.listToResponseDtoSet(ngo.getContacts());
-		moreInformations = NgoMoreInformationMapper.INSTANCE.listToResponseDtoSet(ngo.getMoreInformations());
-		pictures = PictureMapper.INSTANCE.listToResponseDtoSet(ngo.getPictures());
-
-//		contacts = ngo.getContacts().stream()
-//				.map(obj -> new ContactResponseDto(obj))
-//				.collect(Collectors.toSet());
-		
-//		pictures = ngo.getPictures().stream()
-//				.map(obj -> new PictureResponseDto(obj))
-//				.collect(Collectors.toSet());
-		
-//		moreInformations = ngo.getMoreInformations().stream()
-//				.map(obj -> new NgoMoreInformationResponseDto(obj))
-//				.collect(Collectors.toSet());
 	}
 }

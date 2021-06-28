@@ -43,13 +43,16 @@ public class NgoServiceImpl implements NgoService {
 
 	@Override
 	@CacheEvict(value = "ngos", allEntries = true)
-	public NgoSlimResponseDto create(NgoRequestDto request) {
+	public Ngo create(Ngo request) {
 		try {
 
-			Optional<City> optionalCity = cityService.findById(request.getAddress().getCityId());
+			Optional<City> optionalCity = cityService.findById(request.getAddress().getCity().getId());
 			optionalCity.orElseThrow(() -> new BadRequestException("City not exists"));
 
-			Set<SocialCause> causes = socialCauseService.findByIdIn(request.getCauseIds());
+			Set<SocialCause> causes = socialCauseService.findByIdIn(
+					request.getCauses().stream().map(c -> c.getId())
+					.collect(Collectors.toSet())
+			);
 
 			if (causes.size() < 1)
 				throw new IllegalArgumentException("At least one cause required");
@@ -100,7 +103,7 @@ public class NgoServiceImpl implements NgoService {
     				).collect(Collectors.toSet()))
 	    		.build();
 
-			return new NgoSlimResponseDto(repository.save(ngo));
+			return repository.save(ngo);
 		} catch (DataIntegrityViolationException e) {
 			throw new DatabaseException(e.getMessage());
 		}
