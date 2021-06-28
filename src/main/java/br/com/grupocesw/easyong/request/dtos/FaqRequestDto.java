@@ -6,9 +6,11 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import lombok.Data;
+import lombok.*;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class FaqRequestDto implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

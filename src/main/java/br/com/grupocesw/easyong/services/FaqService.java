@@ -1,28 +1,27 @@
 package br.com.grupocesw.easyong.services;
 
-import java.util.List;
 
+import br.com.grupocesw.easyong.entities.Faq;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import br.com.grupocesw.easyong.request.dtos.FaqRequestDto;
-import br.com.grupocesw.easyong.response.dtos.FaqResponseDto;
+import java.util.List;
 
 @Service
 public interface FaqService {
 
-	FaqResponseDto create(FaqRequestDto request);
+	Faq create(Faq faq);
 
-	FaqResponseDto retrieve(Long id);
+	Faq retrieve(Long id);
 
-	FaqResponseDto update(Long id, FaqRequestDto request);
+	Faq update(Long id, Faq faq);
 
 	void delete(Long id);
-	
-	List<FaqResponseDto> findAll();
 
-	Page<FaqResponseDto> findAll(Pageable pageable);
+	List<Faq> findAll();
 
-	Page<FaqResponseDto> findByQuestionAndAnswer(String filter, Pageable pageable);
+	Page<Faq> findAll(Pageable pageable);
+
+	Page<Faq> findByQuestionAndAnswer(String filter, Pageable pageable);
 }

@@ -4,6 +4,7 @@ import java.net.URI;
 
 import javax.validation.Valid;
 
+import br.com.grupocesw.easyong.mappers.SocialCauseMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -33,39 +34,46 @@ import lombok.AllArgsConstructor;
 public class SocialCauseController {
 
 	private final SocialCauseService service;
-	
+
 	@GetMapping
 	public Page<SocialCauseResponseDto> list(@RequestParam(required = false) String filter, Pageable pageable) {
 		if (filter == null)
-			return service.findAll(pageable);
+			return SocialCauseMapper.INSTANCE.listToResponseDto(service.findAll(pageable));
 		else
-			return service.findByName(filter, pageable);
+			return SocialCauseMapper.INSTANCE.listToResponseDto(service.findByName(filter, pageable));
 	}
-	
+
 	@PostMapping
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<SocialCauseResponseDto> create(@RequestBody @Valid SocialCauseRequestDto request) {
-		
-		SocialCauseResponseDto socialCauseDTO = service.create(request);
-		
+		SocialCauseResponseDto dto = SocialCauseMapper.INSTANCE.entityToResponseDto(
+				service.create(SocialCauseMapper.INSTANCE.requestDtoToEntity(request))
+		);
+
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-				.buildAndExpand(socialCauseDTO.getId()).toUri();
-		
-		return ResponseEntity.created(uri).body(socialCauseDTO);
+				.buildAndExpand(dto.getId()).toUri();
+
+		return ResponseEntity.created(uri).body(dto);
 	}
-	
+
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<SocialCauseResponseDto> retrieve(@PathVariable Long id) {
-		return ResponseEntity.ok(service.retrieve(id));
+		return ResponseEntity.ok(
+				SocialCauseMapper.INSTANCE.entityToResponseDto(service.retrieve(id))
+		);
 	}
-	
+
 	@PutMapping(value = "/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<SocialCauseResponseDto> update(@PathVariable Long id, @RequestBody @Valid SocialCauseRequestDto request) {
-		SocialCauseResponseDto socialCauseDto = service.update(id, request);
-		return ResponseEntity.ok().body(socialCauseDto);
+
+		return ResponseEntity.ok(
+				SocialCauseMapper.INSTANCE.entityToResponseDto(
+						service.update(id, SocialCauseMapper.INSTANCE.requestDtoToEntity(request))
+				)
+		);
 	}
-	
+
 	@DeleteMapping(value = "/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
@@ -78,5 +86,5 @@ public class SocialCauseController {
 			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(new ApiResponseDto(false, e.getMessage()));
 		}
 	}
-	 
+
 }

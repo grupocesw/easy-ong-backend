@@ -7,17 +7,19 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import br.com.grupocesw.easyong.entities.validators.FaqValidator;
 import lombok.*;
+
+import java.io.Serializable;
 
 @Entity
 @Table(name = "faqs")
+@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Builder
 @ToString
-public class Faq {
+public class Faq implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,11 +31,4 @@ public class Faq {
 	@Column(name = "answer", nullable = false)
 	private String answer;
 
-	public Faq(Long id, String question, String answer) {
-		FaqValidator.validate(id, question, answer);
-
-		this.id = id;
-		this.question = question;
-		this.answer = answer;
-	}
 }

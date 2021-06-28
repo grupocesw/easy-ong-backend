@@ -5,9 +5,11 @@ import java.io.Serializable;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-import lombok.Data;
+import lombok.*;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class SocialCauseRequestDto implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

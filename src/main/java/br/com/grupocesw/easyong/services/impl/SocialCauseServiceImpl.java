@@ -17,8 +17,6 @@ import org.springframework.stereotype.Service;
 
 import br.com.grupocesw.easyong.entities.SocialCause;
 import br.com.grupocesw.easyong.repositories.SocialCauseRepository;
-import br.com.grupocesw.easyong.request.dtos.SocialCauseRequestDto;
-import br.com.grupocesw.easyong.response.dtos.SocialCauseResponseDto;
 import br.com.grupocesw.easyong.services.SocialCauseService;
 import br.com.grupocesw.easyong.services.exceptions.DatabaseException;
 import br.com.grupocesw.easyong.services.exceptions.ResourceNotFoundException;
@@ -31,44 +29,40 @@ import org.springframework.transaction.annotation.Transactional;
 public class SocialCauseServiceImpl implements SocialCauseService {
 
 	private SocialCauseRepository repository;
-	
+
 	@Override
 	@CacheEvict(value = "socialCauses", allEntries = true)
-	public SocialCauseResponseDto create(SocialCauseRequestDto request) {		
+	public SocialCause create(SocialCause socialCause) {
 		try {
-			SocialCause cause = SocialCause.builder()
-				.name(request.getName())
-				.build();
-			
-			return new SocialCauseResponseDto(repository.save(cause));
+			return repository.save(socialCause);
 		} catch (DataIntegrityViolationException e) {
 			throw new DatabaseException(e.getMessage());
 		}
 	}
-	
+
 	@Override
 	@Cacheable(value = "socialCauses", key = "#id")
-	public SocialCauseResponseDto retrieve(Long id) {
+	public SocialCause retrieve(Long id) {
 		Optional<SocialCause> optional = repository.findById(id);
 		optional.orElseThrow(() -> new ResourceNotFoundException(id));
 
-		return new SocialCauseResponseDto(optional.get());
+		return optional.get();
 	}
 
 	@Override
 	@CacheEvict(value = "socialCauses", allEntries = true)
-	public SocialCauseResponseDto update(Long id, SocialCauseRequestDto request) {
+	public SocialCause update(Long id, SocialCause request) {
 		try {
 			Optional<SocialCause> optional = repository.findById(id);
 			optional.orElseThrow(() -> new ResourceNotFoundException(id));
-			
-			SocialCause cause = optional.get();			
+
+			SocialCause cause = optional.get();
 			cause.setName(request.getName());
 
-			return new SocialCauseResponseDto(repository.save(cause));
+			return repository.save(cause);
 		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException(id);
-		}		
+		}
 	}
 
 	@Override
@@ -82,28 +76,21 @@ public class SocialCauseServiceImpl implements SocialCauseService {
 			throw new DatabaseException(e.getMessage());
 		}
 	}
-	
+
 	@Override
-	public List<SocialCauseResponseDto> findAll() {		
-		List<SocialCauseResponseDto> result = repository.findAll()
-				.stream()
-				.map(obj -> new SocialCauseResponseDto(obj))
-				.collect(Collectors.toList());
-		
-		return result;
+	public List<SocialCause> findAll() {
+		return repository.findAll();
 	}
 
 	@Override
 	@Cacheable(value = "socialCauses", key = "#pageable.pageSize")
-	public Page<SocialCauseResponseDto> findAll(Pageable pageable) {		
-		Page<SocialCause> result = repository.findAll(pageable);
-		return result.map(obj -> new SocialCauseResponseDto(obj));
+	public Page<SocialCause> findAll(Pageable pageable) {
+		return repository.findAll(pageable);
 	}
-	
+
 	@Override
-	public Page<SocialCauseResponseDto> findByName(String name, Pageable pageable) {
-		Page<SocialCause> result = repository.findByNameContainingIgnoreCase(name, pageable);
-		return result.map(obj -> new SocialCauseResponseDto(obj));		
+	public Page<SocialCause> findByName(String name, Pageable pageable) {
+		return repository.findByNameContainingIgnoreCase(name, pageable);
 	}
 
 	@Override
@@ -115,5 +102,4 @@ public class SocialCauseServiceImpl implements SocialCauseService {
 	public Set<SocialCause> findByIdIn(Set<Long> ids) {
 		return repository.findByIdIn(ids);
 	}
-
 }

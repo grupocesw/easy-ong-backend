@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import br.com.grupocesw.easyong.mappers.SocialCauseMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import br.com.grupocesw.easyong.entities.Ngo;
@@ -46,8 +47,10 @@ public class NgoResponseDto implements Serializable {
 		}
 
 		causes = ngo.getCauses().stream()
-				.map(obj -> new SocialCauseResponseDto(obj))
+				.map(obj -> SocialCauseMapper.INSTANCE.entityToResponseDto(obj))
 				.collect(Collectors.toSet());
+
+//		causes = SocialCauseMapper.INSTANCE.listToResponseDtoSet(ngo.getCauses());
 		
 		contacts = ngo.getContacts().stream()
 				.map(obj -> new ContactResponseDto(obj))

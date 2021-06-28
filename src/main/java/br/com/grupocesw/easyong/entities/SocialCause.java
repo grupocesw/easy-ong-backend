@@ -1,5 +1,6 @@
 package br.com.grupocesw.easyong.entities;
 
+import java.io.Serializable;
 import java.util.Set;
 import javax.persistence.*;
 
@@ -16,7 +17,7 @@ import lombok.*;
 @Builder
 @EqualsAndHashCode(exclude = "users")
 @ToString
-public class SocialCause {
+public class SocialCause implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

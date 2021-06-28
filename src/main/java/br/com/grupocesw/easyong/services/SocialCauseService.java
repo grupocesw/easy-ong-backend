@@ -9,26 +9,24 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.com.grupocesw.easyong.entities.SocialCause;
-import br.com.grupocesw.easyong.request.dtos.SocialCauseRequestDto;
-import br.com.grupocesw.easyong.response.dtos.SocialCauseResponseDto;
 
 @Service
 public interface SocialCauseService {
 
-	SocialCauseResponseDto create(SocialCauseRequestDto request);
+	SocialCause create(SocialCause request);
 
-	SocialCauseResponseDto retrieve(Long id);
+	SocialCause retrieve(Long id);
 
-	SocialCauseResponseDto update(Long id, SocialCauseRequestDto request);
+	SocialCause update(Long id, SocialCause request);
 
 	void delete(Long id);
-	
-	List<SocialCauseResponseDto> findAll();
-	
-	Page<SocialCauseResponseDto> findAll(Pageable pageable);
-	
-	Page<SocialCauseResponseDto> findByName(String name, Pageable pageable);
-	
+
+	List<SocialCause> findAll();
+
+	Page<SocialCause> findAll(Pageable pageable);
+
+	Page<SocialCause> findByName(String name, Pageable pageable);
+
 	Optional<SocialCause> findById(Long Id);
 
 	Set<SocialCause> findByIdIn(Set<Long> ids);
