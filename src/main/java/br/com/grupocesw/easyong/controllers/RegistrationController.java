@@ -3,6 +3,7 @@ package br.com.grupocesw.easyong.controllers;
 import javax.persistence.NonUniqueResultException;
 import javax.validation.Valid;
 
+import br.com.grupocesw.easyong.mappers.UserMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,7 +29,9 @@ public class RegistrationController {
 	@PostMapping
 	public ResponseEntity<?> register(@RequestBody @Valid UserCreateRequestDto request) {
 		try {	        
-	        registrationService.register(request);
+	        registrationService.register(
+					UserMapper.INSTANCE.requestDtoToEntity(request)
+			);
 	        
 			return ResponseEntity.status(201).body(
 					new ApiResponseDto(true, "Registered User. Please confirm your email"));

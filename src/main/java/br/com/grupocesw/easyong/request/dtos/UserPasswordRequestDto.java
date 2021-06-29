@@ -22,7 +22,7 @@ public class UserPasswordRequestDto implements Serializable {
 	private String password;
 	
     public User build() {
-		return  User.builder()
+		return User.builder()
 			.password(password)
 			.build();
     }

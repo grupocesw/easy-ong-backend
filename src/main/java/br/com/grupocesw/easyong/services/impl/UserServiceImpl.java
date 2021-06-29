@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
+import br.com.grupocesw.easyong.entities.Picture;
 import br.com.grupocesw.easyong.entities.SocialCause;
 import br.com.grupocesw.easyong.request.dtos.LoginRequestDto;
 import br.com.grupocesw.easyong.response.dtos.JwtAuthenticationResponseDto;
@@ -30,11 +31,7 @@ import org.springframework.stereotype.Service;
 import br.com.grupocesw.easyong.entities.Ngo;
 import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.repositories.UserRepository;
-import br.com.grupocesw.easyong.request.dtos.UserCreateRequestDto;
 import br.com.grupocesw.easyong.request.dtos.UserPasswordRequestDto;
-import br.com.grupocesw.easyong.request.dtos.UserUpdateRequestDto;
-import br.com.grupocesw.easyong.response.dtos.NgoSlimResponseDto;
-import br.com.grupocesw.easyong.response.dtos.UserResponseDto;
 import br.com.grupocesw.easyong.services.exceptions.DatabaseException;
 import br.com.grupocesw.easyong.services.exceptions.ResourceNotFoundException;
 import br.com.grupocesw.easyong.services.exceptions.UnauthenticatedUserException;
@@ -58,7 +55,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	private final JwtTokenService jwtTokenService;
 
 	@Override
-	public UserResponseDto create(UserCreateRequestDto request) {
+	public User create(User request) {
 		try {
 			boolean userExists = repository.existsByUsernameIgnoreCase(request.getUsername());
 			
@@ -69,71 +66,101 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 					String.format("Username %s already exists", request.getUsername()));
 			}
 
-			User user = request.build();
-
-			if (request.getCauseIds() != null && request.getCauseIds().size() > 0) {
-				Set<SocialCause> causes = socialCauseService.findByIdIn(request.getCauseIds());
+			if (request.getCauses() != null && request.getCauses().size() > 0) {
+				Set<SocialCause> causes = socialCauseService.findByIdIn(
+						request.getCauses().stream().map(c -> c.getId())
+								.collect(Collectors.toSet())
+				);
 
 				if (causes.isEmpty())
 					throw new IllegalArgumentException("Social causes not found");
 
-				user.setCauses(causes);
+				request.setCauses(causes);
 			}
 
-			user.setUsername(user.getUsername().trim().toLowerCase());
-			user.setPassword(passwordEncoder.encode(user.getPassword().trim()));
-			user.setRoles(roleService.getDefaultRoles());
-			
-			// TODO remove after implements service e-mail in prod
-			user.setEnabled(true);
-			
-			return new UserResponseDto(repository.save(user));
+			User user = User.builder()
+				.username(request.getUsername().trim().toLowerCase())
+				.password(passwordEncoder.encode(request.getPassword().trim()))
+				.person(request.getPerson())
+				.enabled(true) // TODO remove after implements service e-mail in prod
+				.roles(roleService.getDefaultRoles())
+				.causes(request.getCauses())
+				.build();
+
+			User userSaved = repository.save(user);
+
+			if (userSaved.getPicture() == null) {
+				userSaved.setPicture(Picture.builder().build());
+			}
+
+			return userSaved;
 		} catch (DataIntegrityViolationException e) {
 			throw new DatabaseException(e.getMessage());
 		}
 	}
 
 	@Override
-	public UserResponseDto retrieve(Long id) {
-		Optional<User> optional = repository.findById(id);
-		return new UserResponseDto(
-				optional.orElseThrow(() -> new ResourceNotFoundException(id)));
+	public User retrieve(Long id) {
+		Optional<User> userOptional = repository.findById(id);
+		userOptional.orElseThrow(() -> new ResourceNotFoundException(id));
+
+		if (userOptional.get().getPicture() == null) {
+			userOptional.get().setPicture(Picture.builder().build());
+		}
+
+		return userOptional.get();
 	}
 
 	@Override
-	public UserResponseDto update(Long id, UserUpdateRequestDto request) {
+	public User update(Long id, User request) {
 		try {
 			User user = findById(id);
-			user.getPerson().setName(request.getName());
-			user.getPerson().setBirthday(request.getBirthday());
-			user.getPerson().setGender(request.getGender());
+			user.getPerson().setName(request.getPerson().getName());
+			user.getPerson().setBirthday(request.getPerson().getBirthday());
+			user.getPerson().setGender(request.getPerson().getGender());
 
-			if (request.getCauseIds() != null && request.getCauseIds().size() > 0) {
+			if (request.getCauses() != null && request.getCauses().size() > 0) {
+				Set<SocialCause> causes = socialCauseService.findByIdIn(
+						request.getCauses().stream().map(c -> c.getId())
+								.collect(Collectors.toSet())
+				);
+
+				if (causes.isEmpty())
+					throw new IllegalArgumentException("Social causes not found");
+
 				user.getCauses().clear();
-				user.getCauses().addAll(socialCauseService.findByIdIn(request.getCauseIds()));
+				user.getCauses().addAll(causes);
 			}
 
-			return new UserResponseDto(repository.save(user));
+			return repository.save(user);
 		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException(id);
 		}
 	}
 	
 	@Override
-	public UserResponseDto updateMe(UserUpdateRequestDto request) {
+	public User updateMe(User request) {
 		try {
 			User user = getAuthUser();
-			
-			user.getPerson().setName(request.getName());
-			user.getPerson().setBirthday(request.getBirthday());
-			user.getPerson().setGender(request.getGender());
 
-			if (request.getCauseIds() != null && request.getCauseIds().size() > 0) {
+			user.getPerson().setName(request.getPerson().getName());
+			user.getPerson().setBirthday(request.getPerson().getBirthday());
+			user.getPerson().setGender(request.getPerson().getGender());
+
+			if (request.getCauses() != null && request.getCauses().size() > 0) {
+				Set<SocialCause> causes = socialCauseService.findByIdIn(
+						request.getCauses().stream().map(c -> c.getId())
+								.collect(Collectors.toSet())
+				);
+
+				if (causes.isEmpty())
+					throw new IllegalArgumentException("Social causes not found");
+
 				user.getCauses().clear();
-				user.getCauses().addAll(socialCauseService.findByIdIn(request.getCauseIds()));
+				user.getCauses().addAll(causes);
 			}
 
-			return new UserResponseDto(repository.save(user));
+			return repository.save(user);
 		} catch (EntityNotFoundException e) {
 			throw new UserNotExistException();
 		}
@@ -151,21 +178,33 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	}
 
 	@Override
-	public List<UserResponseDto> findAll() {
+	public List<User> findAll() {
 		return repository.findAll().stream()
-				.map(user -> new UserResponseDto(user))
+				.map(user -> {
+					if (user.getPicture() == null) {
+						user.setPicture(Picture.builder().build());
+					}
+
+					return user;
+				})
 				.collect(Collectors.toList());
 	}
 
 	@Override
-	public Page<UserResponseDto> findCheckedAll(Pageable pageable) {
+	public Page<User> findCheckedAll(Pageable pageable) {
 		return repository.findAll(pageable)
-				.map(user -> new UserResponseDto(user));
+				.map(user -> {
+					if (user.getPicture() == null) {
+						user.setPicture(Picture.builder().build());
+					}
+
+					return user;
+				});
 	}
 	
 	@Override
-	public UserResponseDto getMe() {
-		return new UserResponseDto(getAuthUser());
+	public User getMe() {
+		return getAuthUser();
 	}
 
 	public User getAuthUser() {
@@ -174,11 +213,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		
 		User authenticatedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		User user = findByUsername(authenticatedUser.getUsername()).get();
-		
+
 		if (!user.isEnabled()) 
 			throw new UnauthenticatedUserException();
+
+		User userFound = findByUsername(authenticatedUser.getUsername()).get();
+
+		if (userFound.getPicture() == null) {
+			userFound.setPicture(Picture.builder().build());
+		}
 		
-		return findByUsername(authenticatedUser.getUsername()).get(); 
+		return userFound;
 	}
 	
 	public User findById(Long id) {
@@ -263,9 +308,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	
 	@Override
     public UserDetails loadUserByUsername(String username) {
-        return findByUsername(username)
-    		.map(user -> user)
-    		.orElse(new User());
+        return findByUsername(username).orElse(new User());
     }
 
 	@Override
@@ -274,13 +317,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	}
 
 	@Override
-	public Page<NgoSlimResponseDto> getFavoriteNgos(Pageable pageable) {
+	public Page<Ngo> getFavoriteNgos(Pageable pageable) {
         int pageSize = pageable.getPageSize();
         int currentPage = pageable.getPageNumber();
         int startItem = currentPage * pageSize;
         
-		List<NgoSlimResponseDto> ngos = getAuthUser().getFavoriteNgos().stream()
-				.map(ngo -> new NgoSlimResponseDto(ngo))
+		List<Ngo> ngos = getAuthUser().getFavoriteNgos()
+				.stream()
 				.collect(Collectors.toList());
 
         if (ngos.size() < startItem) {
@@ -290,7 +333,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             ngos = ngos.subList(startItem, toIndex);
         }
 		
-		Page<NgoSlimResponseDto> page = new PageImpl<>(
+		Page<Ngo> page = new PageImpl<>(
 				ngos, 
 				PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()), 
 				ngos.size()

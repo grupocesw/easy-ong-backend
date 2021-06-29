@@ -3,6 +3,7 @@ package br.com.grupocesw.easyong.services;
 import java.util.List;
 import java.util.Optional;
 
+import br.com.grupocesw.easyong.entities.Ngo;
 import br.com.grupocesw.easyong.request.dtos.LoginRequestDto;
 import br.com.grupocesw.easyong.response.dtos.JwtAuthenticationResponseDto;
 import org.springframework.data.domain.Page;
@@ -10,32 +11,28 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.com.grupocesw.easyong.entities.User;
-import br.com.grupocesw.easyong.request.dtos.UserCreateRequestDto;
 import br.com.grupocesw.easyong.request.dtos.UserPasswordRequestDto;
-import br.com.grupocesw.easyong.request.dtos.UserUpdateRequestDto;
-import br.com.grupocesw.easyong.response.dtos.NgoSlimResponseDto;
-import br.com.grupocesw.easyong.response.dtos.UserResponseDto;
 
 @Service
 public interface UserService {
 
-	UserResponseDto create(UserCreateRequestDto request);
+	User create(User request);
 	
-	UserResponseDto retrieve(Long id);
+	User retrieve(Long id);
 
-	UserResponseDto update(Long id, UserUpdateRequestDto request);
-	
-	UserResponseDto updateMe(UserUpdateRequestDto request);
+	User update(Long id, User request);
+
+	User updateMe(User request);
 	
 	void delete(Long id);
 	
-	List<UserResponseDto> findAll();
+	List<User> findAll();
 	
-	Page<UserResponseDto> findCheckedAll(Pageable pageable);
-	
+	Page<User> findCheckedAll(Pageable pageable);
+
 	void favorite(Long ngoId);
 	
-	UserResponseDto getMe();
+	User getMe();
 
 	JwtAuthenticationResponseDto login(LoginRequestDto requestDto);
     
@@ -47,5 +44,5 @@ public interface UserService {
 
 	void enableUser(User user);
 
-	Page<NgoSlimResponseDto> getFavoriteNgos(Pageable pageable);
+	Page<Ngo> getFavoriteNgos(Pageable pageable);
 }

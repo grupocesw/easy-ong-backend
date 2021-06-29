@@ -52,10 +52,6 @@ public class Picture implements Serializable {
 	@ManyToMany(mappedBy = "pictures")
 	private Set<Ngo> ngos;
 	
-//	public Picture (String url) {
-//		this.url = url;
-//	}
-	
 	public String getUrl() {
 		if (!PictureUtil.isURL(url)) {
 			String pictureName = (url == null) ? noImage : url;			

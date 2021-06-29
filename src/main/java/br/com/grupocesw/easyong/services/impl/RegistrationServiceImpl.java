@@ -10,8 +10,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.grupocesw.easyong.entities.ConfirmationToken;
 import br.com.grupocesw.easyong.entities.User;
-import br.com.grupocesw.easyong.request.dtos.UserCreateRequestDto;
-import br.com.grupocesw.easyong.response.dtos.UserResponseDto;
 import br.com.grupocesw.easyong.services.ConfirmationTokenService;
 import br.com.grupocesw.easyong.services.EmailSenderService;
 import br.com.grupocesw.easyong.services.RegistrationService;
@@ -31,7 +29,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     private final EmailSenderService mailSenderService;
     
 	@Override
-	public Boolean register(UserCreateRequestDto request) {
+	public Boolean register(User request) {
 		log.info("Registering user {}", request.getUsername());
 		
 		boolean userExists = userService.existsByUsername(request.getUsername());
@@ -43,20 +41,20 @@ public class RegistrationServiceImpl implements RegistrationService {
 				String.format("Username %s already exists", request.getUsername()));
 		}
 
-		UserResponseDto userDtoRegisted = userService.create(request);		
+		User userRegisted = userService.create(request);
 		String token = getToken();
 
         ConfirmationToken confirmationToken = new ConfirmationToken(
             token,
             LocalDateTime.now(),
             LocalDateTime.now().plusMinutes(15),
-            User.builder().id(userDtoRegisted.getId()).build()
+            User.builder().id(userRegisted.getId()).build()
         );
 
         confirmationTokenService.saveConfirmationToken(confirmationToken);
         
 		try {
-			mailSenderService.sendUserRegister(userDtoRegisted, getLink(token));
+			mailSenderService.sendUserRegister(userRegisted, getLink(token));
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 		}
@@ -130,19 +128,19 @@ public class RegistrationServiceImpl implements RegistrationService {
             throw new IllegalStateException("Token expired.");
         }
         
-        UserResponseDto userDto = new UserResponseDto(ct.getUser());
+        User user = ct.getUser();
 
         ConfirmationToken confirmationToken = new ConfirmationToken(
             token,
             LocalDateTime.now(),
             LocalDateTime.now().plusMinutes(15),
-            User.builder().id(userDto.getId()).build()
+            User.builder().id(user.getId()).build()
         );
 
         confirmationTokenService.saveConfirmationToken(confirmationToken);
         
 		try {
-			mailSenderService.sendUserRegister(userDto, getLink(token));
+			mailSenderService.sendUserRegister(user, getLink(token));
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 		}

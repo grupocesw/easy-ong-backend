@@ -4,6 +4,8 @@ import java.net.URI;
 
 import javax.validation.Valid;
 
+import br.com.grupocesw.easyong.mappers.FaqMapper;
+import br.com.grupocesw.easyong.mappers.UserMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -58,14 +60,19 @@ public class UserController {
 			@ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
 					+ "Default sort order is ascending. " + "Multiple sort criteria are supported.") })
 	public ResponseEntity<Page<UserResponseDto>> list(@ApiIgnore final Pageable pageable) {
-		return ResponseEntity.ok().body(service.findCheckedAll(pageable));
+		return ResponseEntity.ok(
+				UserMapper.INSTANCE.listToResponseDto(service.findCheckedAll(pageable))
+		);
 	}
 
 	@ResponseBody
 	@PostMapping
 	public ResponseEntity<?> create(@RequestBody @Valid UserCreateRequestDto request) {
 		try {
-			UserResponseDto userDto = service.create(request);
+			UserResponseDto userDto =
+					UserMapper.INSTANCE.entityToResponseDto(service.create(
+							UserMapper.INSTANCE.requestDtoToEntity(request)
+					));
 	
 			URI uri = ServletUriComponentsBuilder
 					.fromCurrentRequest()
@@ -80,9 +87,11 @@ public class UserController {
 	}
 
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<?> retrieve(@PathVariable Long id) {		
+	public ResponseEntity<?> retrieve(@PathVariable Long id) {
 		try {
-			return ResponseEntity.ok().body(service.retrieve(id));
+			return ResponseEntity.ok(
+					UserMapper.INSTANCE.entityToResponseDto(service.retrieve(id))
+			);
 		} catch (ResourceNotFoundException e) {
 			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
 		} catch (Exception e) {
@@ -93,7 +102,9 @@ public class UserController {
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid UserUpdateRequestDto request, Errors errors) {
 		try {
-			return ResponseEntity.ok().body(service.update(id, request));
+			return ResponseEntity.ok(UserMapper.INSTANCE.entityToResponseDto(
+					service.update(id, UserMapper.INSTANCE.requestDtoToEntity(request))
+			));
 		} catch (ResourceNotFoundException e) {
 			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
 		} catch (Exception e) {

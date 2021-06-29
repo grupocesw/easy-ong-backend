@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+import br.com.grupocesw.easyong.entities.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -12,7 +13,6 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import br.com.grupocesw.easyong.response.dtos.UserResponseDto;
 import br.com.grupocesw.easyong.services.EmailSenderService;
 import lombok.AllArgsConstructor;
 
@@ -26,15 +26,15 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     
 	@Override
 	@Async		
-	public void sendUserRegister(UserResponseDto userDto, String link) throws IOException {
+	public void sendUserRegister(User user, String link) throws IOException {
 		try {
 			MimeMessage message = mailSender.createMimeMessage();
 			MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 			
 			helper.setFrom("noreply@easyong.com.br");
-			helper.setTo(userDto.getUsername());
+			helper.setTo(user.getUsername());
 			helper.setSubject("Easy ONG - Confirmação de E-mail");			
-			helper.setText(buildEmail(userDto, link), true);
+			helper.setText(buildRegisterEmail(user, link), true);
 			
 			mailSender.send(message);
 		} catch (MessagingException e) {
@@ -43,7 +43,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
         }
 	}
 	
-    private String buildEmail(UserResponseDto userDto, String link) {
+    private String buildRegisterEmail(User user, String link) {
         return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +
             "\n" +
             "<span style=\"display:none;font-size:1px;color:#fff;max-height:0\"></span>\n" +
@@ -99,7 +99,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
             "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
             "      <td style=\"font-family:Helvetica,Arial,sans-serif;font-size:19px;line-height:1.315789474;max-width:560px\">\n" +
             "        \n" +
-            "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Olá " + userDto.getName() + ",</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> Obrigado por se cadastrar no Easy ONG. Por gentileza clique no link abaixo para ativar sua conta: </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #b1b4b6;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"" + link + "\">Ativar agora</a> </p></blockquote>\n Este link expirará em 15 minutos. <p>Vejo você em breve!</p>" +
+            "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Olá " + user.getPerson().getName() + ",</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> Obrigado por se cadastrar no Easy ONG. Por gentileza clique no link abaixo para ativar sua conta: </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #b1b4b6;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"" + link + "\">Ativar agora</a> </p></blockquote>\n Este link expirará em 15 minutos. <p>Vejo você em breve!</p>" +
             "        \n" +
             "      </td>\n" +
             "      <td width=\"10\" valign=\"middle\"><br></td>\n" +

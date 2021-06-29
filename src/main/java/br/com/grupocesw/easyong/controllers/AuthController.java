@@ -4,10 +4,11 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import br.com.grupocesw.easyong.mappers.NgoMapper;
+import br.com.grupocesw.easyong.mappers.UserMapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +22,6 @@ import br.com.grupocesw.easyong.request.dtos.LoginRequestDto;
 import br.com.grupocesw.easyong.request.dtos.UserPasswordRequestDto;
 import br.com.grupocesw.easyong.request.dtos.UserUpdateRequestDto;
 import br.com.grupocesw.easyong.response.dtos.ApiResponseDto;
-import br.com.grupocesw.easyong.response.dtos.JwtAuthenticationResponseDto;
 import br.com.grupocesw.easyong.services.UserService;
 import br.com.grupocesw.easyong.services.exceptions.ResourceNotFoundException;
 import br.com.grupocesw.easyong.services.exceptions.UnauthenticatedUserException;
@@ -52,7 +52,9 @@ public class AuthController {
 	@GetMapping(value = "/me")
 	public ResponseEntity<?> me() {		
 		try {
-			return ResponseEntity.ok(userService.getMe());
+			return ResponseEntity.ok(
+					UserMapper.INSTANCE.entityToResponseDto(userService.getMe())
+			);
 		} catch (UnauthenticatedUserException e) {
 			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
 		} catch (Exception e) {
@@ -61,9 +63,11 @@ public class AuthController {
 	}
 	
 	@PutMapping(value = "/me/update")
-	public ResponseEntity<?> updateProfile(@RequestBody @Valid UserUpdateRequestDto request, Errors errors) {
+	public ResponseEntity<?> updateProfile(@RequestBody @Valid UserUpdateRequestDto request) {
 		try {
-			return ResponseEntity.ok().body(userService.updateMe(request));
+			return ResponseEntity.ok(UserMapper.INSTANCE.entityToResponseDto(
+					userService.updateMe(UserMapper.INSTANCE.requestDtoToEntity(request))
+			));
 		} catch (UserNotExistException e) {
 			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
 		} catch (Exception e) {
@@ -72,7 +76,7 @@ public class AuthController {
 	}
 	
 	@PutMapping(value = "/change-password")
-	public ResponseEntity<?> changePassword(@RequestBody @Valid UserPasswordRequestDto request, Errors errors) {
+	public ResponseEntity<?> changePassword(@RequestBody @Valid UserPasswordRequestDto request) {
 		try {
 			userService.changePassword(request);
 			
@@ -104,7 +108,11 @@ public class AuthController {
 			int currentPage = page.orElse(1);
 	        int pageSize = size.orElse(5);
 	        
-			return ResponseEntity.ok(userService.getFavoriteNgos(PageRequest.of(currentPage - 1, pageSize)));
+			return ResponseEntity.ok(
+					NgoMapper.INSTANCE.listToSlimResponseDto(
+						userService.getFavoriteNgos(PageRequest.of(currentPage - 1, pageSize))
+					)
+			);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(new ApiResponseDto(false, e.getMessage()));
 		}

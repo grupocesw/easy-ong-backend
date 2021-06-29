@@ -57,23 +57,6 @@ public class User implements UserDetails {
 
 	private static final long serialVersionUID = 1L;
 
-	public User(User user) {
-		this.id = user.id;
-		this.username = user.username;
-		this.password = user.password;
-		this.setPerson(user.person);
-		this.causes = user.causes;
-		this.roles = user.roles;
-		this.createdAt = user.getCreatedAt();
-		this.updatedAt = user.getUpdatedAt();
-	}
-
-	public User(String username, String password, Person person) {
-		this.username = username;
-		this.password = password;
-		this.person = person;
-	}
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -134,7 +117,24 @@ public class User implements UserDetails {
 
 	@OneToMany(targetEntity = NgoSuggestion.class, mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	private Set<NgoSuggestion> NgoSuggestions;
+	private Set<NgoSuggestion> ngoSuggestions;
+
+	public User(User user) {
+		this.id = user.id;
+		this.username = user.username;
+		this.password = user.password;
+		this.setPerson(user.person);
+		this.causes = user.causes;
+		this.roles = user.roles;
+		this.createdAt = user.getCreatedAt();
+		this.updatedAt = user.getUpdatedAt();
+	}
+
+	public User(String username, String password, Person person) {
+		this.username = username;
+		this.password = password;
+		this.person = person;
+	}
 
 	@Override
 	public boolean isAccountNonExpired() {

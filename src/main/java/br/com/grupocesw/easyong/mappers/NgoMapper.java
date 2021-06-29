@@ -45,8 +45,8 @@ public interface NgoMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "activated", ignore = true)
-    @Mapping(target = "createAt", ignore = true)
-    @Mapping(target = "updateAt", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "users", ignore = true)
     @Mapping(target = "address", expression = "java(AddressMapper.INSTANCE.requestDtoToEntity(dto.getAddress()))")
     @Mapping(target = "causes", expression = "java(" +

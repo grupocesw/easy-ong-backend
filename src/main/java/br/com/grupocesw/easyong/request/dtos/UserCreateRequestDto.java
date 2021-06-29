@@ -8,26 +8,22 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.*;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import br.com.grupocesw.easyong.entities.Person;
 import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.enums.Gender;
-import br.com.grupocesw.easyong.services.RoleService;
-import lombok.Data;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class UserCreateRequestDto implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-	
-	private RoleService roleService;
 	
 	@Email(message = "Invalid email format")
 	@NotEmpty(message = "Username required")
@@ -48,19 +44,19 @@ public class UserCreateRequestDto implements Serializable {
     private Gender gender;
 
 	private Set<Long> causeIds;
-    
-    public User build() {
-    	Person person = Person.builder()
-			.name(name)
-			.birthday(birthday)
-			.gender(gender)
-			.build();
-		
-		return User.builder()
-			.username(username)
-			.password(password)
-			.person(person)
-			.build();
-    }
+//
+//    public User build() {
+//    	Person person = Person.builder()
+//			.name(name)
+//			.birthday(birthday)
+//			.gender(gender)
+//			.build();
+//
+//		return User.builder()
+//			.username(username)
+//			.password(password)
+//			.person(person)
+//			.build();
+//    }
 
 }

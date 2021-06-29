@@ -5,9 +5,11 @@ import java.time.LocalDate;
 import java.util.Set;
 
 import br.com.grupocesw.easyong.entities.Role;
-import br.com.grupocesw.easyong.entities.SocialCause;
 import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.enums.Gender;
+import br.com.grupocesw.easyong.mappers.PictureMapper;
+import br.com.grupocesw.easyong.mappers.RoleMapper;
+import br.com.grupocesw.easyong.mappers.SocialCauseMapper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,9 +26,9 @@ public class UserResponseDto implements Serializable {
 	private LocalDate birthday;
 	private Gender gender;
 	private String username;
-	private Set<SocialCause> causes;
-	private Set<Role> roles;
 	private PictureResponseDto picture;
+	private Set<SocialCauseResponseDto> causes;
+	private Set<RoleResponseDto> roles;
 
 	public UserResponseDto(User user) {
 		id = user.getId();
@@ -34,9 +36,9 @@ public class UserResponseDto implements Serializable {
 		birthday = user.getPerson().getBirthday();
 		gender = user.getPerson().getGender();
 		username = user.getUsername();
-		causes = user.getCauses();
-		roles = user.getRoles();
-		picture = new PictureResponseDto(user.getPicture());
+		picture = PictureMapper.INSTANCE.entityToResponseDto(user.getPicture());
+		causes = SocialCauseMapper.INSTANCE.listToResponseDtoSet(user.getCauses());
+		roles = RoleMapper.INSTANCE.listToResponseDtoSet(user.getRoles());
 	}
 	
 }
