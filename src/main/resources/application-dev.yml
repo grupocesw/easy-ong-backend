@@ -41,7 +41,11 @@ spring:
     port: 6379
 
   datasource:
-    url: ${DATABASE_URL:jdbc:postgres://postgres:postgres@192.168.10.10:5432/easyong}
+    url: jdbc:postgresql://192.168.10.10:5432/easyong
+    username: postgres
+    password: postgres
+    splatform: postgres
+    driver-class-name: org.postgresql.Driver
     initialization-mode: never
 #    data: classpath:/database/initial-data.sql, classpath:/database/ngos.sql, classpath:/database/users.sql, classpath:/database/update-sequence.sql
   

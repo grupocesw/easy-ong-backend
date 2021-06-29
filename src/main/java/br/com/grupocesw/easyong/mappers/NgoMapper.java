@@ -34,6 +34,7 @@ public interface NgoMapper {
         return entities.map(this::entityToSlimResponseDto);
     }
 
+    @Mapping(target = "picture", expression = "java(PictureMapper.INSTANCE.entityToResponseDto(entity.getPictures().stream().findFirst().orElse(null)))")
     NgoSlimResponseDto entityToSlimResponseDto(Ngo entity);
 
     @Mapping(target = "address", expression = "java(AddressMapper.INSTANCE.entityToResponseDto(entity.getAddress()))")
