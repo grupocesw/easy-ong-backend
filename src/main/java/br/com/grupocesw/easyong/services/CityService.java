@@ -8,25 +8,23 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.com.grupocesw.easyong.entities.City;
-import br.com.grupocesw.easyong.request.dtos.CityRequestDto;
-import br.com.grupocesw.easyong.response.dtos.CityResponseDto;
 
 @Service
 public interface CityService {
 
-	CityResponseDto create(CityRequestDto request);
+	City create(City request);
 
-	CityResponseDto retrieve(Long id);
+	City retrieve(Long id);
 
-	CityResponseDto update(Long id, CityRequestDto request);
+	City update(Long id, City request);
 
 	void delete(Long id);
 	
-	List<CityResponseDto> findAll();
+	List<City> findAll();
 	
-	Page<CityResponseDto> findAll(Pageable pageable);
+	Page<City> findAll(Pageable pageable);
 	
-	Page<CityResponseDto> findByName(String name, Pageable pageable);
+	Page<City> findByName(String name, Pageable pageable);
 	
 	Optional<City> findById(Long Id);
 }

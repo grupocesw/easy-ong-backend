@@ -41,9 +41,10 @@ public class NgoRequestDto implements Serializable {
 	private Set<NgoMoreInformationRequestDto> moreInformations;
 	
 	@NotNull(message = "At least one cause required")
+	@Size(min = 1, message = "At least one picture required")
 	private Set<Long> causeIds;
-	
-	@NotNull(message = "At least one picture required")
+
+	@Size(min = 1, message = "At least one picture required")
 	@JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
 	private Set<PictureRequestDto> pictures;
 

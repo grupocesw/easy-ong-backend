@@ -157,7 +157,7 @@ public class NgoServiceImpl implements NgoService {
 				}
 			}
 
-			if (request.getPictures() != null) {
+			if (request.getPictures() != null && request.getPictures().size() > 0) {
 				ngo.getPictures().clear();
 				ngo.getPictures().addAll(request.getPictures().stream()
     				.map(obj ->
@@ -167,7 +167,7 @@ public class NgoServiceImpl implements NgoService {
     				).collect(Collectors.toSet()));
 			}
 
-			if (request.getMoreInformations() != null) {
+			if (request.getMoreInformations() != null && request.getMoreInformations().size() > 0) {
 				ngo.getMoreInformations().clear();
 				ngo.getMoreInformations().addAll(
 						request.getMoreInformations().stream()

@@ -2,7 +2,6 @@ package br.com.grupocesw.easyong.services.impl;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -14,8 +13,6 @@ import org.springframework.stereotype.Service;
 
 import br.com.grupocesw.easyong.entities.City;
 import br.com.grupocesw.easyong.repositories.CityRepository;
-import br.com.grupocesw.easyong.request.dtos.CityRequestDto;
-import br.com.grupocesw.easyong.response.dtos.CityResponseDto;
 import br.com.grupocesw.easyong.services.CityService;
 import br.com.grupocesw.easyong.services.exceptions.DatabaseException;
 import br.com.grupocesw.easyong.services.exceptions.ResourceNotFoundException;
@@ -28,29 +25,29 @@ public class CityServiceImpl implements CityService {
 	private CityRepository repository;
 	
 	@Override
-	public CityResponseDto create(CityRequestDto request) {		
+	public City create(City request) {
 		try {
 			City city = City.builder()
 				.name(request.getName())
 				.state(request.getState())
 				.build();
 			
-			return new CityResponseDto(repository.save(city));
+			return repository.save(city);
 		} catch (DataIntegrityViolationException e) {
 			throw new DatabaseException(e.getMessage());
 		}
 	}
 	
 	@Override
-	public CityResponseDto retrieve(Long id) {
+	public City retrieve(Long id) {
 		Optional<City> optional = repository.findById(id);
 		optional.orElseThrow(() -> new ResourceNotFoundException(id));
 
-		return new CityResponseDto(optional.get());
+		return optional.get();
 	}
 
 	@Override
-	public CityResponseDto update(Long id, CityRequestDto request) {
+	public City update(Long id, City request) {
 		try {
 			Optional<City> optional = repository.findById(id);
 			optional.orElseThrow(() -> new ResourceNotFoundException(id));
@@ -59,7 +56,7 @@ public class CityServiceImpl implements CityService {
 			city.setName(request.getName());
 			city.setState(request.getState());
 
-			return new CityResponseDto(repository.save(city));
+			return repository.save(city);
 		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException(id);
 		}		
@@ -77,25 +74,18 @@ public class CityServiceImpl implements CityService {
 	}
 	
 	@Override
-	public List<CityResponseDto> findAll() {		
-		List<CityResponseDto> result = repository.findAll()
-				.stream()
-				.map(obj -> new CityResponseDto(obj))
-				.collect(Collectors.toList());
-		
-		return result;
+	public List<City> findAll() {
+		return repository.findAll();
 	}
 
 	@Override
-	public Page<CityResponseDto> findAll(Pageable pageable) {		
-		Page<City> result = repository.findAll(pageable);
-		return result.map(obj -> new CityResponseDto(obj));
+	public Page<City> findAll(Pageable pageable) {
+		return repository.findAll(pageable);
 	}
 	
 	@Override
-	public Page<CityResponseDto> findByName(String name, Pageable pageable) {
-		Page<City> result = repository.findByNameContainingIgnoreCase(name, pageable);
-		return result.map(obj -> new CityResponseDto(obj));		
+	public Page<City> findByName(String name, Pageable pageable) {
+		return repository.findByNameContainingIgnoreCase(name, pageable);
 	}
 
 	@Override

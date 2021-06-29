@@ -7,7 +7,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -20,8 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import br.com.grupocesw.easyong.entities.Picture;
 import br.com.grupocesw.easyong.repositories.PictureRepository;
-import br.com.grupocesw.easyong.request.dtos.PictureRequestDto;
-import br.com.grupocesw.easyong.response.dtos.PictureResponseDto;
 import br.com.grupocesw.easyong.services.PictureService;
 import br.com.grupocesw.easyong.services.exceptions.DatabaseException;
 import br.com.grupocesw.easyong.services.exceptions.ResourceNotFoundException;
@@ -37,36 +34,39 @@ public class PictureServiceImpl implements PictureService {
 	private PictureRepository repository;
 
 	@Override
-	public PictureResponseDto create(MultipartFile file) {		
+	public Picture create(MultipartFile file) {
 		try {
 			String fileName = StringUtils.cleanPath(file.getOriginalFilename());			
-			Picture picture = repository.save(new Picture(fileName));
+			Picture picture = repository.save(
+				Picture.builder()
+						.url(fileName)
+						.build()
+			);
 			
 			picture.setUrl(fileName);
 			
-			return new PictureResponseDto(picture);
+			return picture;
 		} catch (DataIntegrityViolationException e) {
 			throw new DatabaseException(e.getMessage());
 		}
 	}
 	
 	@Override
-	public PictureResponseDto retrieve(Long id) {
+	public Picture retrieve(Long id) {
 		try {			
-			Picture picture = findById(id);
-			return new PictureResponseDto(repository.save(picture));
+			return findById(id);
 		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException(id);
 		}		
 	}
 
 	@Override
-	public PictureResponseDto update(Long id, PictureRequestDto request) {
+	public Picture update(Long id, Picture request) {
 		try {			
 			Picture picture = findById(id);
 			picture.setUrl(request.getUrl());
 
-			return new PictureResponseDto(repository.save(picture));
+			return repository.save(picture);
 		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException(id);
 		}		
@@ -84,10 +84,8 @@ public class PictureServiceImpl implements PictureService {
 	}
 	
 	@Override
-	public List<PictureResponseDto> findAll() {
-		return repository.findAll().stream()
-			.map(obj -> new PictureResponseDto(obj))
-			.collect(Collectors.toList());
+	public List<Picture> findAll() {
+		return repository.findAll();
 	}
 	
 	public Picture findById(Long id) {
@@ -97,7 +95,7 @@ public class PictureServiceImpl implements PictureService {
 	}
 	
 	@Override
-    public void upload(PictureRequestDto request, MultipartFile file) {
+    public void upload(Picture request, MultipartFile file) {
 
         Path storageDirectory = Paths.get(storageDirectoryPath);
 
