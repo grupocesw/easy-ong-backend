@@ -47,14 +47,6 @@ import lombok.ToString;
 @EqualsAndHashCode(of = {"id", "cnpj"})
 @ToString
 public class Ngo implements Serializable {
-	
-	public Ngo(Ngo ngoDTO) {
-		id = ngoDTO.getId();
-		name = ngoDTO.getName();
-		cnpj = ngoDTO.getCnpj();
-		description = ngoDTO.getDescription();
-		activated = ngoDTO.getActivated();
-	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -112,4 +104,5 @@ public class Ngo implements Serializable {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@ManyToMany(mappedBy = "favoriteNgos", fetch = FetchType.EAGER, cascade=CascadeType.ALL)
 	private Set<User> users;
+
 }

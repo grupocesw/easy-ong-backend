@@ -11,7 +11,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,14 +45,14 @@ public class NgoController {
 			@ApiIgnore final Pageable pageable) {
 
 		if (filter != null)
-			return service.findByActivatedWithFilter(filter, pageable);
+			return NgoMapper.INSTANCE.listToSlimResponseDto(service.findByActivatedWithFilter(filter, pageable));
 		else
-			return service.findByActivated(pageable);
+			return NgoMapper.INSTANCE.listToSlimResponseDto(service.findByActivated(pageable));
 	}
 	
 	@GetMapping(value = "/suggested")
 	public Page<NgoSlimResponseDto> findSuggested(@PageableDefault(page = 0, size = 5) Pageable pageable) {
-		return service.findSuggested(pageable);
+		return NgoMapper.INSTANCE.listToSlimResponseDto(service.findSuggested(pageable));
 	}
 	
 	@PostMapping
@@ -75,14 +74,18 @@ public class NgoController {
 	
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<NgoResponseDto> retrieve(@PathVariable Long id) {
-		return ResponseEntity.ok(service.retrieve(id));
+		return ResponseEntity.ok(
+				NgoMapper.INSTANCE.entityToResponseDto(service.retrieve(id))
+		);
 	}
 	
 	@PutMapping(value = "/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid NgoRequestDto request, Errors errors) {		
+	public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid NgoRequestDto request) {
 		try {
-			return ResponseEntity.ok().body(service.update(id, request));
+			return ResponseEntity.ok(NgoMapper.INSTANCE.entityToResponseDto(
+					service.update(id, NgoMapper.INSTANCE.requestDtoToEntity(request))
+			));
 		} catch (ResourceNotFoundException e) {
 			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
 		} catch (Exception e) {
@@ -95,7 +98,7 @@ public class NgoController {
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 		try {
 			service.delete(id);
-			return ResponseEntity.ok().body(new ApiResponseDto(true, String.format("Deleted ngo. Id %d", id)));
+			return ResponseEntity.ok().body(new ApiResponseDto(true, String.format("Deleted NGO. Id %d", id)));
 		} catch (ResourceNotFoundException e) {
 			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
 		} catch (Exception e) {

@@ -2,9 +2,10 @@ package br.com.grupocesw.easyong.response.dtos;
 
 import java.io.Serializable;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import br.com.grupocesw.easyong.mappers.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import br.com.grupocesw.easyong.entities.Ngo;
@@ -12,6 +13,8 @@ import br.com.grupocesw.easyong.entities.User;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class NgoResponseDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -39,9 +42,9 @@ public class NgoResponseDto implements Serializable {
 		pictures = PictureMapper.INSTANCE.listToResponseDtoSet(ngo.getPictures());
 
 		if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser")) {
-			
+
 			User authenticatedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-			
+
 			if (ngo.getUsers() != null) {
 				for (User user: ngo.getUsers()) {
 					if (authenticatedUser.getUsername().equals(user.getUsername()))
