@@ -57,25 +57,25 @@ services:
         networks:
             - easyong-network
 
-    sso-id:
-        image: quay.io/keycloak/keycloak:13.0.1
-        container_name: keycloak-v13
-        ports:
-            - "8081:8080"
-        environment:
-            - KEYCLOAK_USER=admin
-            - KEYCLOAK_PASSWORD=admin
-        networks:
-            - easyong-network
+#    sso-id:
+#        image: quay.io/keycloak/keycloak:13.0.1
+#        container_name: keycloak-v13
+#        ports:
+#            - "8081:8080"
+#        environment:
+#            - KEYCLOAK_USER=admin
+#            - KEYCLOAK_PASSWORD=admin
+#        networks:
+#            - easyong-network
 
-    qa-server:
-        image: sonarqube:8-community
-        container_name: sonarqube-v8
-        ports:
-            - "9000:9000"
-            - "9002:9002"
-        networks:
-            - easyong-network
+#    qa-server:
+#        image: sonarqube:8-community
+#        container_name: sonarqube-v8
+#        ports:
+#            - "9000:9000"
+#            - "9002:9002"
+#        networks:
+#            - easyong-network
 
 networks:
     easyong-network:
