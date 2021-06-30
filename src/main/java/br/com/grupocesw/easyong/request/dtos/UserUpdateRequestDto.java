@@ -1,20 +1,16 @@
 package br.com.grupocesw.easyong.request.dtos;
 
-import java.io.Serializable;
-import java.time.LocalDate;
-import java.util.Set;
-
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import br.com.grupocesw.easyong.entities.Person;
-import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.enums.Gender;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -33,17 +29,5 @@ public class UserUpdateRequestDto implements Serializable {
     private Gender gender;
 
 	private Set<Long> causeIds;
-    
-    public User build() {
-    	Person person = Person.builder()
-			.name(name)
-			.birthday(birthday)
-			.gender(gender)
-			.build();
-
-		return User.builder()
-			.person(person)
-			.build();
-    }
 
 }

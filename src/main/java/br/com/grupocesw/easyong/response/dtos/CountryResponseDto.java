@@ -1,11 +1,10 @@
 package br.com.grupocesw.easyong.response.dtos;
 
-import java.io.Serializable;
-
-import br.com.grupocesw.easyong.entities.Country;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 @Data
 @AllArgsConstructor
@@ -18,9 +17,4 @@ public class CountryResponseDto implements Serializable {
 	private String name;
 	private String abbreviation;
 
-	public CountryResponseDto(Country country) {
-		id = country.getId();
-		name = country.getName();
-		abbreviation = country.getAbbreviation();
-	}
 }

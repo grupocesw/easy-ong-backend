@@ -4,19 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
@@ -35,6 +23,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @Entity
 @Table(name = "ngos")
@@ -64,6 +53,9 @@ public class Ngo implements Serializable {
 	@Builder.Default
 	@Column(name = "activated", nullable = false, columnDefinition="BOOLEAN DEFAULT true")
 	private Boolean activated = true;
+
+	@Transient
+	private boolean favorited;
 
 	@CreationTimestamp
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
@@ -105,4 +97,16 @@ public class Ngo implements Serializable {
 	@ManyToMany(mappedBy = "favoriteNgos", fetch = FetchType.EAGER, cascade=CascadeType.ALL)
 	private Set<User> users;
 
+	public boolean getFavorited() {
+		if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser") && this.getUsers() != null) {
+			User authenticatedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+			for (User user: this.getUsers()) {
+				if (authenticatedUser.getUsername().equals(user.getUsername()))
+					favorited = true;
+			}
+		}
+
+		return favorited;
+	}
 }

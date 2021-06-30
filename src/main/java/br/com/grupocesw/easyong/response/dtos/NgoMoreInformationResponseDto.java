@@ -17,8 +17,5 @@ public class NgoMoreInformationResponseDto implements Serializable {
 	private Long id;
 	private String information;
 
-	public NgoMoreInformationResponseDto(NgoMoreInformation moreInformation) {
-		id = moreInformation.getId();
-		information = moreInformation.getInformation();
-	}
+
 }

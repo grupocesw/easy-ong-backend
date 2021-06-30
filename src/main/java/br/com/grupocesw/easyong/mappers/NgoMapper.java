@@ -26,12 +26,13 @@ public interface NgoMapper {
                 .collect(Collectors.toSet());
     }
 
+    @Mapping(target = "favorited", expression = "java(entity.getFavorited())")
     default Page<NgoResponseDto> listToResponseDto(Page<Ngo> entities) {
         return entities.map(this::entityToResponseDto);
     }
 
     default Page<NgoSlimResponseDto> listToSlimResponseDto(Page<Ngo> entities) {
-        return entities.map(this::entityToSlimResponseDto);
+            return entities.map(this::entityToSlimResponseDto);
     }
 
     @Mapping(target = "picture", expression = "java(PictureMapper.INSTANCE.entityToResponseDto(entity.getPictures().stream().findFirst().orElse(null)))")

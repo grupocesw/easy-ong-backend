@@ -19,10 +19,4 @@ public class StateResponseDto implements Serializable {
 	private String abbreviation;
 	private String country;
 
-	public StateResponseDto(State state) {
-		id = state.getId();
-		name = state.getName();
-		abbreviation = state.getAbbreviation();
-		country = String.format("%s - %s", state.getCountry().getName(), state.getCountry().getAbbreviation());
-	}
 }
