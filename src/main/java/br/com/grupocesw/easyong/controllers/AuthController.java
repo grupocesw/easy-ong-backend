@@ -7,11 +7,11 @@ import br.com.grupocesw.easyong.request.dtos.UserPasswordRequestDto;
 import br.com.grupocesw.easyong.request.dtos.UserUpdateRequestDto;
 import br.com.grupocesw.easyong.response.dtos.ApiResponseDto;
 import br.com.grupocesw.easyong.services.UserService;
-import br.com.grupocesw.easyong.services.exceptions.ResourceNotFoundException;
-import br.com.grupocesw.easyong.services.exceptions.UnauthenticatedUserException;
-import br.com.grupocesw.easyong.services.exceptions.UserNotConfirmedException;
-import br.com.grupocesw.easyong.services.exceptions.UserNotExistException;
-import lombok.AllArgsConstructor;
+import br.com.grupocesw.easyong.exceptions.ResourceNotFoundException;
+import br.com.grupocesw.easyong.exceptions.UnauthenticatedUserException;
+import br.com.grupocesw.easyong.exceptions.UserNotConfirmedException;
+import br.com.grupocesw.easyong.exceptions.UserNotExistException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Optional;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping(value = "/api/auth")
 @RestController
 public class AuthController {

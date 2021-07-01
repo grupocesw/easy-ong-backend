@@ -11,5 +11,7 @@ public interface RoleService {
 	
 	Role findByName(String name);
 
+	void existsOrThrowsException(Long id);
+
 	Set<Role> getDefaultRoles();
 }

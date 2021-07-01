@@ -1,27 +1,23 @@
 package br.com.grupocesw.easyong.services.impl;
 
-import java.util.List;
-import java.util.Optional;
-
-import javax.persistence.EntityNotFoundException;
-
+import br.com.grupocesw.easyong.entities.Faq;
+import br.com.grupocesw.easyong.exceptions.BadRequestException;
+import br.com.grupocesw.easyong.exceptions.ResourceNotFoundException;
+import br.com.grupocesw.easyong.repositories.FaqRepository;
+import br.com.grupocesw.easyong.services.FaqService;
+import br.com.grupocesw.easyong.exceptions.DatabaseException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import br.com.grupocesw.easyong.entities.Faq;
-import br.com.grupocesw.easyong.repositories.FaqRepository;
-import br.com.grupocesw.easyong.services.FaqService;
-import br.com.grupocesw.easyong.services.exceptions.DatabaseException;
-import br.com.grupocesw.easyong.services.exceptions.ResourceNotFoundException;
-import lombok.AllArgsConstructor;
+import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class FaqServiceImpl implements FaqService {
 
 	private final FaqRepository repository;
@@ -44,40 +40,31 @@ public class FaqServiceImpl implements FaqService {
 	@Override
 	@Cacheable(value = "faqs", key = "#id")
 	public Faq retrieve(Long id) {
-		Optional<Faq> optional = repository.findById(id);
-		optional.orElseThrow(() -> new ResourceNotFoundException(id));
-
-		return optional.get();
+		return repository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 
 	@Override
 	@CacheEvict(value = "faqs", allEntries = true)
 	public Faq update(Long id, Faq request) {
-		try {
-			Optional<Faq> optional = repository.findById(id);
-			optional.orElseThrow(() -> new ResourceNotFoundException(id));
+		Faq faq = retrieve(id);
+		faq.setQuestion(request.getQuestion());
+		faq.setAnswer(request.getAnswer());
 
-			Faq faq = optional.get();
-
-			faq.setQuestion(request.getQuestion());
-			faq.setAnswer(request.getAnswer());
-
-			return repository.save(faq);
-		} catch (EntityNotFoundException e) {
-			throw new ResourceNotFoundException(id);
-		}
+		return repository.save(faq);
 	}
 
 	@Override
 	@CacheEvict(value = "faqs", allEntries = true)
 	public void delete(Long id) {
-		try {
-			repository.deleteById(id);
-		} catch (EmptyResultDataAccessException e) {
-			throw new ResourceNotFoundException(id);
-		} catch (DataIntegrityViolationException e) {
-			throw new DatabaseException(e.getMessage());
-		}
+		repository.delete(retrieve(id));
+	}
+
+
+	@Override
+	public void existsOrThrowsException(Long id) {
+		if (!repository.existsById(id))
+			throw new BadRequestException("Faq not found. Id " + id);
 	}
 
 	@Override

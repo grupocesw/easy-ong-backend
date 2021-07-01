@@ -1,26 +1,25 @@
 package br.com.grupocesw.easyong.services.impl;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
-
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import br.com.grupocesw.easyong.entities.ConfirmationToken;
 import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.services.ConfirmationTokenService;
 import br.com.grupocesw.easyong.services.EmailSenderService;
 import br.com.grupocesw.easyong.services.RegistrationService;
 import br.com.grupocesw.easyong.services.UserService;
-import br.com.grupocesw.easyong.services.exceptions.UsernameAlreadyConfirmedException;
-import br.com.grupocesw.easyong.services.exceptions.UsernameAlreadyExistsException;
-import lombok.AllArgsConstructor;
+import br.com.grupocesw.easyong.exceptions.UsernameAlreadyConfirmedException;
+import br.com.grupocesw.easyong.exceptions.UsernameAlreadyExistsException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class RegistrationServiceImpl implements RegistrationService {
 

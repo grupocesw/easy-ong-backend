@@ -1,28 +1,24 @@
 package br.com.grupocesw.easyong.services.impl;
 
-import java.util.List;
-import java.util.Optional;
-
-import javax.persistence.EntityNotFoundException;
-
+import br.com.grupocesw.easyong.entities.City;
+import br.com.grupocesw.easyong.exceptions.BadRequestException;
+import br.com.grupocesw.easyong.exceptions.ResourceNotFoundException;
+import br.com.grupocesw.easyong.repositories.CityRepository;
+import br.com.grupocesw.easyong.services.CityService;
+import br.com.grupocesw.easyong.exceptions.DatabaseException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import br.com.grupocesw.easyong.entities.City;
-import br.com.grupocesw.easyong.repositories.CityRepository;
-import br.com.grupocesw.easyong.services.CityService;
-import br.com.grupocesw.easyong.services.exceptions.DatabaseException;
-import br.com.grupocesw.easyong.services.exceptions.ResourceNotFoundException;
-import lombok.AllArgsConstructor;
+import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CityServiceImpl implements CityService {
 
-	private CityRepository repository;
+	private final CityRepository repository;
 	
 	@Override
 	public City create(City request) {
@@ -40,37 +36,22 @@ public class CityServiceImpl implements CityService {
 	
 	@Override
 	public City retrieve(Long id) {
-		Optional<City> optional = repository.findById(id);
-		optional.orElseThrow(() -> new ResourceNotFoundException(id));
-
-		return optional.get();
+		return repository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 
 	@Override
 	public City update(Long id, City request) {
-		try {
-			Optional<City> optional = repository.findById(id);
-			optional.orElseThrow(() -> new ResourceNotFoundException(id));
-			
-			City city = optional.get();			
-			city.setName(request.getName());
-			city.setState(request.getState());
+		City city = retrieve(id);
+		city.setName(request.getName());
+		city.setState(request.getState());
 
-			return repository.save(city);
-		} catch (EntityNotFoundException e) {
-			throw new ResourceNotFoundException(id);
-		}		
+		return repository.save(city);
 	}
 
 	@Override
 	public void delete(Long id) {
-		try {
-			repository.deleteById(id);
-		} catch (EmptyResultDataAccessException e) {
-			throw new ResourceNotFoundException(id);
-		} catch (DataIntegrityViolationException e) {
-			throw new DatabaseException(e.getMessage());
-		}
+		repository.delete(retrieve(id));
 	}
 	
 	@Override
@@ -89,8 +70,9 @@ public class CityServiceImpl implements CityService {
 	}
 
 	@Override
-	public Optional<City> findById(Long Id) {
-		return repository.findById(Id);
+	public void existsOrThrowsException(Long id) {
+		if (!repository.existsById(id))
+			throw new BadRequestException("City not found. Id " + id);
 	}
 
 }

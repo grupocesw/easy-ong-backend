@@ -1,5 +1,21 @@
 package br.com.grupocesw.easyong.services.impl;
 
+import br.com.grupocesw.easyong.entities.Picture;
+import br.com.grupocesw.easyong.exceptions.BadRequestException;
+import br.com.grupocesw.easyong.exceptions.ResourceNotFoundException;
+import br.com.grupocesw.easyong.repositories.PictureRepository;
+import br.com.grupocesw.easyong.services.PictureService;
+import br.com.grupocesw.easyong.exceptions.DatabaseException;
+import br.com.grupocesw.easyong.utils.PictureUtil;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.IOUtils;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -8,30 +24,13 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
 
-import javax.persistence.EntityNotFoundException;
-
-import org.apache.commons.io.IOUtils;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
-
-import br.com.grupocesw.easyong.entities.Picture;
-import br.com.grupocesw.easyong.repositories.PictureRepository;
-import br.com.grupocesw.easyong.services.PictureService;
-import br.com.grupocesw.easyong.services.exceptions.DatabaseException;
-import br.com.grupocesw.easyong.services.exceptions.ResourceNotFoundException;
-import br.com.grupocesw.easyong.utils.PictureUtil;
-import lombok.AllArgsConstructor;
-
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PictureServiceImpl implements PictureService {
 
 	public final String storageDirectoryPath = "storage/pictures/";
 	
-	private PictureRepository repository;
+	private final PictureRepository repository;
 
 	@Override
 	public Picture create(MultipartFile file) {
@@ -53,11 +52,8 @@ public class PictureServiceImpl implements PictureService {
 	
 	@Override
 	public Picture retrieve(Long id) {
-		try {			
-			return findById(id);
-		} catch (EntityNotFoundException e) {
-			throw new ResourceNotFoundException(id);
-		}		
+		return repository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 
 	@Override
@@ -81,6 +77,12 @@ public class PictureServiceImpl implements PictureService {
 		} catch (DataIntegrityViolationException e) {
 			throw new DatabaseException(e.getMessage());
 		}
+	}
+
+	@Override
+	public void existsOrThrowsException(Long id) {
+		if (!repository.existsById(id))
+			throw new BadRequestException("Picture not found. Id " + id);
 	}
 	
 	@Override

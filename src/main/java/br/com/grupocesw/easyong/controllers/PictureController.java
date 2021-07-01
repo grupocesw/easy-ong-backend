@@ -1,7 +1,8 @@
 package br.com.grupocesw.easyong.controllers;
 
+import br.com.grupocesw.easyong.services.PictureService;
 import br.com.grupocesw.easyong.services.impl.PictureServiceImpl;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,12 +11,12 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping(value = "/api/pictures")
 @RestController
 public class PictureController {
 
-	private final PictureServiceImpl service;
+	private final PictureService service;
 
 	@ResponseBody
 	@PostMapping(value = "upload", produces = { MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })

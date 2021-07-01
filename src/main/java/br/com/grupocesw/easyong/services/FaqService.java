@@ -19,6 +19,8 @@ public interface FaqService {
 
 	void delete(Long id);
 
+	void existsOrThrowsException(Long id);
+
 	List<Faq> findAll();
 
 	Page<Faq> findAll(Pageable pageable);

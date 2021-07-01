@@ -1,11 +1,6 @@
-package br.com.grupocesw.easyong.resources.exceptions;
+package br.com.grupocesw.easyong.handlers;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-
+import br.com.grupocesw.easyong.response.dtos.ApiErrorResponseDto;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +14,11 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import br.com.grupocesw.easyong.response.dtos.ApiErrorResponseDto;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @ControllerAdvice
 public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
@@ -30,56 +29,74 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 	  HttpHeaders headers, 
 	  HttpStatus status, 
 	  WebRequest request) {
+
 	    List<String> errors = new ArrayList<>();
+
 	    for (FieldError error : ex.getBindingResult().getFieldErrors()) {
 	        errors.add(error.getField() + ": " + error.getDefaultMessage());
 	    }
+
 	    for (ObjectError error : ex.getBindingResult().getGlobalErrors()) {
 	        errors.add(error.getObjectName() + ": " + error.getDefaultMessage());
 	    }
 	    
-	    ApiErrorResponseDto apiError = 
-	      new ApiErrorResponseDto(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors);
-	    return handleExceptionInternal(
-	      ex, apiError, headers, apiError.getStatus(), request);
+	    ApiErrorResponseDto apiError = ApiErrorResponseDto.builder()
+				.status(HttpStatus.BAD_REQUEST)
+				.message(ex.getLocalizedMessage())
+				.errors(errors)
+				.build();
+
+	    return handleExceptionInternal(ex, apiError, headers, apiError.getStatus(), request);
 	}
 	
 	@Override
 	protected ResponseEntity<Object> handleMissingServletRequestParameter(
 	  MissingServletRequestParameterException ex, HttpHeaders headers, 
 	  HttpStatus status, WebRequest request) {
+
 	    String error = ex.getParameterName() + " parameter is missing";
-	    
-	    ApiErrorResponseDto apiError = 
-	      new ApiErrorResponseDto(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), error);
-	    return new ResponseEntity<>(
-	      apiError, new HttpHeaders(), apiError.getStatus());
+
+		ApiErrorResponseDto apiError = ApiErrorResponseDto.builder()
+				.status(HttpStatus.BAD_REQUEST)
+				.message(ex.getLocalizedMessage())
+				.errors(Collections.singletonList(error))
+				.build();
+
+	    return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
 	}
 	
 	@ExceptionHandler({ ConstraintViolationException.class })
 	public ResponseEntity<Object> handleConstraintViolation(
 	  ConstraintViolationException ex, WebRequest request) {
+
 	    List<String> errors = new ArrayList<>();
+
 	    for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
 	        errors.add(violation.getRootBeanClass().getName() + " " + 
 	          violation.getPropertyPath() + ": " + violation.getMessage());
 	    }
 
-	    ApiErrorResponseDto apiError = 
-	      new ApiErrorResponseDto(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors);
-	    return new ResponseEntity<>(
-	      apiError, new HttpHeaders(), apiError.getStatus());
+		ApiErrorResponseDto apiError = ApiErrorResponseDto.builder()
+				.status(HttpStatus.BAD_REQUEST)
+				.message(ex.getLocalizedMessage())
+				.errors(errors)
+				.build();
+
+	    return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
 	}
 	
 	@ExceptionHandler({ MethodArgumentTypeMismatchException.class })
 	public ResponseEntity<Object> handleMethodArgumentTypeMismatch(
 	  MethodArgumentTypeMismatchException ex, WebRequest request) {
-	    String error = 
-	      ex.getName() + " should be of type " + ex.getRequiredType().getName();
 
-	    ApiErrorResponseDto apiError = 
-	      new ApiErrorResponseDto(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), error);
-	    return new ResponseEntity<>(
-	      apiError, new HttpHeaders(), apiError.getStatus());
+	    String error = ex.getName() + " should be of type " + ex.getRequiredType().getName();
+
+		ApiErrorResponseDto apiError = ApiErrorResponseDto.builder()
+				.status(HttpStatus.BAD_REQUEST)
+				.message(ex.getLocalizedMessage())
+				.errors(Collections.singletonList(error))
+				.build();
+
+	    return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
 	}
 }

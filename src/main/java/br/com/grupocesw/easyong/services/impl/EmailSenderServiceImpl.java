@@ -1,11 +1,8 @@
 package br.com.grupocesw.easyong.services.impl;
 
-import java.io.IOException;
-
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-
 import br.com.grupocesw.easyong.entities.User;
+import br.com.grupocesw.easyong.services.EmailSenderService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -13,14 +10,15 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import br.com.grupocesw.easyong.services.EmailSenderService;
-import lombok.AllArgsConstructor;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.io.IOException;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class EmailSenderServiceImpl implements EmailSenderService {
 	
-	private JavaMailSender mailSender;
+	private final JavaMailSender mailSender;
 	private final static Logger LOGGER = LoggerFactory
             .getLogger(EmailSenderServiceImpl.class);
     

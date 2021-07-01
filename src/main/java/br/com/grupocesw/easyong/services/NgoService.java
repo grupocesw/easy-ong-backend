@@ -15,10 +15,10 @@ public interface NgoService {
 	Ngo retrieve(Long id);
 
 	Ngo update(Long id, Ngo request) throws Exception;
-	
-	Ngo findById(Long id);
 
 	void delete(Long id);
+
+	void existsOrThrowsException(Long id);
 
 	Page<Ngo> findByActivated(Pageable pageable);
 

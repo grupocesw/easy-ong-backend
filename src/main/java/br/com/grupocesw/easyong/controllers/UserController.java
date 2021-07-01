@@ -6,10 +6,10 @@ import br.com.grupocesw.easyong.request.dtos.UserUpdateRequestDto;
 import br.com.grupocesw.easyong.response.dtos.ApiResponseDto;
 import br.com.grupocesw.easyong.response.dtos.UserResponseDto;
 import br.com.grupocesw.easyong.services.UserService;
-import br.com.grupocesw.easyong.services.exceptions.ResourceNotFoundException;
-import br.com.grupocesw.easyong.services.exceptions.UsernameAlreadyExistsException;
+import br.com.grupocesw.easyong.exceptions.ResourceNotFoundException;
+import br.com.grupocesw.easyong.exceptions.UsernameAlreadyExistsException;
 import io.swagger.annotations.*;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -23,10 +23,10 @@ import springfox.documentation.annotations.ApiIgnore;
 import javax.validation.Valid;
 import java.net.URI;
 
+@RequiredArgsConstructor
+@PreAuthorize("hasAuthority('ADMIN')")
 @RestController
 @RequestMapping(value = "/api/users")
-@AllArgsConstructor
-@PreAuthorize("hasAuthority('ADMIN')")
 public class UserController {
 
 	private final UserService service;
@@ -100,7 +100,7 @@ public class UserController {
 	public ResponseEntity<?> delete(@PathVariable Long id) {		
 		try {
 			service.delete(id);
-			return ResponseEntity.ok().body(new ApiResponseDto(true, String.format("Deleted user. Id %d", id)));
+			return ResponseEntity.ok(new ApiResponseDto(true, String.format("Deleted user. Id %d", id)));
 		} catch (ResourceNotFoundException e) {
 			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
 		} catch (Exception e) {

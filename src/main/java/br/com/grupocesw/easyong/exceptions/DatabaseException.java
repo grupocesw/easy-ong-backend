@@ -1,4 +1,4 @@
-package br.com.grupocesw.easyong.services.exceptions;
+package br.com.grupocesw.easyong.exceptions;
 
 public class DatabaseException extends RuntimeException {
 

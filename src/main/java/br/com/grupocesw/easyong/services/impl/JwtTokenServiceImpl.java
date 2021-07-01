@@ -1,15 +1,11 @@
 package br.com.grupocesw.easyong.services.impl;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import br.com.grupocesw.easyong.configs.JwtConfig;
+import br.com.grupocesw.easyong.entities.User;
+import br.com.grupocesw.easyong.services.JwtTokenService;
+import br.com.grupocesw.easyong.services.UserService;
+import io.jsonwebtoken.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,24 +15,21 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import br.com.grupocesw.easyong.configs.JwtConfig;
-import br.com.grupocesw.easyong.entities.User;
-import br.com.grupocesw.easyong.services.JwtTokenService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
-import io.jsonwebtoken.UnsupportedJwtException;
-import lombok.extern.slf4j.Slf4j;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Date;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class JwtTokenServiceImpl extends OncePerRequestFilter implements JwtTokenService {
 
-	@Autowired private JwtConfig jwtConfig;
-    @Autowired private UserServiceImpl userService;
+    @Autowired private JwtConfig jwtConfig;
+    @Autowired private UserService userService;
 
     @Override
     public String generateToken(Authentication authentication) {

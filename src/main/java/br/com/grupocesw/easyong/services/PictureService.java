@@ -21,6 +21,8 @@ public interface PictureService {
 
 	void delete(Long id);
 
+	void existsOrThrowsException(Long id);
+
 	List<Picture> findAll();
 	
     void upload(Picture request, MultipartFile file);

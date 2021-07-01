@@ -1,37 +1,27 @@
 package br.com.grupocesw.easyong.services.impl;
 
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityNotFoundException;
-
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
-import br.com.grupocesw.easyong.entities.Address;
-import br.com.grupocesw.easyong.entities.City;
-import br.com.grupocesw.easyong.entities.Contact;
-import br.com.grupocesw.easyong.entities.Ngo;
-import br.com.grupocesw.easyong.entities.NgoMoreInformation;
-import br.com.grupocesw.easyong.entities.Picture;
-import br.com.grupocesw.easyong.entities.SocialCause;
+import br.com.grupocesw.easyong.entities.*;
+import br.com.grupocesw.easyong.exceptions.BadRequestException;
+import br.com.grupocesw.easyong.exceptions.ResourceNotFoundException;
 import br.com.grupocesw.easyong.repositories.NgoRepository;
 import br.com.grupocesw.easyong.services.CityService;
 import br.com.grupocesw.easyong.services.NgoService;
 import br.com.grupocesw.easyong.services.SocialCauseService;
-import br.com.grupocesw.easyong.services.exceptions.BadRequestException;
-import br.com.grupocesw.easyong.services.exceptions.DatabaseException;
-import br.com.grupocesw.easyong.services.exceptions.ResourceNotFoundException;
-import lombok.AllArgsConstructor;
+import br.com.grupocesw.easyong.exceptions.DatabaseException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import javax.persistence.EntityNotFoundException;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class NgoServiceImpl implements NgoService {
 
 	private final NgoRepository repository;
@@ -42,13 +32,14 @@ public class NgoServiceImpl implements NgoService {
 	@CacheEvict(value = "ngos", allEntries = true)
 	public Ngo create(Ngo request) {
 		try {
-
-			Optional<City> optionalCity = cityService.findById(request.getAddress().getCity().getId());
-			optionalCity.orElseThrow(() -> new BadRequestException("City not exists"));
+			cityService.existsOrThrowsException(request.getAddress().getCity().getId());
+			City city = cityService.retrieve(request.getAddress().getCity().getId());
 
 			Set<SocialCause> causes = socialCauseService.findByIdIn(
-					request.getCauses().stream().map(c -> c.getId())
-					.collect(Collectors.toSet())
+					request.getCauses()
+						.stream()
+						.map(c -> c.getId())
+						.collect(Collectors.toSet())
 			);
 
 			if (causes.size() < 1)
@@ -70,7 +61,7 @@ public class NgoServiceImpl implements NgoService {
         		.latitude(request.getAddress().getLatitude())
         		.longitude(request.getAddress().getLongitude())
         		.district(request.getAddress().getDistrict())
-        		.city(optionalCity.get())
+        		.city(city)
     			.build();
 
 			Ngo ngo = Ngo.builder().name(request.getName())
@@ -108,20 +99,15 @@ public class NgoServiceImpl implements NgoService {
 
 	@Override
 	public Ngo retrieve(Long id) {
-		Optional<Ngo> optional = repository.findById(id);
-		optional.orElseThrow(() -> new ResourceNotFoundException(id));
-
-		return optional.get();
+		return repository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 
 	@Override
 	@CacheEvict(value = "ngos", allEntries = true)
 	public Ngo update(Long id, Ngo request) throws Exception {
 		try {
-			Optional<Ngo> optional = repository.findById(id);
-			optional.orElseThrow(() -> new ResourceNotFoundException(id));
-
-			Ngo ngo = optional.get();
+			Ngo ngo = retrieve(id);
 
 			ngo.setName(request.getName());
 			ngo.setCnpj(request.getCnpj());
@@ -151,9 +137,10 @@ public class NgoServiceImpl implements NgoService {
 				ngo.getAddress().setDistrict(request.getAddress().getDistrict());
 
 				if (request.getAddress().getCity() != null) {
-					Optional<City> optionalCity = cityService.findById(request.getAddress().getCity().getId());
-					optionalCity.orElseThrow(() -> new BadRequestException("City not exists"));
-					ngo.getAddress().setCity(optionalCity.get());
+					cityService.existsOrThrowsException(request.getAddress().getCity().getId());
+					City city = cityService.retrieve(request.getAddress().getCity().getId());
+
+					ngo.getAddress().setCity(city);
 				}
 			}
 
@@ -203,13 +190,13 @@ public class NgoServiceImpl implements NgoService {
 	@Override
 	@CacheEvict(value = "ngos", allEntries = true)
 	public void delete(Long id) {
-		try {
-			repository.deleteById(id);
-		} catch (EmptyResultDataAccessException e) {
-			throw new ResourceNotFoundException(id);
-		} catch (DataIntegrityViolationException e) {
-			throw new DatabaseException(e.getMessage());
-		}
+		repository.delete(retrieve(id));
+	}
+
+	@Override
+	public void existsOrThrowsException(Long id) {
+		if (!repository.existsById(id))
+			throw new BadRequestException("Ngo not found. Id " + id);
 	}
 
 	@Override
@@ -227,11 +214,6 @@ public class NgoServiceImpl implements NgoService {
 	public Page<Ngo> findSuggested(Pageable pageable) {
 
 		return repository.findSuggested(pageable);
-	}
-
-	@Override
-	public Ngo findById(Long id) {
-		return repository.getOne(id);
 	}
 
 }

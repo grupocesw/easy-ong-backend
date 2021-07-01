@@ -21,13 +21,13 @@ public interface SocialCauseService {
 
 	void delete(Long id);
 
+	void existsOrThrowsException(Long id);
+
 	List<SocialCause> findAll();
 
 	Page<SocialCause> findAll(Pageable pageable);
 
 	Page<SocialCause> findByName(String name, Pageable pageable);
-
-	Optional<SocialCause> findById(Long Id);
 
 	Set<SocialCause> findByIdIn(Set<Long> ids);
 }

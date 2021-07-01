@@ -1,20 +1,20 @@
 package br.com.grupocesw.easyong.services.impl;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityNotFoundException;
-
+import br.com.grupocesw.easyong.entities.Ngo;
 import br.com.grupocesw.easyong.entities.Picture;
 import br.com.grupocesw.easyong.entities.SocialCause;
+import br.com.grupocesw.easyong.entities.User;
+import br.com.grupocesw.easyong.exceptions.*;
+import br.com.grupocesw.easyong.exceptions.BadRequestException;
+import br.com.grupocesw.easyong.repositories.UserRepository;
 import br.com.grupocesw.easyong.request.dtos.LoginRequestDto;
+import br.com.grupocesw.easyong.request.dtos.UserPasswordRequestDto;
 import br.com.grupocesw.easyong.response.dtos.JwtAuthenticationResponseDto;
 import br.com.grupocesw.easyong.services.*;
 import io.jsonwebtoken.Claims;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -28,22 +28,15 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import br.com.grupocesw.easyong.entities.Ngo;
-import br.com.grupocesw.easyong.entities.User;
-import br.com.grupocesw.easyong.repositories.UserRepository;
-import br.com.grupocesw.easyong.request.dtos.UserPasswordRequestDto;
-import br.com.grupocesw.easyong.services.exceptions.DatabaseException;
-import br.com.grupocesw.easyong.services.exceptions.ResourceNotFoundException;
-import br.com.grupocesw.easyong.services.exceptions.UnauthenticatedUserException;
-import br.com.grupocesw.easyong.services.exceptions.UserNotConfirmedException;
-import br.com.grupocesw.easyong.services.exceptions.UserNotExistException;
-import br.com.grupocesw.easyong.services.exceptions.UsernameAlreadyExistsException;
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import javax.persistence.EntityNotFoundException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService, UserDetailsService {
 
 	private final UserRepository repository;
@@ -101,27 +94,29 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public User retrieve(Long id) {
-		Optional<User> userOptional = repository.findById(id);
-		userOptional.orElseThrow(() -> new ResourceNotFoundException(id));
+		User user = repository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(id));
 
-		if (userOptional.get().getPicture() == null) {
-			userOptional.get().setPicture(Picture.builder().build());
+		if (user.getPicture() == null) {
+			user.setPicture(Picture.builder().build());
 		}
 
-		return userOptional.get();
+		return user;
 	}
 
 	@Override
 	public User update(Long id, User request) {
 		try {
-			User user = findById(id);
+			User user = retrieve(id);
 			user.getPerson().setName(request.getPerson().getName());
 			user.getPerson().setBirthday(request.getPerson().getBirthday());
 			user.getPerson().setGender(request.getPerson().getGender());
 
 			if (request.getCauses() != null && request.getCauses().size() > 0) {
 				Set<SocialCause> causes = socialCauseService.findByIdIn(
-						request.getCauses().stream().map(c -> c.getId())
+						request.getCauses()
+								.stream()
+								.map(c -> c.getId())
 								.collect(Collectors.toSet())
 				);
 
@@ -168,18 +163,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public void delete(Long id) {
-		try {
-			repository.deleteById(id);
-		} catch (EmptyResultDataAccessException e) {
-			throw new ResourceNotFoundException(id);
-		} catch (DataIntegrityViolationException e) {
-			throw new DatabaseException(e.getMessage());
-		}
+		repository.delete(retrieve(id));
+	}
+
+	@Override
+	public void existsOrThrowsException(Long id) {
+		if (!repository.existsById(id))
+			throw new BadRequestException("User not found. Id " + id);
 	}
 
 	@Override
 	public List<User> findAll() {
-		return repository.findAll().stream()
+		return repository.findAll()
+				.stream()
 				.map(user -> {
 					if (user.getPicture() == null) {
 						user.setPicture(Picture.builder().build());
@@ -224,12 +220,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		}
 		
 		return userFound;
-	}
-	
-	public User findById(Long id) {
-		return repository.findById(id)
-    		.map(user -> user)
-    		.orElseThrow(() -> new UserNotExistException());
 	}
 
 	@Override
@@ -289,7 +279,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	@Override
 	public void favorite(Long ngoId) {
 		User userAuth = getAuthUser();
-		Ngo ngo = ngoService.findById(ngoId);
+		Ngo ngo = ngoService.retrieve(ngoId);
 
 		if (userAuth.getFavoriteNgos().contains(ngo)) {
 			userAuth.getFavoriteNgos().remove(ngo);
@@ -298,22 +288,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		}
 
 		repository.save(userAuth);
-	}
-	
-	@Override
-	public void enableUser(User user) {
-		user.setEnabled(true);
-		repository.save(user);
-	}
-	
-	@Override
-    public UserDetails loadUserByUsername(String username) {
-        return findByUsername(username).orElse(new User());
-    }
-
-	@Override
-	public Boolean existsByUsername(String username) {
-		return repository.existsByUsernameIgnoreCase(username);
 	}
 
 	@Override
@@ -340,6 +314,22 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 			);
 		
 		return page;
+	}
+
+	@Override
+	public void enableUser(User user) {
+		user.setEnabled(true);
+		repository.save(user);
+	}
+
+	@Override
+	public UserDetails loadUserByUsername(String username) {
+		return findByUsername(username).orElse(new User());
+	}
+
+	@Override
+	public Boolean existsByUsername(String username) {
+		return repository.existsByUsernameIgnoreCase(username);
 	}
 	
 }

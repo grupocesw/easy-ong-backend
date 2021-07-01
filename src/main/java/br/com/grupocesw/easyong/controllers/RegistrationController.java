@@ -4,18 +4,18 @@ import br.com.grupocesw.easyong.mappers.UserMapper;
 import br.com.grupocesw.easyong.request.dtos.UserCreateRequestDto;
 import br.com.grupocesw.easyong.response.dtos.ApiResponseDto;
 import br.com.grupocesw.easyong.services.RegistrationService;
-import br.com.grupocesw.easyong.services.exceptions.UserNotExistException;
-import br.com.grupocesw.easyong.services.exceptions.UsernameAlreadyExistsException;
-import lombok.AllArgsConstructor;
+import br.com.grupocesw.easyong.exceptions.UserNotExistException;
+import br.com.grupocesw.easyong.exceptions.UsernameAlreadyExistsException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.NonUniqueResultException;
 import javax.validation.Valid;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping(path = "api/registration")
-@AllArgsConstructor
 public class RegistrationController {
 
 	private final RegistrationService registrationService;

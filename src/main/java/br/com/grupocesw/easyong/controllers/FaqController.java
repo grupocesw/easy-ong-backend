@@ -5,8 +5,8 @@ import br.com.grupocesw.easyong.request.dtos.FaqRequestDto;
 import br.com.grupocesw.easyong.response.dtos.ApiResponseDto;
 import br.com.grupocesw.easyong.response.dtos.FaqResponseDto;
 import br.com.grupocesw.easyong.services.FaqService;
-import br.com.grupocesw.easyong.services.exceptions.ResourceNotFoundException;
-import lombok.AllArgsConstructor;
+import br.com.grupocesw.easyong.exceptions.ResourceNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -18,7 +18,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping(value = "/api/faqs")
 @RestController
 public class FaqController {

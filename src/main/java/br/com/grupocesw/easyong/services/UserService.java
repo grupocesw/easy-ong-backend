@@ -25,6 +25,8 @@ public interface UserService {
 	User updateMe(User request);
 	
 	void delete(Long id);
+
+	void existsOrThrowsException(Long id);
 	
 	List<User> findAll();
 	

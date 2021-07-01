@@ -1,17 +1,16 @@
 package br.com.grupocesw.easyong.services.impl;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-
 import br.com.grupocesw.easyong.entities.ConfirmationToken;
 import br.com.grupocesw.easyong.repositories.ConfirmationTokenRepository;
 import br.com.grupocesw.easyong.services.ConfirmationTokenService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ConfirmationTokenServiceImpl implements ConfirmationTokenService {
 
     private final ConfirmationTokenRepository confirmationTokenRepository;

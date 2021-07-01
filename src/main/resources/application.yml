@@ -1,4 +1,7 @@
 debug: false
+server:
+  error:
+    include-stacktrace: on_param
 
 security:
   basic:
