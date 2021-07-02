@@ -1,21 +1,20 @@
 package br.com.grupocesw.easyong.request.dtos;
 
-import java.io.Serializable;
-import java.util.Set;
-
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.util.Set;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class NgoRequestDto implements Serializable {
+public class NgoCreateRequestDto implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -39,12 +38,13 @@ public class NgoRequestDto implements Serializable {
 
 	@JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
 	private Set<NgoMoreInformationRequestDto> moreInformations;
-	
-	@NotNull(message = "At least one cause required")
+
 	@Size(min = 1, message = "At least one picture required")
+	@NotEmpty(message = "At least one cause required")
 	private Set<Long> causeIds;
 
 	@Size(min = 1, message = "At least one picture required")
+	@NotEmpty(message = "At least one picture required")
 	@JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
 	private Set<PictureRequestDto> pictures;
 

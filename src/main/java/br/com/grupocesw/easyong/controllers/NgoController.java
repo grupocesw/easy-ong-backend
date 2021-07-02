@@ -1,9 +1,9 @@
 package br.com.grupocesw.easyong.controllers;
 
-import br.com.grupocesw.easyong.exceptions.BadRequestException;
 import br.com.grupocesw.easyong.exceptions.ResourceNotFoundException;
 import br.com.grupocesw.easyong.mappers.NgoMapper;
-import br.com.grupocesw.easyong.request.dtos.NgoRequestDto;
+import br.com.grupocesw.easyong.request.dtos.NgoCreateRequestDto;
+import br.com.grupocesw.easyong.request.dtos.NgoUpdateRequestDto;
 import br.com.grupocesw.easyong.response.dtos.ApiResponseDto;
 import br.com.grupocesw.easyong.response.dtos.NgoResponseDto;
 import br.com.grupocesw.easyong.response.dtos.NgoSlimResponseDto;
@@ -47,19 +47,15 @@ public class NgoController {
 	
 	@PostMapping
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<?> create(@Valid @RequestBody NgoRequestDto request) {
-		try {
-			NgoSlimResponseDto dto = NgoMapper.INSTANCE.entityToSlimResponseDto(
-					service.create(NgoMapper.INSTANCE.requestDtoToEntity(request))
-			);
+	public ResponseEntity<?> create(@Valid @RequestBody NgoCreateRequestDto request) {
+		NgoSlimResponseDto dto = NgoMapper.INSTANCE.entityToSlimResponseDto(
+				service.create(NgoMapper.INSTANCE.requestDtoToEntity(request))
+		);
 
-			URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-					.buildAndExpand(dto.getId()).toUri();
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+				.buildAndExpand(dto.getId()).toUri();
 
-			return ResponseEntity.created(uri).body(dto);
-		} catch (BadRequestException |IllegalArgumentException e) {
-			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
-		}		
+		return ResponseEntity.created(uri).body(dto);
 	}
 	
 	@GetMapping(value = "/{id}")
@@ -71,29 +67,18 @@ public class NgoController {
 	
 	@PutMapping(value = "/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid NgoRequestDto request) {
-		try {
-			return ResponseEntity.ok(NgoMapper.INSTANCE.entityToResponseDto(
-					service.update(id, NgoMapper.INSTANCE.requestDtoToEntity(request))
-			));
-		} catch (ResourceNotFoundException e) {
-			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(new ApiResponseDto(false, e.getMessage()));
-		}
+	public ResponseEntity<NgoResponseDto> update(@PathVariable Long id, @RequestBody @Valid NgoUpdateRequestDto request) throws Exception {
+		return ResponseEntity.ok(NgoMapper.INSTANCE.entityToResponseDto(
+				service.update(id, NgoMapper.INSTANCE.requestDtoToEntity(request))
+		));
 	}
 	
 	@DeleteMapping(value = "/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
-		try {
-			service.delete(id);
-			return ResponseEntity.ok().body(new ApiResponseDto(true, String.format("Deleted Ngo. Id %d", id)));
-		} catch (ResourceNotFoundException e) {
-			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(new ApiResponseDto(false, e.getMessage()));
-		}
+		service.delete(id);
+
+		return ResponseEntity.noContent().build();
 	}
 	 
 }

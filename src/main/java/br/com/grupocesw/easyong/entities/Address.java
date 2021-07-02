@@ -35,10 +35,10 @@ public class Address implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "number", length = 7)
-	private Integer number;
+	@Column(name = "number", length = 7, nullable = false)
+	private String number;
 	
-	@Column(name = "street")
+	@Column(name = "street", nullable = false)
 	private String street;
 	
 	@Column(name = "complement")
@@ -53,7 +53,7 @@ public class Address implements Serializable {
 	@Column(name = "longitude", length = 12)
 	private String longitude;
 
-	@Column(name = "district")
+	@Column(name = "district", nullable = false)
 	private String district;
 	
 	@JsonIgnore

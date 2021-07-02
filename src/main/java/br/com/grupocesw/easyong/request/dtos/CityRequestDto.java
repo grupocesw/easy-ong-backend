@@ -1,14 +1,12 @@
 package br.com.grupocesw.easyong.request.dtos;
 
-import java.io.Serializable;
-
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
-
-import br.com.grupocesw.easyong.entities.State;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 @Data
 @AllArgsConstructor
@@ -22,5 +20,5 @@ public class CityRequestDto implements Serializable {
 	private String name;
 
 	@NotEmpty(message = "State required")
-	private State state;
+	private StateRequestDto state;
 }

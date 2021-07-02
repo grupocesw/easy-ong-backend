@@ -5,9 +5,7 @@ import br.com.grupocesw.easyong.exceptions.BadRequestException;
 import br.com.grupocesw.easyong.exceptions.ResourceNotFoundException;
 import br.com.grupocesw.easyong.repositories.CityRepository;
 import br.com.grupocesw.easyong.services.CityService;
-import br.com.grupocesw.easyong.exceptions.DatabaseException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,17 +19,8 @@ public class CityServiceImpl implements CityService {
 	private final CityRepository repository;
 	
 	@Override
-	public City create(City request) {
-		try {
-			City city = City.builder()
-				.name(request.getName())
-				.state(request.getState())
-				.build();
-			
-			return repository.save(city);
-		} catch (DataIntegrityViolationException e) {
-			throw new DatabaseException(e.getMessage());
-		}
+	public City create(City city) {
+		return repository.save(city);
 	}
 	
 	@Override

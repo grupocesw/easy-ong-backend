@@ -1,4 +1,4 @@
-package br.com.grupocesw.easyong.handlers;
+package br.com.grupocesw.easyong.response.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class StandardError implements Serializable {
+public class StandardHandlerErrorResponseDto implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 

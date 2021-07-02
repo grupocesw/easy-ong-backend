@@ -51,10 +51,10 @@ public interface UserMapper {
     @Mapping(source = "name", target = "person.name")
     @Mapping(source = "birthday", target = "person.birthday")
     @Mapping(source = "gender", target = "person.gender")
-    @Mapping(target = "causes", expression = "java(" +
+    @Mapping(target = "causes", expression = "java((dto.getCauseIds() != null) ? " +
             "dto.getCauseIds().stream()" +
             ".map(id -> SocialCause.builder().id(id).build())" +
-            ".collect(Collectors.toSet()))")
+            ".collect(Collectors.toSet()) : null)")
     User requestDtoToEntity(UserCreateRequestDto dto);
 
     @Mapping(target = "id", ignore = true)
@@ -71,9 +71,9 @@ public interface UserMapper {
     @Mapping(source = "name", target = "person.name")
     @Mapping(source = "birthday", target = "person.birthday")
     @Mapping(source = "gender", target = "person.gender")
-    @Mapping(target = "causes", expression = "java(" +
+    @Mapping(target = "causes", expression = "java((dto.getCauseIds() != null) ? " +
             "dto.getCauseIds().stream()" +
             ".map(id -> SocialCause.builder().id(id).build())" +
-            ".collect(Collectors.toSet()))")
+            ".collect(Collectors.toSet()) : null)")
     User requestDtoToEntity(UserUpdateRequestDto dto);
 }

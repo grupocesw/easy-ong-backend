@@ -5,12 +5,9 @@ import br.com.grupocesw.easyong.exceptions.BadRequestException;
 import br.com.grupocesw.easyong.exceptions.ResourceNotFoundException;
 import br.com.grupocesw.easyong.repositories.PictureRepository;
 import br.com.grupocesw.easyong.services.PictureService;
-import br.com.grupocesw.easyong.exceptions.DatabaseException;
 import br.com.grupocesw.easyong.utils.PictureUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.IOUtils;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,20 +31,16 @@ public class PictureServiceImpl implements PictureService {
 
 	@Override
 	public Picture create(MultipartFile file) {
-		try {
-			String fileName = StringUtils.cleanPath(file.getOriginalFilename());			
-			Picture picture = repository.save(
-				Picture.builder()
-						.url(fileName)
-						.build()
-			);
-			
-			picture.setUrl(fileName);
-			
-			return picture;
-		} catch (DataIntegrityViolationException e) {
-			throw new DatabaseException(e.getMessage());
-		}
+		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+		Picture picture = repository.save(
+			Picture.builder()
+					.url(fileName)
+					.build()
+		);
+
+		picture.setUrl(fileName);
+
+		return picture;
 	}
 	
 	@Override
@@ -58,25 +51,15 @@ public class PictureServiceImpl implements PictureService {
 
 	@Override
 	public Picture update(Long id, Picture request) {
-		try {			
-			Picture picture = findById(id);
-			picture.setUrl(request.getUrl());
+		Picture picture = retrieve(id);
+		picture.setUrl(request.getUrl());
 
-			return repository.save(picture);
-		} catch (EntityNotFoundException e) {
-			throw new ResourceNotFoundException(id);
-		}		
+		return repository.save(picture);
 	}
 
 	@Override
 	public void delete(Long id) {
-		try {
-			repository.deleteById(id);
-		} catch (EmptyResultDataAccessException e) {
-			throw new ResourceNotFoundException(id);
-		} catch (DataIntegrityViolationException e) {
-			throw new DatabaseException(e.getMessage());
-		}
+		repository.delete(retrieve(id));
 	}
 
 	@Override

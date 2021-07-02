@@ -5,11 +5,9 @@ import br.com.grupocesw.easyong.exceptions.BadRequestException;
 import br.com.grupocesw.easyong.exceptions.ResourceNotFoundException;
 import br.com.grupocesw.easyong.repositories.FaqRepository;
 import br.com.grupocesw.easyong.services.FaqService;
-import br.com.grupocesw.easyong.exceptions.DatabaseException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,11 +28,7 @@ public class FaqServiceImpl implements FaqService {
 	@Override
 	@CacheEvict(value = "faqs", allEntries = true)
 	public Faq create(Faq faq) {
-		try {
-			return repository.save(faq);
-		} catch (DataIntegrityViolationException e) {
-			throw new DatabaseException(e.getMessage());
-		}
+		return repository.save(faq);
 	}
 
 	@Override

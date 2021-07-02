@@ -67,14 +67,9 @@ public class SocialCauseController {
 	@DeleteMapping(value = "/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
-		try {
-			service.delete(id);
-			return ResponseEntity.ok().body(new ApiResponseDto(true, String.format("Deleted Social Cause. Id %d", id)));
-		} catch (ResourceNotFoundException e) {
-			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(new ApiResponseDto(false, e.getMessage()));
-		}
+		service.delete(id);
+
+		return ResponseEntity.noContent().build();
 	}
 
 }

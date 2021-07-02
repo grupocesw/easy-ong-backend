@@ -2,7 +2,8 @@ package br.com.grupocesw.easyong.mappers;
 
 import br.com.grupocesw.easyong.entities.Ngo;
 import br.com.grupocesw.easyong.entities.SocialCause;
-import br.com.grupocesw.easyong.request.dtos.NgoRequestDto;
+import br.com.grupocesw.easyong.request.dtos.NgoCreateRequestDto;
+import br.com.grupocesw.easyong.request.dtos.NgoUpdateRequestDto;
 import br.com.grupocesw.easyong.response.dtos.NgoResponseDto;
 import br.com.grupocesw.easyong.response.dtos.NgoSlimResponseDto;
 import org.mapstruct.Mapper;
@@ -55,5 +56,17 @@ public interface NgoMapper {
             "dto.getCauseIds().stream()" +
             ".map(id -> SocialCause.builder().id(id).build())" +
             ".collect(Collectors.toSet()))")
-    Ngo requestDtoToEntity(NgoRequestDto dto);
+    Ngo requestDtoToEntity(NgoCreateRequestDto dto);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "activated", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "users", ignore = true)
+    @Mapping(target = "address", expression = "java(AddressMapper.INSTANCE.requestDtoToEntity(dto.getAddress()))")
+    @Mapping(target = "causes", expression = "java((dto.getCauseIds() != null) ? " +
+            "dto.getCauseIds().stream()" +
+            ".map(id -> SocialCause.builder().id(id).build())" +
+            ".collect(Collectors.toSet()) : null)")
+    Ngo requestDtoToEntity(NgoUpdateRequestDto dto);
 }

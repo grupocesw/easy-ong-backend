@@ -32,5 +32,6 @@ public interface CityMapper {
     CityResponseDto entityToResponseDto(City entity);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "state", expression = "java(StateMapper.INSTANCE.requestDtoToEntity(dto.getState()))")
     City requestDtoToEntity(CityRequestDto dto);
 }

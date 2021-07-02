@@ -32,7 +32,7 @@ public class NgoSuggestion implements Serializable {
 	private Long id;
 	
 	@NotEmpty(message="Message required")
-	@Column(name = "message", nullable = false, columnDefinition="TEXT")
+	@Column(name = "message", nullable = false, columnDefinition = "TEXT")
 	private String message;
 
 	@ManyToOne

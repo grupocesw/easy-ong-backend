@@ -5,11 +5,9 @@ import br.com.grupocesw.easyong.exceptions.BadRequestException;
 import br.com.grupocesw.easyong.exceptions.ResourceNotFoundException;
 import br.com.grupocesw.easyong.repositories.SocialCauseRepository;
 import br.com.grupocesw.easyong.services.SocialCauseService;
-import br.com.grupocesw.easyong.exceptions.DatabaseException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,11 +26,7 @@ public class SocialCauseServiceImpl implements SocialCauseService {
 	@Override
 	@CacheEvict(value = "socialCauses", allEntries = true)
 	public SocialCause create(SocialCause socialCause) {
-		try {
-			return repository.save(socialCause);
-		} catch (DataIntegrityViolationException e) {
-			throw new DatabaseException(e.getMessage());
-		}
+		return repository.save(socialCause);
 	}
 
 	@Override

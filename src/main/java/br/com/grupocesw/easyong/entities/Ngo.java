@@ -44,7 +44,7 @@ public class Ngo implements Serializable {
 	@Column(name = "name", nullable = false, length = 100)
 	private String name;
 
-	@Column(name = "cnpj", length = 14, unique = true)
+	@Column(name = "cnpj", length = 14, unique = true, nullable = false)
 	private String cnpj;
 	
 	@Column(name = "description", columnDefinition="TEXT")

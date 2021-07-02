@@ -5,7 +5,6 @@ import br.com.grupocesw.easyong.entities.Picture;
 import br.com.grupocesw.easyong.entities.SocialCause;
 import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.exceptions.*;
-import br.com.grupocesw.easyong.exceptions.BadRequestException;
 import br.com.grupocesw.easyong.repositories.UserRepository;
 import br.com.grupocesw.easyong.request.dtos.LoginRequestDto;
 import br.com.grupocesw.easyong.request.dtos.UserPasswordRequestDto;
@@ -14,7 +13,6 @@ import br.com.grupocesw.easyong.services.*;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -49,47 +47,43 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public User create(User request) {
-		try {
-			boolean userExists = repository.existsByUsernameIgnoreCase(request.getUsername());
-			
-			if (userExists) {
-				log.warn("username {} already exists.", request.getUsername());
+		boolean userExists = repository.existsByUsernameIgnoreCase(request.getUsername());
 
-				throw new UsernameAlreadyExistsException(
-					String.format("Username %s already exists", request.getUsername()));
-			}
+		if (userExists) {
+			log.warn("username {} already exists.", request.getUsername());
 
-			if (request.getCauses() != null && request.getCauses().size() > 0) {
-				Set<SocialCause> causes = socialCauseService.findByIdIn(
-						request.getCauses().stream().map(c -> c.getId())
-								.collect(Collectors.toSet())
-				);
-
-				if (causes.isEmpty())
-					throw new IllegalArgumentException("Social causes not found");
-
-				request.setCauses(causes);
-			}
-
-			User user = User.builder()
-				.username(request.getUsername().trim().toLowerCase())
-				.password(passwordEncoder.encode(request.getPassword().trim()))
-				.person(request.getPerson())
-				.enabled(true) // TODO remove after implements service e-mail in prod
-				.roles(roleService.getDefaultRoles())
-				.causes(request.getCauses())
-				.build();
-
-			User userSaved = repository.save(user);
-
-			if (userSaved.getPicture() == null) {
-				userSaved.setPicture(Picture.builder().build());
-			}
-
-			return userSaved;
-		} catch (DataIntegrityViolationException e) {
-			throw new DatabaseException(e.getMessage());
+			throw new UsernameAlreadyExistsException(
+				String.format("Username %s already exists", request.getUsername()));
 		}
+
+		if (request.getCauses() != null && request.getCauses().size() > 0) {
+			Set<SocialCause> causes = socialCauseService.findByIdIn(
+					request.getCauses().stream().map(c -> c.getId())
+							.collect(Collectors.toSet())
+			);
+
+			if (causes.isEmpty())
+				throw new IllegalArgumentException("Social causes not found");
+
+			request.setCauses(causes);
+		}
+
+		User user = User.builder()
+			.username(request.getUsername().trim().toLowerCase())
+			.password(passwordEncoder.encode(request.getPassword().trim()))
+			.person(request.getPerson())
+			.enabled(true) // TODO remove after implements service e-mail in prod
+			.roles(roleService.getDefaultRoles())
+			.causes(request.getCauses())
+			.build();
+
+		User userSaved = repository.save(user);
+
+		if (userSaved.getPicture() == null) {
+			userSaved.setPicture(Picture.builder().build());
+		}
+
+		return userSaved;
 	}
 
 	@Override
@@ -106,31 +100,27 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public User update(Long id, User request) {
-		try {
-			User user = retrieve(id);
-			user.getPerson().setName(request.getPerson().getName());
-			user.getPerson().setBirthday(request.getPerson().getBirthday());
-			user.getPerson().setGender(request.getPerson().getGender());
+		User user = retrieve(id);
+		user.getPerson().setName(request.getPerson().getName());
+		user.getPerson().setBirthday(request.getPerson().getBirthday());
+		user.getPerson().setGender(request.getPerson().getGender());
 
-			if (request.getCauses() != null && request.getCauses().size() > 0) {
-				Set<SocialCause> causes = socialCauseService.findByIdIn(
-						request.getCauses()
-								.stream()
-								.map(c -> c.getId())
-								.collect(Collectors.toSet())
-				);
+		if (request.getCauses() != null && request.getCauses().size() > 0) {
+			Set<SocialCause> causes = socialCauseService.findByIdIn(
+					request.getCauses()
+							.stream()
+							.map(c -> c.getId())
+							.collect(Collectors.toSet())
+			);
 
-				if (causes.isEmpty())
-					throw new IllegalArgumentException("Social causes not found");
+			if (causes.isEmpty())
+				throw new IllegalArgumentException("Social causes not found");
 
-				user.getCauses().clear();
-				user.getCauses().addAll(causes);
-			}
-
-			return repository.save(user);
-		} catch (EntityNotFoundException e) {
-			throw new ResourceNotFoundException(id);
+			user.getCauses().clear();
+			user.getCauses().addAll(causes);
 		}
+
+		return repository.save(user);
 	}
 	
 	@Override

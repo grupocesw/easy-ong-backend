@@ -14,7 +14,7 @@ public class AddressResponseDto implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
-	private Integer number;
+	private String number;
 	private String street;
 	private String complement;
 	private String zipCode;

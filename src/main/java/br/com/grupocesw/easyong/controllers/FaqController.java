@@ -2,14 +2,11 @@ package br.com.grupocesw.easyong.controllers;
 
 import br.com.grupocesw.easyong.mappers.FaqMapper;
 import br.com.grupocesw.easyong.request.dtos.FaqRequestDto;
-import br.com.grupocesw.easyong.response.dtos.ApiResponseDto;
 import br.com.grupocesw.easyong.response.dtos.FaqResponseDto;
 import br.com.grupocesw.easyong.services.FaqService;
-import br.com.grupocesw.easyong.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -65,14 +62,9 @@ public class FaqController {
 	@DeleteMapping(value = "/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
-		try {
-			service.delete(id);
-			return ResponseEntity.ok().body(new ApiResponseDto(true, String.format("Deleted FAQ. Id %d", id)));
-		} catch (ResourceNotFoundException e) {
-			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(new ApiResponseDto(false, e.getMessage()));
-		}
+		service.delete(id);
+
+		return ResponseEntity.noContent().build();
 	}
 
 }

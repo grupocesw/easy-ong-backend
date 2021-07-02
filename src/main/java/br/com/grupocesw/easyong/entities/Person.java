@@ -44,32 +44,32 @@ public class Person implements Serializable {
 	@Column(name = "name", nullable = false, length = 100)
 	private String name;
 
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	@Column(name = "birthday")
 	private LocalDate birthday;
 
+	@Builder.Default
 	@Column(name = "gender")
-	private Gender gender;
+	private Gender gender = Gender.UNINFORMED;
 
 	@OneToOne(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "person_id")
 	@ToString.Exclude
 	private User user;
 	
-	public Person(Person person) {
-		this.id = person.id;
-		this.name = person.name;
-		this.birthday = person.birthday;
-		this.gender = person.gender;
-	}
-
-	public Person(String name, LocalDate birthday, Gender gender) {
-		this.name = name;
-		this.birthday = birthday;
-		this.gender = gender;
-	}
-	
-	public Person(String name) {
-		this.name = name;
-	}
+//	public Person(Person person) {
+//		this.id = person.id;
+//		this.name = person.name;
+//		this.birthday = person.birthday;
+//		this.gender = person.gender;
+//	}
+//
+//	public Person(String name, LocalDate birthday, Gender gender) {
+//		this.name = name;
+//		this.birthday = birthday;
+//		this.gender = gender;
+//	}
+//
+//	public Person(String name) {
+//		this.name = name;
+//	}
 }

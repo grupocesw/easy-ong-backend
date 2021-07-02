@@ -52,60 +52,39 @@ public class UserController {
 	@ResponseBody
 	@PostMapping
 	public ResponseEntity<?> create(@RequestBody @Valid UserCreateRequestDto request) {
-		try {
-			UserResponseDto userDto =
-					UserMapper.INSTANCE.entityToResponseDto(service.create(
-							UserMapper.INSTANCE.requestDtoToEntity(request)
-					));
-	
-			URI uri = ServletUriComponentsBuilder
-					.fromCurrentRequest()
-					.path("/{id}")
-					.buildAndExpand(userDto.getId())
-					.toUri();
-	
-			return ResponseEntity.created(uri).body(userDto);
-		} catch (UsernameAlreadyExistsException e) {
-			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
-		}
+		UserResponseDto userDto =
+				UserMapper.INSTANCE.entityToResponseDto(service.create(
+						UserMapper.INSTANCE.requestDtoToEntity(request)
+				));
+
+		URI uri = ServletUriComponentsBuilder
+				.fromCurrentRequest()
+				.path("/{id}")
+				.buildAndExpand(userDto.getId())
+				.toUri();
+
+		return ResponseEntity.created(uri).body(userDto);
 	}
 
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<?> retrieve(@PathVariable Long id) {
-		try {
-			return ResponseEntity.ok(
-					UserMapper.INSTANCE.entityToResponseDto(service.retrieve(id))
-			);
-		} catch (ResourceNotFoundException e) {
-			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(new ApiResponseDto(false, e.getMessage()));
-		}
+		return ResponseEntity.ok(
+				UserMapper.INSTANCE.entityToResponseDto(service.retrieve(id))
+		);
 	}
 
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid UserUpdateRequestDto request, Errors errors) {
-		try {
-			return ResponseEntity.ok(UserMapper.INSTANCE.entityToResponseDto(
-					service.update(id, UserMapper.INSTANCE.requestDtoToEntity(request))
-			));
-		} catch (ResourceNotFoundException e) {
-			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(new ApiResponseDto(false, e.getMessage()));
-		}
+		return ResponseEntity.ok(UserMapper.INSTANCE.entityToResponseDto(
+				service.update(id, UserMapper.INSTANCE.requestDtoToEntity(request))
+		));
 	}
 
 	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<?> delete(@PathVariable Long id) {		
-		try {
-			service.delete(id);
-			return ResponseEntity.ok(new ApiResponseDto(true, String.format("Deleted user. Id %d", id)));
-		} catch (ResourceNotFoundException e) {
-			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(new ApiResponseDto(false, e.getMessage()));
-		}
+	public ResponseEntity<?> delete(@PathVariable Long id) {
+		service.delete(id);
+
+		return ResponseEntity.noContent().build();
 	}
 
 }
