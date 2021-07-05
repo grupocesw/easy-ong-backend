@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 				.username(request.getUsername())
 				.password(passwordEncoder.encode(request.getPassword()))
 				.person(request.getPerson())
-				.enabled(false) // TODO remove after implements service e-mail in prod
+				.enabled(true) // TODO remove after implements service e-mail in prod
 				.roles(roleService.getDefaultRoles())
 				.causes(request.getCauses())
 				.build()
