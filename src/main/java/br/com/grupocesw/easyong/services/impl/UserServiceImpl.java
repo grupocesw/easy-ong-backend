@@ -1,13 +1,10 @@
 package br.com.grupocesw.easyong.services.impl;
 
 import br.com.grupocesw.easyong.entities.Ngo;
-import br.com.grupocesw.easyong.entities.Picture;
 import br.com.grupocesw.easyong.entities.SocialCause;
 import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.exceptions.*;
 import br.com.grupocesw.easyong.repositories.UserRepository;
-import br.com.grupocesw.easyong.request.dtos.LoginRequestDto;
-import br.com.grupocesw.easyong.request.dtos.UserPasswordRequestDto;
 import br.com.grupocesw.easyong.response.dtos.JwtAuthenticationResponseDto;
 import br.com.grupocesw.easyong.services.*;
 import io.jsonwebtoken.Claims;
@@ -26,7 +23,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -68,32 +64,22 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 			request.setCauses(causes);
 		}
 
-		User user = User.builder()
-			.username(request.getUsername().trim().toLowerCase())
-			.password(passwordEncoder.encode(request.getPassword().trim()))
-			.person(request.getPerson())
-			.enabled(true) // TODO remove after implements service e-mail in prod
-			.roles(roleService.getDefaultRoles())
-			.causes(request.getCauses())
-			.build();
-
-		User userSaved = repository.save(user);
-
-		if (userSaved.getPicture() == null) {
-			userSaved.setPicture(Picture.builder().build());
-		}
-
-		return userSaved;
+		return repository.save(
+			User.builder()
+				.username(request.getUsername())
+				.password(passwordEncoder.encode(request.getPassword()))
+				.person(request.getPerson())
+				.enabled(false) // TODO remove after implements service e-mail in prod
+				.roles(roleService.getDefaultRoles())
+				.causes(request.getCauses())
+				.build()
+		);
 	}
 
 	@Override
 	public User retrieve(Long id) {
 		User user = repository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(id));
-
-		if (user.getPicture() == null) {
-			user.setPicture(Picture.builder().build());
-		}
 
 		return user;
 	}
@@ -125,30 +111,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	
 	@Override
 	public User updateMe(User request) {
-		try {
-			User user = getAuthUser();
-
-			user.getPerson().setName(request.getPerson().getName());
-			user.getPerson().setBirthday(request.getPerson().getBirthday());
-			user.getPerson().setGender(request.getPerson().getGender());
-
-			if (request.getCauses() != null && request.getCauses().size() > 0) {
-				Set<SocialCause> causes = socialCauseService.findByIdIn(
-						request.getCauses().stream().map(c -> c.getId())
-								.collect(Collectors.toSet())
-				);
-
-				if (causes.isEmpty())
-					throw new IllegalArgumentException("Social causes not found");
-
-				user.getCauses().clear();
-				user.getCauses().addAll(causes);
-			}
-
-			return repository.save(user);
-		} catch (EntityNotFoundException e) {
-			throw new UserNotExistException();
-		}
+		return repository.save(
+			update(getAuthUser().getId(), request)
+		);
 	}
 
 	@Override
@@ -164,28 +129,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public List<User> findAll() {
-		return repository.findAll()
-				.stream()
-				.map(user -> {
-					if (user.getPicture() == null) {
-						user.setPicture(Picture.builder().build());
-					}
-
-					return user;
-				})
-				.collect(Collectors.toList());
+		return repository.findAll();
 	}
 
 	@Override
 	public Page<User> findCheckedAll(Pageable pageable) {
-		return repository.findAll(pageable)
-				.map(user -> {
-					if (user.getPicture() == null) {
-						user.setPicture(Picture.builder().build());
-					}
-
-					return user;
-				});
+		return repository.findAll(pageable);
 	}
 	
 	@Override
@@ -201,33 +150,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		User user = findByUsername(authenticatedUser.getUsername()).get();
 
 		if (!user.isEnabled()) 
-			throw new UnauthenticatedUserException();
-
-		User userFound = findByUsername(authenticatedUser.getUsername()).get();
-
-		if (userFound.getPicture() == null) {
-			userFound.setPicture(Picture.builder().build());
-		}
+			throw new DisabledUserException();
 		
-		return userFound;
+		return user;
 	}
 
 	@Override
-	public JwtAuthenticationResponseDto login(LoginRequestDto requestDto) {
-		String username = requestDto.getUsername().trim().toLowerCase();
-		String password = requestDto.getPassword().trim();
-
-		Optional<User> user = Optional.ofNullable(
-			repository.findByUsernameIgnoreCase(username).orElseThrow(
-				() -> new UserNotExistException()
-		));
-
-		if (!user.get().isEnabled()) {
-			throw new UserNotConfirmedException();
-		}
-
+	public JwtAuthenticationResponseDto login(User request) {
 		Authentication authentication = authenticationManager
-				.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+				.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
 
 		String token = jwtTokenService.generateToken(authentication);
 		Claims claims = jwtTokenService.getClaimsFromJWT(token);
@@ -240,25 +171,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 				.username(claims.getSubject())
 				.accessToken(token)
 				.expiration(df.format(claims.getExpiration()))
-				.tokenType("Bearer")
 				.build();
 	}
 	
 	@Override
-	public void changePassword(UserPasswordRequestDto userDto) {
-		try {
-			User user = getAuthUser();			
-			user.setPassword(passwordEncoder.encode(userDto.build().getPassword()));
+	public void changePassword(User request) {
+		User user = getAuthUser();
+		user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-			repository.save(user);
-		} catch (EntityNotFoundException e) {
-			throw new UserNotExistException();
-		}
+		repository.save(user);
 	}
 
 	@Override
 	public Optional<User> findByUsername(String username) {
-		log.info("retrieving user {}", username);
+		log.info("findByUsername user {}", username);
 
 		return Optional.ofNullable(
 				repository.findByUsernameIgnoreCase(username).orElseThrow(

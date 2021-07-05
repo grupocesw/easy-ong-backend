@@ -3,15 +3,7 @@ package br.com.grupocesw.easyong.entities;
 import java.io.Serializable;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -43,6 +35,9 @@ public class Picture implements Serializable {
 	@Column(name = "url", nullable = false, columnDefinition = "TEXT")
 	private String url;
 
+	@Transient
+	private String name;
+
 	@OneToOne(mappedBy = "picture")
 	@JoinColumn(name = "picture_id")
 	@ToString.Exclude
@@ -61,4 +56,7 @@ public class Picture implements Serializable {
 		return url;
 	}
 
+	public String getName() {
+		return url;
+	}
 }

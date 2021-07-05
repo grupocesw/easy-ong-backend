@@ -2,10 +2,9 @@ package br.com.grupocesw.easyong.controllers;
 
 import br.com.grupocesw.easyong.mappers.SocialCauseMapper;
 import br.com.grupocesw.easyong.request.dtos.SocialCauseRequestDto;
-import br.com.grupocesw.easyong.response.dtos.ApiResponseDto;
+import br.com.grupocesw.easyong.response.dtos.ApiStandardResponseDto;
 import br.com.grupocesw.easyong.response.dtos.SocialCauseResponseDto;
 import br.com.grupocesw.easyong.services.SocialCauseService;
-import br.com.grupocesw.easyong.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,10 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.net.URI;
 
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/social-causes")
@@ -35,41 +33,59 @@ public class SocialCauseController {
 
 	@PostMapping
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<SocialCauseResponseDto> create(@RequestBody @Valid SocialCauseRequestDto request) {
+	public ResponseEntity<ApiStandardResponseDto> create(@RequestBody @Valid SocialCauseRequestDto request, HttpServletRequest httpRequest) {
 		SocialCauseResponseDto dto = SocialCauseMapper.INSTANCE.entityToResponseDto(
 				service.create(SocialCauseMapper.INSTANCE.requestDtoToEntity(request))
 		);
 
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-				.buildAndExpand(dto.getId()).toUri();
-
-		return ResponseEntity.created(uri).body(dto);
+		return ResponseEntity
+			.status(HttpStatus.CREATED)
+			.body(ApiStandardResponseDto.builder()
+				.message("Created Social Cause")
+				.data(dto)
+				.path(httpRequest.getRequestURI())
+				.build()
+			);
 	}
 
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<SocialCauseResponseDto> retrieve(@PathVariable Long id) {
-		return ResponseEntity.ok(
-				SocialCauseMapper.INSTANCE.entityToResponseDto(service.retrieve(id))
-		);
+		return ResponseEntity.ok(SocialCauseMapper.INSTANCE.entityToResponseDto(service.retrieve(id)));
 	}
 
 	@PutMapping(value = "/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<SocialCauseResponseDto> update(@PathVariable Long id, @RequestBody @Valid SocialCauseRequestDto request) {
+	public ResponseEntity<ApiStandardResponseDto> update(
+			@PathVariable Long id,
+			@RequestBody @Valid SocialCauseRequestDto request,
+			HttpServletRequest httpRequest) {
 
-		return ResponseEntity.ok(
-				SocialCauseMapper.INSTANCE.entityToResponseDto(
-						service.update(id, SocialCauseMapper.INSTANCE.requestDtoToEntity(request))
-				)
+		SocialCauseResponseDto dto = SocialCauseMapper.INSTANCE.entityToResponseDto(
+				service.update(id, SocialCauseMapper.INSTANCE.requestDtoToEntity(request))
 		);
+
+		return ResponseEntity
+			.status(HttpStatus.OK)
+			.body(ApiStandardResponseDto.builder()
+				.message("Updated Social Cause")
+				.data(dto)
+				.path(httpRequest.getRequestURI())
+				.build()
+			);
 	}
 
 	@DeleteMapping(value = "/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<?> delete(@PathVariable Long id) {
+	public ResponseEntity<ApiStandardResponseDto> delete(@PathVariable Long id, HttpServletRequest httpRequest) {
 		service.delete(id);
 
-		return ResponseEntity.noContent().build();
+		return ResponseEntity
+			.status(HttpStatus.OK)
+			.body(ApiStandardResponseDto.builder()
+				.message("Deleted Social Cause")
+				.path(httpRequest.getRequestURI())
+				.build()
+			);
 	}
 
 }

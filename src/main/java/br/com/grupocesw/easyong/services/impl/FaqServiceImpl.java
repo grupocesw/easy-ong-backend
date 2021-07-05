@@ -54,7 +54,6 @@ public class FaqServiceImpl implements FaqService {
 		repository.delete(retrieve(id));
 	}
 
-
 	@Override
 	public void existsOrThrowsException(Long id) {
 		if (!repository.existsById(id))

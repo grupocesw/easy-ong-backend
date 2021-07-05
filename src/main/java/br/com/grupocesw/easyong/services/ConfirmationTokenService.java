@@ -9,7 +9,7 @@ import br.com.grupocesw.easyong.entities.ConfirmationToken;
 @Service
 public interface ConfirmationTokenService {
 
-    void saveConfirmationToken(ConfirmationToken token);
+    void save(ConfirmationToken token);
 
     Optional<ConfirmationToken> getToken(String token);
     

@@ -12,5 +12,7 @@ public class JwtAuthenticationResponseDto {
     private String username;
     private String accessToken;
     private String expiration;
-    private String tokenType;
+
+    @Builder.Default
+    private String tokenType = "Bearer";
 }

@@ -1,10 +1,9 @@
 package br.com.grupocesw.easyong.controllers;
 
-import br.com.grupocesw.easyong.exceptions.ResourceNotFoundException;
 import br.com.grupocesw.easyong.mappers.NgoMapper;
 import br.com.grupocesw.easyong.request.dtos.NgoCreateRequestDto;
 import br.com.grupocesw.easyong.request.dtos.NgoUpdateRequestDto;
-import br.com.grupocesw.easyong.response.dtos.ApiResponseDto;
+import br.com.grupocesw.easyong.response.dtos.ApiStandardResponseDto;
 import br.com.grupocesw.easyong.response.dtos.NgoResponseDto;
 import br.com.grupocesw.easyong.response.dtos.NgoSlimResponseDto;
 import br.com.grupocesw.easyong.services.NgoService;
@@ -16,11 +15,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.net.URI;
 
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/ngos")
@@ -47,38 +45,59 @@ public class NgoController {
 	
 	@PostMapping
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<?> create(@Valid @RequestBody NgoCreateRequestDto request) {
+	public ResponseEntity<ApiStandardResponseDto> create(@Valid @RequestBody NgoCreateRequestDto request, HttpServletRequest httpRequest) {
 		NgoSlimResponseDto dto = NgoMapper.INSTANCE.entityToSlimResponseDto(
 				service.create(NgoMapper.INSTANCE.requestDtoToEntity(request))
 		);
 
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-				.buildAndExpand(dto.getId()).toUri();
-
-		return ResponseEntity.created(uri).body(dto);
+		return ResponseEntity
+			.status(HttpStatus.CREATED)
+			.body(ApiStandardResponseDto.builder()
+				.message("Created Ngo")
+				.data(dto)
+				.path(httpRequest.getRequestURI())
+				.build()
+			);
 	}
 	
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<NgoResponseDto> retrieve(@PathVariable Long id) {
-		return ResponseEntity.ok(
-				NgoMapper.INSTANCE.entityToResponseDto(service.retrieve(id))
-		);
+		return ResponseEntity.ok(NgoMapper.INSTANCE.entityToResponseDto(service.retrieve(id)));
 	}
 	
 	@PutMapping(value = "/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<NgoResponseDto> update(@PathVariable Long id, @RequestBody @Valid NgoUpdateRequestDto request) throws Exception {
-		return ResponseEntity.ok(NgoMapper.INSTANCE.entityToResponseDto(
+	public ResponseEntity<ApiStandardResponseDto> update(
+			@PathVariable Long id,
+			@RequestBody @Valid NgoUpdateRequestDto request,
+			HttpServletRequest httpRequest) throws Exception {
+
+		NgoResponseDto dto = NgoMapper.INSTANCE.entityToResponseDto(
 				service.update(id, NgoMapper.INSTANCE.requestDtoToEntity(request))
-		));
+		);
+
+		return ResponseEntity
+			.status(HttpStatus.OK)
+			.body(ApiStandardResponseDto.builder()
+				.message("Updated Ngo")
+				.data(dto)
+				.path(httpRequest.getRequestURI())
+				.build()
+			);
 	}
 	
 	@DeleteMapping(value = "/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<?> delete(@PathVariable Long id) {
+	public ResponseEntity<ApiStandardResponseDto> delete(@PathVariable Long id, HttpServletRequest httpRequest) {
 		service.delete(id);
 
-		return ResponseEntity.noContent().build();
+		return ResponseEntity
+			.status(HttpStatus.OK)
+			.body(ApiStandardResponseDto.builder()
+				.message("Deleted Ngo")
+				.path(httpRequest.getRequestURI())
+				.build()
+			);
 	}
 	 
 }

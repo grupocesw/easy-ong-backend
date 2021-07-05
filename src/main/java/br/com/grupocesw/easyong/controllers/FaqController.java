@@ -2,18 +2,19 @@ package br.com.grupocesw.easyong.controllers;
 
 import br.com.grupocesw.easyong.mappers.FaqMapper;
 import br.com.grupocesw.easyong.request.dtos.FaqRequestDto;
+import br.com.grupocesw.easyong.response.dtos.ApiStandardResponseDto;
 import br.com.grupocesw.easyong.response.dtos.FaqResponseDto;
 import br.com.grupocesw.easyong.services.FaqService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.net.URI;
 
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/faqs")
@@ -32,39 +33,59 @@ public class FaqController {
 
 	@PostMapping
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<FaqResponseDto> create(@RequestBody @Valid FaqRequestDto request) {
-
+	public ResponseEntity<ApiStandardResponseDto> create(@RequestBody @Valid FaqRequestDto request, HttpServletRequest httpRequest) {
 		FaqResponseDto dto = FaqMapper.INSTANCE.entityToResponseDto(
 				service.create(FaqMapper.INSTANCE.requestDtoToEntity(request))
 		);
 
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-				.buildAndExpand(dto.getId()).toUri();
-
-		return ResponseEntity.created(uri).body(dto);
+		return ResponseEntity
+			.status(HttpStatus.CREATED)
+			.body(ApiStandardResponseDto.builder()
+				.message("Created Faq")
+				.data(dto)
+				.path(httpRequest.getRequestURI())
+				.build()
+			);
 	}
 
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<FaqResponseDto> retrieve(@PathVariable Long id) {
-		return ResponseEntity.ok(
-				FaqMapper.INSTANCE.entityToResponseDto(service.retrieve(id))
-		);
+		return ResponseEntity.ok(FaqMapper.INSTANCE.entityToResponseDto(service.retrieve(id)));
 	}
 
 	@PutMapping(value = "/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<FaqResponseDto> update(@PathVariable Long id, @RequestBody @Valid FaqRequestDto request) {
-		return ResponseEntity.ok(FaqMapper.INSTANCE.entityToResponseDto(
+	public ResponseEntity<ApiStandardResponseDto> update(
+			@PathVariable Long id,
+			@RequestBody @Valid FaqRequestDto request,
+			HttpServletRequest httpRequest) {
+
+		FaqResponseDto dto = FaqMapper.INSTANCE.entityToResponseDto(
 				service.update(id, FaqMapper.INSTANCE.requestDtoToEntity(request))
-		));
+		);
+
+		return ResponseEntity
+			.status(HttpStatus.OK)
+			.body(ApiStandardResponseDto.builder()
+				.message("Updated Faq")
+				.data(dto)
+				.path(httpRequest.getRequestURI())
+				.build()
+			);
 	}
 
 	@DeleteMapping(value = "/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<?> delete(@PathVariable Long id) {
+	public ResponseEntity<ApiStandardResponseDto> delete(@PathVariable Long id, HttpServletRequest httpRequest) {
 		service.delete(id);
 
-		return ResponseEntity.noContent().build();
+		return ResponseEntity
+			.status(HttpStatus.OK)
+			.body(ApiStandardResponseDto.builder()
+				.message("Deleted Faq")
+				.path(httpRequest.getRequestURI())
+				.build()
+			);
 	}
 
 }

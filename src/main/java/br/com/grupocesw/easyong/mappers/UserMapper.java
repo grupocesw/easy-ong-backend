@@ -2,7 +2,9 @@ package br.com.grupocesw.easyong.mappers;
 
 import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.entities.SocialCause;
+import br.com.grupocesw.easyong.request.dtos.LoginRequestDto;
 import br.com.grupocesw.easyong.request.dtos.UserCreateRequestDto;
+import br.com.grupocesw.easyong.request.dtos.UserPasswordRequestDto;
 import br.com.grupocesw.easyong.request.dtos.UserUpdateRequestDto;
 import br.com.grupocesw.easyong.response.dtos.UserResponseDto;
 import org.mapstruct.Mapper;
@@ -76,4 +78,35 @@ public interface UserMapper {
             ".map(id -> SocialCause.builder().id(id).build())" +
             ".collect(Collectors.toSet()) : null)")
     User requestDtoToEntity(UserUpdateRequestDto dto);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "username", ignore = true)
+    @Mapping(target = "person", ignore = true)
+    @Mapping(target = "enabled", ignore = true)
+    @Mapping(target = "locked", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "roles", ignore = true)
+    @Mapping(target = "tokens", ignore = true)
+    @Mapping(target = "picture", ignore = true)
+    @Mapping(target = "favoriteNgos", ignore = true)
+    @Mapping(target = "notifications", ignore = true)
+    @Mapping(target = "ngoSuggestions", ignore = true)
+    @Mapping(target = "causes", ignore = true)
+    User requestDtoToEntity(UserPasswordRequestDto dto);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "person", ignore = true)
+    @Mapping(target = "enabled", ignore = true)
+    @Mapping(target = "locked", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "roles", ignore = true)
+    @Mapping(target = "tokens", ignore = true)
+    @Mapping(target = "picture", ignore = true)
+    @Mapping(target = "favoriteNgos", ignore = true)
+    @Mapping(target = "notifications", ignore = true)
+    @Mapping(target = "ngoSuggestions", ignore = true)
+    @Mapping(target = "causes", ignore = true)
+    User requestDtoToEntity(LoginRequestDto dto);
 }

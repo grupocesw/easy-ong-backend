@@ -31,5 +31,7 @@ public interface PictureMapper {
     PictureResponseDto entityToResponseDto(Picture entity);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "ngos", ignore = true)
     Picture requestDtoToEntity(PictureRequestDto dto);
 }

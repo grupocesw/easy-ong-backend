@@ -1,17 +1,15 @@
 package br.com.grupocesw.easyong.services;
 
-import java.util.List;
-import java.util.Optional;
-
 import br.com.grupocesw.easyong.entities.Ngo;
+import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.request.dtos.LoginRequestDto;
 import br.com.grupocesw.easyong.response.dtos.JwtAuthenticationResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import br.com.grupocesw.easyong.entities.User;
-import br.com.grupocesw.easyong.request.dtos.UserPasswordRequestDto;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public interface UserService {
@@ -36,9 +34,9 @@ public interface UserService {
 	
 	User getMe();
 
-	JwtAuthenticationResponseDto login(LoginRequestDto requestDto);
+	JwtAuthenticationResponseDto login(User request);
     
-    void changePassword(UserPasswordRequestDto request);
+    void changePassword(User request);
      
     Optional<User> findByUsername(String username);
     

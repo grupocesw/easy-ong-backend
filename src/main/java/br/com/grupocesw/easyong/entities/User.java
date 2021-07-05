@@ -136,6 +136,27 @@ public class User implements UserDetails {
 		this.person = person;
 	}
 
+	public Picture getPicture() {
+		if (picture == null)
+			return Picture.builder().build();
+
+		return picture;
+	}
+
+	public String getUsername() {
+		if (!username.isEmpty())
+			return username.trim().toLowerCase();
+
+		return username;
+	}
+
+	public String getPassword() {
+		if (!password.isEmpty())
+			return password.trim();
+
+		return password;
+	}
+
 	@Override
 	public boolean isAccountNonExpired() {
 		return true;

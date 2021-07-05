@@ -1,7 +1,6 @@
 package br.com.grupocesw.easyong.controllers;
 
 import br.com.grupocesw.easyong.services.PictureService;
-import br.com.grupocesw.easyong.services.impl.PictureServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +19,9 @@ public class PictureController {
 
 	@ResponseBody
 	@PostMapping(value = "upload", produces = { MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })
-	public ResponseEntity<Void> uploadImage(@RequestPart(required = true) MultipartFile file) {
-		service.create(file);
-		return ResponseEntity.noContent().build();
+	public ResponseEntity<?> upload(@RequestPart(required = true) MultipartFile file, HttpServletRequest httpRequest) {
+		service.upload(file);
+		return ResponseEntity.ok().build();
 	}
 
 	@ResponseBody
