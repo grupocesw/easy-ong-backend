@@ -28,9 +28,9 @@ public class AppController {
     @GetMapping(value = "/confirmation-account/{token}", produces = MediaType.TEXT_HTML_VALUE)
     public String confirmationAccount(@PathVariable String token, ModelMap model) {
         try {
-            registrationService.confirmUserAccount(token);
+            User user = registrationService.confirmUserAccount(token);
+            model.addAttribute("message", String.format("%s, sua conta foi ativada com sucesso. Seja bem-vindo!", user.getPerson().getName()));
 
-            model.addAttribute("message", String.format("%s, seja bem-vindo!"));
             return "success-page";
         } catch (Exception e) {
             model.addAttribute("message", e.getMessage());
