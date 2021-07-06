@@ -9,7 +9,10 @@ import br.com.grupocesw.easyong.services.RegistrationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -38,8 +41,8 @@ public class RegistrationController {
 			);
 	}
 	
-	@GetMapping(path = "resend-confirmation/{username}")
-	public ResponseEntity<ApiStandardResponseDto> resendConfirmation(@PathVariable UserUsernameRequestDto request, HttpServletRequest httpRequest) {
+	@PostMapping(path = "resend-confirmation")
+	public ResponseEntity<ApiStandardResponseDto> resendConfirmation(@RequestBody @Valid UserUsernameRequestDto request, HttpServletRequest httpRequest) {
 		registrationService.resendConfirmation(UserMapper.INSTANCE.requestDtoToEntity(request));
 
 		return ResponseEntity
@@ -51,16 +54,4 @@ public class RegistrationController {
 			);
 	}
 
-//	@GetMapping(path = "confirm/{token}")
-//	public ResponseEntity<ApiStandardResponseDto> confirm(@PathVariable String token, HttpServletRequest httpRequest) {
-//		registrationService.confirmToken(token);
-//
-//		return ResponseEntity
-//			.status(HttpStatus.OK)
-//			.body(ApiStandardResponseDto.builder()
-//				.message("Confirmed user with success")
-//				.path(httpRequest.getRequestURI())
-//				.build()
-//			);
-//	}
 }

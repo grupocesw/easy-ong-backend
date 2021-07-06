@@ -9,7 +9,7 @@ import java.util.Optional;
 @Service
 public interface ConfirmationTokenService {
 
-    void save(ConfirmationToken token);
+    ConfirmationToken save(ConfirmationToken token);
 
     ConfirmationToken findByToken(String token);
 

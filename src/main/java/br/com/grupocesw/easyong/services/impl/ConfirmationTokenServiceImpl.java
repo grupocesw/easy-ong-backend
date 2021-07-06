@@ -1,7 +1,6 @@
 package br.com.grupocesw.easyong.services.impl;
 
 import br.com.grupocesw.easyong.entities.ConfirmationToken;
-import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.exceptions.ExpiredTokenRequestException;
 import br.com.grupocesw.easyong.exceptions.InvalidTokenException;
 import br.com.grupocesw.easyong.exceptions.TokenNotFoundException;
@@ -23,8 +22,8 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService {
     private final ConfirmationTokenRepository confirmationTokenRepository;
 
     @Override
-    public void save(ConfirmationToken token) {
-        confirmationTokenRepository.save(token);
+    public ConfirmationToken save(ConfirmationToken token) {
+        return confirmationTokenRepository.save(token);
     }
 
     @Override
