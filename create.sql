@@ -3,11 +3,11 @@ create sequence confirmation_token_sequence start 1 increment 1;
     create table addresses (
        id  bigserial not null,
         complement varchar(255),
-        district varchar(255),
+        district varchar(255) not null,
         latitude varchar(12),
         longitude varchar(12),
-        number int4,
-        street varchar(255),
+        number varchar(7) not null,
+        street varchar(255) not null,
         zip_code varchar(8),
         city_id int8,
         primary key (id)
@@ -86,7 +86,7 @@ create sequence confirmation_token_sequence start 1 increment 1;
     create table ngos (
        id  bigserial not null,
         activated BOOLEAN DEFAULT true not null,
-        cnpj varchar(14),
+        cnpj varchar(14) not null,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         description TEXT,
         name varchar(100) not null,
@@ -165,7 +165,7 @@ create sequence confirmation_token_sequence start 1 increment 1;
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         enabled boolean,
         locked boolean,
-        password varchar(100),
+        password varchar(100) not null,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         username varchar(100) not null,
         person_id int8,

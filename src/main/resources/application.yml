@@ -30,7 +30,7 @@ spring:
       cache-null-values: false
 
   profiles:
-    active: ${APP_PROFILE:test}    
+    active: ${APP_PROFILE:test}
     include:
       - application-test
       - application-dev
