@@ -13,16 +13,18 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "confirmation_tokens")
 @Getter
 @Setter
 public class ConfirmationToken implements Serializable {
+
+	private static final long TOKEN_EXPIRATION_TIME_IN_MINUTES = 15;
 
 	@Id
 	@SequenceGenerator(name = "confirmation_token_sequence", sequenceName = "confirmation_token_sequence", allocationSize = 1)
@@ -32,11 +34,13 @@ public class ConfirmationToken implements Serializable {
 	@Column(nullable = false)
 	private String token;
 
+	@Builder.Default
 	@Column(nullable = false)
-	private LocalDateTime createdAt;
+	private LocalDateTime createdAt = LocalDateTime.now();
 
+	@Builder.Default
 	@Column(nullable = false)
-	private LocalDateTime expiresAt;
+	private LocalDateTime expiresAt = LocalDateTime.now().plusMinutes(TOKEN_EXPIRATION_TIME_IN_MINUTES);;
 
 	private LocalDateTime confirmedAt;
 
@@ -44,10 +48,4 @@ public class ConfirmationToken implements Serializable {
 	@JoinColumn(nullable = false, name = "user_id")
 	private User user;
 
-	public ConfirmationToken(String token, LocalDateTime createdAt, LocalDateTime expiresAt, User user) {
-		this.token = token;
-		this.createdAt = createdAt;
-		this.expiresAt = expiresAt;
-		this.user = user;
-	}
 }

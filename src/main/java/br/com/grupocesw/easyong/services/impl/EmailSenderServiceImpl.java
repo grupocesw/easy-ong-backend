@@ -31,7 +31,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
 			
 			helper.setFrom("noreply@easyong.com.br");
 			helper.setTo(user.getUsername());
-			helper.setSubject("Easy ONG - Confirmação de E-mail");			
+			helper.setSubject("Easy ONG - Confirmação de E-mail");
 			helper.setText(buildRegisterEmail(user, link), true);
 			
 			mailSender.send(message);
@@ -39,6 +39,25 @@ public class EmailSenderServiceImpl implements EmailSenderService {
             LOGGER.error("Failed to send email.", e);
             throw new IllegalStateException("Failed to send email.");
         }
+	}
+
+	@Override
+	@Async
+	public void sendRecoverPassword(User user, String link) throws IOException {
+		try {
+			MimeMessage message = mailSender.createMimeMessage();
+			MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+			helper.setFrom("noreply@easyong.com.br");
+			helper.setTo(user.getUsername());
+			helper.setSubject("Easy ONG - Recuperação de Senha");
+			helper.setText(buildRegisterEmail(user, link), true);
+
+			mailSender.send(message);
+		} catch (MessagingException e) {
+			LOGGER.error("Failed to send email.", e);
+			throw new IllegalStateException("Failed to send email.");
+		}
 	}
 	
     private String buildRegisterEmail(User user, String link) {

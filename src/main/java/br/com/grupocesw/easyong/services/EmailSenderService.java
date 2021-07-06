@@ -13,4 +13,5 @@ import br.com.grupocesw.easyong.response.dtos.UserResponseDto;
 public interface EmailSenderService {
     
 	void sendUserRegister(User user, String link) throws MessagingException, IOException;
+	void sendRecoverPassword(User user, String link) throws MessagingException, IOException;
 }

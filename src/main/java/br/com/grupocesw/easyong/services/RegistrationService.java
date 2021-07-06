@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 public interface RegistrationService {
 
 	User register(User request);
-	
-	Boolean confirmToken(String token);
 
-	Boolean resendConfirmation(String username);
+	User confirmUserAccount(String token);
+
+	void resendConfirmation(User request);
 }

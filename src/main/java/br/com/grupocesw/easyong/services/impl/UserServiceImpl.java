@@ -1,5 +1,6 @@
 package br.com.grupocesw.easyong.services.impl;
 
+import br.com.grupocesw.easyong.entities.ConfirmationToken;
 import br.com.grupocesw.easyong.entities.Ngo;
 import br.com.grupocesw.easyong.entities.SocialCause;
 import br.com.grupocesw.easyong.entities.User;
@@ -7,6 +8,7 @@ import br.com.grupocesw.easyong.exceptions.*;
 import br.com.grupocesw.easyong.repositories.UserRepository;
 import br.com.grupocesw.easyong.response.dtos.JwtAuthenticationResponseDto;
 import br.com.grupocesw.easyong.services.*;
+import br.com.grupocesw.easyong.utils.AppUtil;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,9 +24,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -40,6 +44,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	private final PasswordEncoder passwordEncoder;
 	private final AuthenticationManager authenticationManager;
 	private final JwtTokenService jwtTokenService;
+	private final ConfirmationTokenService confirmationTokenService;
+	private final EmailSenderService mailSenderService;
 
 	@Override
 	public User create(User request) {
@@ -93,10 +99,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 		if (request.getCauses() != null && request.getCauses().size() > 0) {
 			Set<SocialCause> causes = socialCauseService.findByIdIn(
-					request.getCauses()
-							.stream()
-							.map(c -> c.getId())
-							.collect(Collectors.toSet())
+				request.getCauses()
+					.stream()
+					.map(c -> c.getId())
+					.collect(Collectors.toSet())
 			);
 
 			if (causes.isEmpty())
@@ -183,13 +189,45 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	}
 
 	@Override
+	public void recoverPassword(User request) {
+		User user = findByUsername(request.getUsername()).get();
+		String token = confirmationTokenService.generateToken();
+
+		confirmationTokenService.save(
+			ConfirmationToken.builder()
+				.token(token)
+				.user(user)
+				.build()
+		);
+
+		try {
+			mailSenderService.sendRecoverPassword(user, AppUtil.getRootUrlAppConcatPath("/recover-password/" + token));
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+
+	}
+	@Override
+	@Transactional
+	public User confirmUserRecoverPassword(String token, User request) {
+		ConfirmationToken confirmationToken = confirmationTokenService.findByToken(token);
+		User user = confirmationToken.getUser();
+		user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+		confirmationTokenService.setConfirmedAt(token);
+
+		return user;
+	}
+
+
+	@Override
 	public Optional<User> findByUsername(String username) {
 		log.info("findByUsername user {}", username);
 
 		return Optional.ofNullable(
-				repository.findByUsernameIgnoreCase(username).orElseThrow(
-						() -> new UserNotExistException()
-				));
+			repository.findByUsernameIgnoreCase(username).orElseThrow(
+					() -> new UserNotExistException()
+			));
 	}
 
 	@Override
@@ -212,9 +250,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         int currentPage = pageable.getPageNumber();
         int startItem = currentPage * pageSize;
         
-		List<Ngo> ngos = getAuthUser().getFavoriteNgos()
-				.stream()
-				.collect(Collectors.toList());
+		List<Ngo> ngos = getAuthUser().getFavoriteNgos().stream().collect(Collectors.toList());
 
         if (ngos.size() < startItem) {
         	ngos = Collections.emptyList();
@@ -224,10 +260,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
 		
 		Page<Ngo> page = new PageImpl<>(
-				ngos, 
-				PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()), 
-				ngos.size()
-			);
+			ngos,
+			PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()),
+			ngos.size()
+		);
 		
 		return page;
 	}

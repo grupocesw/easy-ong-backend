@@ -37,7 +37,11 @@ public interface UserService {
 	JwtAuthenticationResponseDto login(User request);
     
     void changePassword(User request);
-     
+
+    void recoverPassword(User request);
+
+	User confirmUserRecoverPassword(String token, User request);
+
     Optional<User> findByUsername(String username);
     
     Boolean existsByUsername(String username);

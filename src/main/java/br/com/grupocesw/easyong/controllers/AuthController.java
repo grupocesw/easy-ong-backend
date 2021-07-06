@@ -5,6 +5,7 @@ import br.com.grupocesw.easyong.mappers.UserMapper;
 import br.com.grupocesw.easyong.request.dtos.LoginRequestDto;
 import br.com.grupocesw.easyong.request.dtos.UserPasswordRequestDto;
 import br.com.grupocesw.easyong.request.dtos.UserUpdateRequestDto;
+import br.com.grupocesw.easyong.request.dtos.UserUsernameRequestDto;
 import br.com.grupocesw.easyong.response.dtos.ApiStandardResponseDto;
 import br.com.grupocesw.easyong.response.dtos.JwtAuthenticationResponseDto;
 import br.com.grupocesw.easyong.response.dtos.NgoSlimResponseDto;
@@ -71,7 +72,20 @@ public class AuthController {
 		return ResponseEntity
 			.status(HttpStatus.OK)
 			.body(ApiStandardResponseDto.builder()
-				.message("Password changed")
+				.message("Success. Password changed")
+				.path(httpRequest.getRequestURI())
+				.build()
+			);
+	}
+
+	@PostMapping(value = "/recover-password")
+	public ResponseEntity<ApiStandardResponseDto> recoverPassword(@RequestBody @Valid UserUsernameRequestDto request, HttpServletRequest httpRequest) {
+		service.recoverPassword(UserMapper.INSTANCE.requestDtoToEntity(request));
+
+		return ResponseEntity
+			.status(HttpStatus.OK)
+			.body(ApiStandardResponseDto.builder()
+				.message("Success. Sent email with instructions to recover password")
 				.path(httpRequest.getRequestURI())
 				.build()
 			);
@@ -84,7 +98,7 @@ public class AuthController {
 		return ResponseEntity
 			.status(HttpStatus.OK)
 			.body(ApiStandardResponseDto.builder()
-				.message(String.format("Action applied Ngo. Id %d", ngoId))
+				.message(String.format("Success. Action applied Ngo. Id %d", ngoId))
 				.path(httpRequest.getRequestURI())
 				.build()
 			);

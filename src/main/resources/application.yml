@@ -22,6 +22,8 @@ spring:
   application:
     name: Easy ONG
 
+  mvc.favicon.enabled: false
+
   cache:
     type: redis
     redis:

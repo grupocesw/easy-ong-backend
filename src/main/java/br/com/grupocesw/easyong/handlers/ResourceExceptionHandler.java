@@ -120,4 +120,28 @@ public class ResourceExceptionHandler {
 				);
 	}
 
+	@ExceptionHandler(TokenNotFoundException.class)
+	public ResponseEntity<StandardHandlerErrorResponseDto> tokenNotFound(TokenNotFoundException ex, HttpServletRequest resquest) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST.value())
+			.body(StandardHandlerErrorResponseDto.builder()
+				.code(10)
+				.error("Token not found")
+				.message(ex.getMessage())
+				.path(resquest.getRequestURI())
+				.build()
+			);
+	}
+
+	@ExceptionHandler(InvalidTokenException.class)
+	public ResponseEntity<StandardHandlerErrorResponseDto> invalideToken(InvalidTokenException ex, HttpServletRequest resquest) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST.value())
+			.body(StandardHandlerErrorResponseDto.builder()
+				.code(11)
+				.error("Invalid Token")
+				.message(ex.getMessage())
+				.path(resquest.getRequestURI())
+				.build()
+				);
+	}
+
 }

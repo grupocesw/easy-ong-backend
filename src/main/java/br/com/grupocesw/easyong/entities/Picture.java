@@ -5,6 +5,7 @@ import java.util.Set;
 
 import javax.persistence.*;
 
+import br.com.grupocesw.easyong.utils.AppUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import br.com.grupocesw.easyong.utils.PictureUtil;
@@ -50,7 +51,7 @@ public class Picture implements Serializable {
 	public String getUrl() {
 		if (!PictureUtil.isURL(url)) {
 			String pictureName = (url == null) ? noImage : url;			
-			return PictureUtil.getServerUrl(path, pictureName);
+			return AppUtil.getRootUrlAppConcatPath(path + "/" + pictureName);
 		}
 		
 		return url;

@@ -2,6 +2,7 @@ package br.com.grupocesw.easyong.controllers;
 
 import br.com.grupocesw.easyong.mappers.UserMapper;
 import br.com.grupocesw.easyong.request.dtos.UserCreateRequestDto;
+import br.com.grupocesw.easyong.request.dtos.UserUsernameRequestDto;
 import br.com.grupocesw.easyong.response.dtos.ApiStandardResponseDto;
 import br.com.grupocesw.easyong.response.dtos.UserResponseDto;
 import br.com.grupocesw.easyong.services.RegistrationService;
@@ -38,8 +39,8 @@ public class RegistrationController {
 	}
 	
 	@GetMapping(path = "resend-confirmation/{username}")
-	public ResponseEntity<ApiStandardResponseDto> resendConfirmation(@PathVariable String username, HttpServletRequest httpRequest) {
-		registrationService.resendConfirmation(username);
+	public ResponseEntity<ApiStandardResponseDto> resendConfirmation(@PathVariable UserUsernameRequestDto request, HttpServletRequest httpRequest) {
+		registrationService.resendConfirmation(UserMapper.INSTANCE.requestDtoToEntity(request));
 
 		return ResponseEntity
 			.status(HttpStatus.OK)
@@ -50,16 +51,16 @@ public class RegistrationController {
 			);
 	}
 
-	@GetMapping(path = "confirm/{token}")
-	public ResponseEntity<ApiStandardResponseDto> confirm(@PathVariable String token, HttpServletRequest httpRequest) {
-		registrationService.confirmToken(token);
-
-		return ResponseEntity
-			.status(HttpStatus.OK)
-			.body(ApiStandardResponseDto.builder()
-				.message("Confirmed user with success")
-				.path(httpRequest.getRequestURI())
-				.build()
-			);
-	}
+//	@GetMapping(path = "confirm/{token}")
+//	public ResponseEntity<ApiStandardResponseDto> confirm(@PathVariable String token, HttpServletRequest httpRequest) {
+//		registrationService.confirmToken(token);
+//
+//		return ResponseEntity
+//			.status(HttpStatus.OK)
+//			.body(ApiStandardResponseDto.builder()
+//				.message("Confirmed user with success")
+//				.path(httpRequest.getRequestURI())
+//				.build()
+//			);
+//	}
 }

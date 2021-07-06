@@ -9,15 +9,14 @@ import br.com.grupocesw.easyong.services.ConfirmationTokenService;
 import br.com.grupocesw.easyong.services.EmailSenderService;
 import br.com.grupocesw.easyong.services.RegistrationService;
 import br.com.grupocesw.easyong.services.UserService;
+import br.com.grupocesw.easyong.utils.AppUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -27,8 +26,6 @@ public class RegistrationServiceImpl implements RegistrationService {
 	private final UserService userService;
     private final ConfirmationTokenService confirmationTokenService;
     private final EmailSenderService mailSenderService;
-
-    private final long TOKEN_EXPIRATION_TIME_IN_MINUTES = 15;
 
 	@Override
 	public User register(User request) {
@@ -44,19 +41,19 @@ public class RegistrationServiceImpl implements RegistrationService {
 		}
 
 		User userRegisted = userService.create(request);
-		String token = getToken();
+		String token = confirmationTokenService.generateToken();
 
-        ConfirmationToken confirmationToken = new ConfirmationToken(
-            token,
-            LocalDateTime.now(),
-            LocalDateTime.now().plusMinutes(TOKEN_EXPIRATION_TIME_IN_MINUTES),
-            User.builder().id(userRegisted.getId()).build()
-        );
-
-        confirmationTokenService.save(confirmationToken);
+        confirmationTokenService.save(
+			ConfirmationToken.builder()
+				.token(token)
+				.user(userRegisted)
+				.build()
+		);
         
 		try {
-			mailSenderService.sendUserRegister(userRegisted, getLink(token));
+			mailSenderService.sendUserRegister(userRegisted,
+					AppUtil.getRootUrlAppConcatPath("/confirmation-account/" + token)
+			);
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 		}
@@ -66,49 +63,27 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     @Override
     @Transactional
-    public Boolean confirmToken(String token) {
-        ConfirmationToken confirmationToken = confirmationTokenService
-                .getToken(token)
-                .orElseThrow(() ->
-                        new ExpiredTokenRequestException());
+    public User confirmUserAccount(String token) {
+		ConfirmationToken confirmationToken = confirmationTokenService.findByToken(token);
+		User user = confirmationToken.getUser();
 
-        User user = confirmationToken.getUser();
-        
-        if (user.isEnabled() || confirmationToken.getConfirmedAt() != null) {
-        	log.warn("Username {} already confirmed.", user.getUsername());
-            throw new UsernameAlreadyConfirmedException();
-        }
-
-        LocalDateTime expiredAt = confirmationToken.getExpiresAt();
-
-        if (expiredAt.isBefore(LocalDateTime.now())) {
-            throw new ExpiredTokenRequestException();
-        }
+		if (user.isEnabled()) {
+			log.warn("Username {} already confirmed.", user.getUsername());
+			throw new UsernameAlreadyConfirmedException();
+		}
 
         userService.enableUser(user);
         confirmationTokenService.setConfirmedAt(token);
-        
-        return true;
-    }
-    
-    private String getLink(String token) {
-		return ServletUriComponentsBuilder
-			.fromCurrentContextPath()
-			.build()
-			.toUriString()
-			.concat("/api/registration/confirm/" + token);
-    }
-    
-    private String getToken() {
-    	return UUID.randomUUID().toString();
+
+        return user;
     }
 
 	@Override
-	public Boolean resendConfirmation(String username) {
-		log.info("Resend confirmation user {}", username);
+	public void resendConfirmation(User request) {
+		log.info("Resend confirmation user {}", request.getUsername());
 
 		ConfirmationToken ct = confirmationTokenService
-            .findByUsername(username)
+            .findByUsername(request.getUsername())
             .orElseThrow(() ->
                     new UsernameNotFoundException("Username not found."));
 		
@@ -117,10 +92,8 @@ public class RegistrationServiceImpl implements RegistrationService {
 			throw new UsernameAlreadyConfirmedException();
 		}
 
-		String token = getToken();
-		
 		if (ct.getUser().isEnabled() || ct.getConfirmedAt() != null) {
-        	log.warn("Username {} already confirmed.", username);
+        	log.warn("Username {} already confirmed.", request.getUsername());
             throw new UsernameAlreadyConfirmedException();
         }
 
@@ -131,22 +104,19 @@ public class RegistrationServiceImpl implements RegistrationService {
         }
         
         User user = ct.getUser();
+		String token = confirmationTokenService.generateToken();
 
-        ConfirmationToken confirmationToken = new ConfirmationToken(
-            token,
-            LocalDateTime.now(),
-            LocalDateTime.now().plusMinutes(TOKEN_EXPIRATION_TIME_IN_MINUTES),
-            User.builder().id(user.getId()).build()
-        );
-
-        confirmationTokenService.save(confirmationToken);
+		confirmationTokenService.save(
+			ConfirmationToken.builder()
+				.token(token)
+				.user(user)
+				.build()
+		);
         
 		try {
-			mailSenderService.sendUserRegister(user, getLink(token));
+			mailSenderService.sendUserRegister(user, AppUtil.getRootUrlAppConcatPath("/recover-password/" + token));
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 		}
-
-		return true;
 	}
 }

@@ -48,7 +48,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         "/api/faqs/**",
         "/api/pictures/**",
         "/h2-console",
-        "/h2-console/**"
+        "/h2-console/**",
+        "/static/**"
     };
 	
 	private static final String[] ANONYMOUS_LIST = {

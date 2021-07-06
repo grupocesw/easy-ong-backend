@@ -26,7 +26,7 @@ public class UserCreateRequestDto implements Serializable {
 	private String username;
 
 	@NotEmpty(message = "Password required")
-	@Size(min = 6, max = 100, message = "Password must contain between 6 and 100 characters")
+	@Size(min = 8, max = 100, message = "Password must contain between 6 and 100 characters")
 	private String password;
 	
 	@NotEmpty(message = "Name required")
