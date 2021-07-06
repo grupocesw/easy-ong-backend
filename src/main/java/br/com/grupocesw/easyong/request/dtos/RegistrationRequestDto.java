@@ -11,6 +11,7 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import br.com.grupocesw.easyong.enums.Gender;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,7 @@ public class RegistrationRequestDto {
 	@Column(name = "name", nullable = false, length = 100)
     private String name;
 
+	@ApiModelProperty(notes="Username is email", name="Username", required=true, value="user@easyong.com.br")
 	@Email(message = "The email format is incorrect")
 	@NotEmpty(message = "Username required")
 	@Size(min = 3, max = 100, message = "Username must contain between 3 and 100 characters")

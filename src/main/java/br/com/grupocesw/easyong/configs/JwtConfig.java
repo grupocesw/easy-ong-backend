@@ -20,7 +20,7 @@ public class JwtConfig {
     @Value("${security.jwt.prefix:}")
     private String prefix;
 
-    @Value("${security.jwt.expiration:1234}")
+    @Value("${security.jwt.expiration:86400}")
     private int expiration;
 
     @Value("${security.jwt.secret:}")

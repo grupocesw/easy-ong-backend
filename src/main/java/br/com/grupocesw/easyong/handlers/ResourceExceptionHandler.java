@@ -41,7 +41,7 @@ public class ResourceExceptionHandler {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST.value())
 				.body(StandardHandlerErrorResponseDto.builder()
 					.code(3)
-					.error("User not existS")
+					.error("User not exists")
 					.message(ex.getMessage())
 					.path(resquest.getRequestURI())
 					.build()

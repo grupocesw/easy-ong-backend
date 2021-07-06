@@ -11,6 +11,7 @@ import br.com.grupocesw.easyong.response.dtos.JwtAuthenticationResponseDto;
 import br.com.grupocesw.easyong.response.dtos.NgoSlimResponseDto;
 import br.com.grupocesw.easyong.response.dtos.UserResponseDto;
 import br.com.grupocesw.easyong.services.UserService;
+import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,10 +26,19 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/auth")
 @RestController
+@Api(tags = "Auth Controller")
 public class AuthController {
 
 	private final UserService service;
 
+	@ApiOperation(value = "Authentication user")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Authentication successfully"),
+			@ApiResponse(code = 400, message = "Validation failed for arguments or error input data | " +
+					"User not exists"),
+			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
+			@ApiResponse(code = 500, message = "An exception was generated")
+	})
 	@PostMapping("/login")
 	public ResponseEntity<JwtAuthenticationResponseDto> login(@Valid @RequestBody LoginRequestDto request) {
 		return ResponseEntity.ok(
@@ -36,6 +46,12 @@ public class AuthController {
 		);
 	}
 
+	@ApiOperation(value = "Get information logged user")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Get informations successfully"),
+			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
+			@ApiResponse(code = 500, message = "An exception was generated")
+	})
 	@GetMapping(value = "/me")
 	public ResponseEntity<ApiStandardResponseDto> me(HttpServletRequest httpRequest) {
 		UserResponseDto dto = UserMapper.INSTANCE.entityToResponseDto(service.getMe());
@@ -49,7 +65,14 @@ public class AuthController {
 				.build()
 			);
 	}
-	
+
+	@ApiOperation(value = "Update logged user profile")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Updated successfully"),
+			@ApiResponse(code = 400, message = "Validation failed for arguments or error input data"),
+			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
+			@ApiResponse(code = 500, message = "An exception was generated")
+	})
 	@PutMapping(value = "/me/update")
 	public ResponseEntity<ApiStandardResponseDto> updateProfile(@RequestBody @Valid UserUpdateRequestDto request, HttpServletRequest httpRequest) {
 		UserResponseDto dto = UserMapper.INSTANCE.entityToResponseDto(
@@ -58,13 +81,24 @@ public class AuthController {
 		return ResponseEntity
 			.status(HttpStatus.OK)
 			.body(ApiStandardResponseDto.builder()
-				.message("Update user profile")
+				.message("Updated user profile")
 				.data(dto)
 				.path(httpRequest.getRequestURI())
 				.build()
 			);
 	}
-	
+
+	@ApiOperation(value = "Change password user in your profile")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Changed password successfully"),
+			@ApiResponse(code = 400, message = "Validation failed for arguments or error input data | " +
+					"User not exists | " +
+					"Email already sent. Please wait 15 minutes for new request | " +
+					"Passwords must match | " +
+					"Password must contain uppercase, lowercase, number and special character | " +
+					"Password must contain between 6 and 100 characters"),
+			@ApiResponse(code = 500, message = "An exception was generated")
+	})
 	@PutMapping(value = "/change-password")
 	public ResponseEntity<ApiStandardResponseDto> changePassword(@RequestBody @Valid UserPasswordRequestDto request, HttpServletRequest httpRequest) {
 		service.changePassword(request);
@@ -78,6 +112,14 @@ public class AuthController {
 			);
 	}
 
+	@ApiOperation(value = "Resend email for change password")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Email sent successfully"),
+			@ApiResponse(code = 400, message = "Validation failed for arguments or error input data | " +
+					"User not exists | " +
+					"Email already sent. Please wait 15 minutes for new request"),
+			@ApiResponse(code = 500, message = "An exception was generated")
+	})
 	@PostMapping(value = "/recover-password")
 	public ResponseEntity<ApiStandardResponseDto> recoverPassword(@RequestBody @Valid UserUsernameRequestDto request, HttpServletRequest httpRequest) {
 		service.recoverPassword(UserMapper.INSTANCE.requestDtoToEntity(request));
@@ -91,6 +133,13 @@ public class AuthController {
 			);
 	}
 
+	@ApiOperation(value = "Favorite or remove favorite NGO to logged user")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "User logged into the system executes the action successfully"),
+			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
+			@ApiResponse(code = 404, message = "Ngo not found"),
+			@ApiResponse(code = 500, message = "An exception was generated")
+	})
 	@PutMapping(value = "/favorite-ngos/{ngoId}")
 	public ResponseEntity<ApiStandardResponseDto> favorite(@PathVariable Long ngoId, HttpServletRequest httpRequest) {
 		service.favorite(ngoId);
@@ -103,7 +152,18 @@ public class AuthController {
 				.build()
 			);
 	}
-	
+
+	@ApiOperation(value = "Return pageable list of NGOs by default 20 items")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Return list successfully"),
+			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
+			@ApiResponse(code = 500, message = "An exception was generated")
+	})
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "page", dataType = "integer", paramType = "query", value = "Results page you want to retrieve (0..N)"),
+			@ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", value = "Number of records per page."),
+			@ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
+					+ "Default sort order is ascending. " + "Multiple sort criteria are supported.") })
 	@GetMapping(value = "/favorite-ngos")
 	public ResponseEntity<Page<NgoSlimResponseDto>> favoriteNgos(
 			@RequestParam("page") Optional<Integer> page, 

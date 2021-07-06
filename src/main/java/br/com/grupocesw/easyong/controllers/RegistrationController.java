@@ -6,6 +6,10 @@ import br.com.grupocesw.easyong.request.dtos.UserUsernameRequestDto;
 import br.com.grupocesw.easyong.response.dtos.ApiStandardResponseDto;
 import br.com.grupocesw.easyong.response.dtos.UserResponseDto;
 import br.com.grupocesw.easyong.services.RegistrationService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +24,17 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(path = "api/registration")
+@Api(tags = "Registration Controller")
 public class RegistrationController {
 
 	private final RegistrationService registrationService;
 
+	@ApiOperation(value = "Register new user")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Register new user successfully"),
+			@ApiResponse(code = 400, message = "Validation failed for arguments or error input data | Username already exists"),
+			@ApiResponse(code = 500, message = "An exception was generated")
+	})
 	@PostMapping
 	public ResponseEntity<ApiStandardResponseDto> register(@RequestBody @Valid UserCreateRequestDto request, HttpServletRequest httpRequest) {
 		UserResponseDto dto =
@@ -40,7 +51,17 @@ public class RegistrationController {
 				.build()
 			);
 	}
-	
+
+	@ApiOperation(value = "Resend email for user account activation")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Email sent successfully"),
+			@ApiResponse(code = 400, message = "Validation failed for arguments or error input data | " +
+					"Username already exists | " +
+					"User not exists | " +
+					"User already confirmed in the system | " +
+					"Email already sent. Please wait 15 minutes for new request"),
+			@ApiResponse(code = 500, message = "An exception was generated")
+	})
 	@PostMapping(path = "resend-confirmation")
 	public ResponseEntity<ApiStandardResponseDto> resendConfirmation(@RequestBody @Valid UserUsernameRequestDto request, HttpServletRequest httpRequest) {
 		registrationService.resendConfirmation(UserMapper.INSTANCE.requestDtoToEntity(request));

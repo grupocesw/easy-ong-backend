@@ -14,10 +14,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import springfox.documentation.annotations.ApiIgnore;
 
 @Controller
 @RequiredArgsConstructor
 @Slf4j
+@ApiIgnore
 public class AppController {
 
     private final RegistrationService registrationService;

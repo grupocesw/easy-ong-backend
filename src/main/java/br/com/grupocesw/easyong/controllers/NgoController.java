@@ -7,6 +7,7 @@ import br.com.grupocesw.easyong.response.dtos.ApiStandardResponseDto;
 import br.com.grupocesw.easyong.response.dtos.NgoResponseDto;
 import br.com.grupocesw.easyong.response.dtos.NgoSlimResponseDto;
 import br.com.grupocesw.easyong.services.NgoService;
+import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,10 +24,22 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/ngos")
 @RestController
+@Api(tags = "NGO Controller")
 public class NgoController {
 
 	private final NgoService service;
-	
+
+	@ApiOperation(value = "Return pageable list of NGOs by default 20 items and also you can also use name, description " +
+			"and social cause name filters")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Return list successfully"),
+			@ApiResponse(code = 500, message = "An exception was generated")
+	})
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "page", dataType = "integer", paramType = "query", value = "Results page you want to retrieve (0..N)"),
+			@ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", value = "Number of records per page."),
+			@ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
+					+ "Default sort order is ascending. " + "Multiple sort criteria are supported.") })
 	@GetMapping
 	public Page<NgoSlimResponseDto> list(
 			@RequestParam(required = false) String filter,
@@ -37,12 +50,29 @@ public class NgoController {
 		else
 			return NgoMapper.INSTANCE.listToSlimResponseDto(service.findByActivated(pageable));
 	}
-	
+
+	@ApiOperation(value = "Return suggested pageable list of NGOs by default 5 items to logged and anonymous user")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Return list successfully"),
+			@ApiResponse(code = 500, message = "An exception was generated")
+	})
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "page", dataType = "integer", paramType = "query", value = "Results page you want to retrieve (0..N)"),
+			@ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", value = "Number of records per page."),
+			@ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
+					+ "Default sort order is ascending. " + "Multiple sort criteria are supported.") })
 	@GetMapping(value = "/suggested")
 	public Page<NgoSlimResponseDto> findSuggested(@PageableDefault(page = 0, size = 5) Pageable pageable) {
 		return NgoMapper.INSTANCE.listToSlimResponseDto(service.findSuggested(pageable));
 	}
-	
+
+	@ApiOperation(value = "Create new NGO")
+	@ApiResponses(value = {
+			@ApiResponse(code = 201, message = "Created successfully"),
+			@ApiResponse(code = 400, message = "Validation failed for arguments or error input data"),
+			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
+			@ApiResponse(code = 500, message = "An exception was generated")
+	})
 	@PostMapping
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<ApiStandardResponseDto> create(@Valid @RequestBody NgoCreateRequestDto request, HttpServletRequest httpRequest) {
@@ -59,12 +89,26 @@ public class NgoController {
 				.build()
 			);
 	}
-	
+
+	@ApiOperation(value = "Get one NGO")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Get one successfully"),
+			@ApiResponse(code = 404, message = "Resource not found"),
+			@ApiResponse(code = 500, message = "An exception was generated")
+	})
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<NgoResponseDto> retrieve(@PathVariable Long id) {
 		return ResponseEntity.ok(NgoMapper.INSTANCE.entityToResponseDto(service.retrieve(id)));
 	}
-	
+
+	@ApiOperation(value = "Update specific NGO")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Updated successfully"),
+			@ApiResponse(code = 400, message = "Validation failed for arguments or error input data"),
+			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
+			@ApiResponse(code = 404, message = "Resource not found"),
+			@ApiResponse(code = 500, message = "An exception was generated")
+	})
 	@PutMapping(value = "/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<ApiStandardResponseDto> update(
@@ -85,7 +129,14 @@ public class NgoController {
 				.build()
 			);
 	}
-	
+
+	@ApiOperation(value = "Delete specific NGO")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Deleted successfully"),
+			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
+			@ApiResponse(code = 404, message = "Resource not found"),
+			@ApiResponse(code = 500, message = "An exception was generated")
+	})
 	@DeleteMapping(value = "/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<ApiStandardResponseDto> delete(@PathVariable Long id, HttpServletRequest httpRequest) {

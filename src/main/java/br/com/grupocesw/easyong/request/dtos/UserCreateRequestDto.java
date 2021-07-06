@@ -2,6 +2,7 @@ package br.com.grupocesw.easyong.request.dtos;
 
 import br.com.grupocesw.easyong.enums.Gender;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import javax.validation.constraints.Email;
@@ -19,7 +20,8 @@ import java.util.Set;
 public class UserCreateRequestDto implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-	
+
+	@ApiModelProperty(notes="Username is email", name="Username", required=true, value="user@easyong.com.br")
 	@Email(message = "Invalid email format")
 	@NotEmpty(message = "Username required")
 	@Size(min = 3, max = 100, message = "Username must contain between 3 and 100 characters")

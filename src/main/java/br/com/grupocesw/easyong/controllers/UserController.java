@@ -23,28 +23,36 @@ import javax.validation.Valid;
 @PreAuthorize("hasAuthority('ADMIN')")
 @RestController
 @RequestMapping(value = "/api/users")
+@Api(tags = "User Controller")
 public class UserController {
 
 	private final UserService service;
 
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Retorna a lista de usuário"),
-			@ApiResponse(code = 401, message = "Credencial inválida para acessar este recurso"),
-			@ApiResponse(code = 403, message = "Você não tem permissão para acessar este recurso"),
-			@ApiResponse(code = 500, message = "Foi gerada uma exceção"), })
-	@GetMapping
-	@ResponseStatus(HttpStatus.OK)
-	@ApiOperation(value = "Find users")
+	@ApiOperation(value = "Return pageable list of users by default 20 items")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Return list with success"),
+			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
+			@ApiResponse(code = 500, message = "An exception was generated")
+	})
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "page", dataType = "integer", paramType = "query", value = "Results page you want to retrieve (0..N)"),
 			@ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", value = "Number of records per page."),
 			@ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
 					+ "Default sort order is ascending. " + "Multiple sort criteria are supported.") })
+	@GetMapping
 	public ResponseEntity<Page<UserResponseDto>> list(@ApiIgnore final Pageable pageable) {
 		return ResponseEntity.ok(
 				UserMapper.INSTANCE.listToResponseDto(service.findCheckedAll(pageable))
 		);
 	}
 
+	@ApiOperation(value = "Return pageable list of users by default 20 items")
+	@ApiResponses(value = {
+			@ApiResponse(code = 201, message = "Created user successfully"),
+			@ApiResponse(code = 400, message = "Validation failed for arguments or error input data | Username already exists"),
+			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
+			@ApiResponse(code = 500, message = "An exception was generated")
+	})
 	@ResponseBody
 	@PostMapping
 	public ResponseEntity<ApiStandardResponseDto> create(@RequestBody @Valid UserCreateRequestDto request, HttpServletRequest httpRequest) {
@@ -63,11 +71,26 @@ public class UserController {
 			);
 	}
 
+	@ApiOperation(value = "Get one user")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Get one successfully"),
+			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
+			@ApiResponse(code = 404, message = "Resource not found"),
+			@ApiResponse(code = 500, message = "An exception was generated")
+	})
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<UserResponseDto> retrieve(@PathVariable Long id) {
 		return ResponseEntity.ok(UserMapper.INSTANCE.entityToResponseDto(service.retrieve(id)));
 	}
 
+	@ApiOperation(value = "Update specific user")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Updated successfully"),
+			@ApiResponse(code = 400, message = "Validation failed for arguments or error input data"),
+			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
+			@ApiResponse(code = 404, message = "Resource not found"),
+			@ApiResponse(code = 500, message = "An exception was generated")
+	})
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<ApiStandardResponseDto> update(@PathVariable Long id, @RequestBody @Valid UserUpdateRequestDto request, HttpServletRequest httpRequest) {
 		UserResponseDto dto = UserMapper.INSTANCE.entityToResponseDto(
@@ -84,6 +107,13 @@ public class UserController {
 			);
 	}
 
+	@ApiOperation(value = "Delete specific user")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Deleted successfully"),
+			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
+			@ApiResponse(code = 404, message = "Resource not found"),
+			@ApiResponse(code = 500, message = "An exception was generated")
+	})
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<ApiStandardResponseDto> delete(@PathVariable Long id, HttpServletRequest httpRequest) {
 		service.delete(id);

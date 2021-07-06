@@ -1,6 +1,7 @@
 package br.com.grupocesw.easyong.request.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,7 +32,7 @@ public class NgoCreateRequestDto implements Serializable {
 	private Boolean activated = true;
 	
 	private AddressRequestDto address;
-	
+
 	@NotNull(message = "At least one contact required")
 	@JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
 	private Set<ContactRequestDto> contacts;
