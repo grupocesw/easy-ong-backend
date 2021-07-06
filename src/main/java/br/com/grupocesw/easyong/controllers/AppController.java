@@ -1,7 +1,6 @@
 package br.com.grupocesw.easyong.controllers;
 
 import br.com.grupocesw.easyong.entities.User;
-import br.com.grupocesw.easyong.mappers.UserMapper;
 import br.com.grupocesw.easyong.request.dtos.UserPasswordRequestDto;
 import br.com.grupocesw.easyong.services.ConfirmationTokenService;
 import br.com.grupocesw.easyong.services.RegistrationService;
@@ -29,7 +28,7 @@ public class AppController {
     public String confirmationAccount(@PathVariable String token, ModelMap model) {
         try {
             User user = registrationService.confirmUserAccount(token);
-            model.addAttribute("message", String.format("%s, sua conta foi ativada com sucesso. Seja bem-vindo!", user.getPerson().getName()));
+            model.addAttribute("message", String.format("%s sua conta foi ativada com sucesso. Seja bem-vindo!", user.getPerson().getName()));
 
             return "success-page";
         } catch (Exception e) {
@@ -65,25 +64,14 @@ public class AppController {
 
         try {
             redirectAttr.addFlashAttribute("token", token);
-
-            if (request.getPassword().length() < 8 || request.getPassword().length() > 100) {
-                redirectAttr.addFlashAttribute("message", "As senhas devem ter entre 8 e 100 caracteres");
-                return redirectError;
-            }
-
-            if (!request.getPassword().equals(request.getPasswordConfirmation())) {
-                redirectAttr.addFlashAttribute("message", "As senhas devem ser iguais");
-                return redirectError;
-            }
-
-            User user = userService.confirmUserRecoverPassword(token, UserMapper.INSTANCE.requestDtoToEntity(request));
+            User user = userService.confirmUserRecoverPassword(token, request);
 
             model.addAttribute("message",
                     String.format("%s, sua senha foi alterada com sucesso!", user.getPerson().getName()));
 
             return "success-page";
         } catch (Exception e) {
-            model.addAttribute("message", e.getMessage());
+            redirectAttr.addFlashAttribute("message", e.getMessage());
         }
 
         return redirectError;

@@ -3,6 +3,7 @@ package br.com.grupocesw.easyong.services;
 import br.com.grupocesw.easyong.entities.Ngo;
 import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.request.dtos.LoginRequestDto;
+import br.com.grupocesw.easyong.request.dtos.UserPasswordRequestDto;
 import br.com.grupocesw.easyong.response.dtos.JwtAuthenticationResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,11 +37,11 @@ public interface UserService {
 
 	JwtAuthenticationResponseDto login(User request);
     
-    void changePassword(User request);
+    void changePassword(UserPasswordRequestDto request);
 
     void recoverPassword(User request);
 
-	User confirmUserRecoverPassword(String token, User request);
+	User confirmUserRecoverPassword(String token, UserPasswordRequestDto request);
 
     Optional<User> findByUsername(String username);
     

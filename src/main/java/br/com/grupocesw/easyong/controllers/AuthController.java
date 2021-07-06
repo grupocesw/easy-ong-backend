@@ -67,7 +67,7 @@ public class AuthController {
 	
 	@PutMapping(value = "/change-password")
 	public ResponseEntity<ApiStandardResponseDto> changePassword(@RequestBody @Valid UserPasswordRequestDto request, HttpServletRequest httpRequest) {
-		service.changePassword(UserMapper.INSTANCE.requestDtoToEntity(request));
+		service.changePassword(request);
 
 		return ResponseEntity
 			.status(HttpStatus.OK)

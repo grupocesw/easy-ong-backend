@@ -6,9 +6,11 @@ import br.com.grupocesw.easyong.entities.SocialCause;
 import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.exceptions.*;
 import br.com.grupocesw.easyong.repositories.UserRepository;
+import br.com.grupocesw.easyong.request.dtos.UserPasswordRequestDto;
 import br.com.grupocesw.easyong.response.dtos.JwtAuthenticationResponseDto;
 import br.com.grupocesw.easyong.services.*;
 import br.com.grupocesw.easyong.utils.AppUtil;
+import br.com.grupocesw.easyong.utils.CheckPatternPasswordUtil;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -181,7 +182,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	}
 	
 	@Override
-	public void changePassword(User request) {
+	public void changePassword(UserPasswordRequestDto request) {
+		String error = CheckPatternPasswordUtil.isPasswordOk(request.getPassword(), request.getPasswordConfirmation());
+
+		if(!error.isEmpty())
+			throw new BadRequestException(error);
+
 		User user = getAuthUser();
 		user.setPassword(passwordEncoder.encode(request.getPassword()));
 
@@ -209,7 +215,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	}
 	@Override
 	@Transactional
-	public User confirmUserRecoverPassword(String token, User request) {
+	public User confirmUserRecoverPassword(String token, UserPasswordRequestDto request) {
+		String error = CheckPatternPasswordUtil.isPasswordOk(request.getPassword(), request.getPasswordConfirmation());
+
+		if(!error.isEmpty())
+			throw new BadRequestException(error);
+
 		ConfirmationToken confirmationToken = confirmationTokenService.findByToken(token);
 		User user = confirmationToken.getUser();
 		user.setPassword(passwordEncoder.encode(request.getPassword()));
