@@ -1,7 +1,6 @@
 package br.com.grupocesw.easyong.services;
 
 import br.com.grupocesw.easyong.entities.ConfirmationToken;
-import br.com.grupocesw.easyong.entities.User;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -15,7 +14,7 @@ public interface ConfirmationTokenService {
 
     String generateToken();
 
-    Optional<ConfirmationToken> findByUsername(String username);
+    Optional<ConfirmationToken> findByUsernameNotExpiratedAndNotConfirmed(String username);
 
     Integer setConfirmedAt(String token);
 }

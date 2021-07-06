@@ -30,6 +30,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -197,6 +199,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	@Override
 	public void recoverPassword(User request) {
 		User user = findByUsername(request.getUsername()).get();
+		Optional<ConfirmationToken> tokenFound = confirmationTokenService
+				.findByUsernameNotExpiratedAndNotConfirmed(user.getUsername());
+
+		if (tokenFound.isPresent()) {
+			var minutes = Long.toString(Duration.between(LocalDateTime.now(), tokenFound.get().getExpiresAt()).plusMinutes(1L).toMinutes());
+			throw new BadRequestException("Email already sent. Please wait " + minutes + " minutes for new request");
+		}
+
 		String token = confirmationTokenService.generateToken();
 
 		confirmationTokenService.save(

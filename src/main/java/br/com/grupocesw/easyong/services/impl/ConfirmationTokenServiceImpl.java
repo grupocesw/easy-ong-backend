@@ -53,7 +53,10 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService {
     }
 
 	@Override
-	public Optional<ConfirmationToken> findByUsername(String username) {
-		return confirmationTokenRepository.findDistinctFirstByUsername(username);
+	public Optional<ConfirmationToken> findByUsernameNotExpiratedAndNotConfirmed(String username) {
+		return confirmationTokenRepository
+                .findTopByUserUsernameAndConfirmedAtNullAndExpiresAtAfterOrderByIdDesc(
+                        username, LocalDateTime.now()
+                );
 	}
 }
