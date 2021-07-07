@@ -36,8 +36,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService, UserDetailsService {
 
 	private final UserRepository repository;
@@ -52,10 +52,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public User create(User request) {
+		log.info("Create user with username {}", request.getUsername());
+
 		boolean userExists = repository.existsByUsernameIgnoreCase(request.getUsername());
 
 		if (userExists) {
-			log.warn("username {} already exists.", request.getUsername());
+			log.warn("Username {} already exists", request.getUsername());
 
 			throw new UsernameAlreadyExistsException(
 				String.format("Username %s already exists", request.getUsername()));
@@ -67,8 +69,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 							.collect(Collectors.toSet())
 			);
 
-			if (causes.isEmpty())
+			if (causes.isEmpty()) {
+				log.warn("Social cause not found {} already exists", request.getCauses());
 				throw new IllegalArgumentException("Social causes not found");
+			}
 
 			request.setCauses(causes);
 		}
@@ -78,7 +82,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 				.username(request.getUsername())
 				.password(passwordEncoder.encode(request.getPassword()))
 				.person(request.getPerson())
-				.enabled(false) // TODO remove after implements service e-mail in prod
 				.roles(roleService.getDefaultRoles())
 				.causes(request.getCauses())
 				.build()
@@ -95,6 +98,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public User update(Long id, User request) {
+		log.info("Update to username {}", request.getUsername());
+
 		User user = retrieve(id);
 		user.getPerson().setName(request.getPerson().getName());
 		user.getPerson().setBirthday(request.getPerson().getBirthday());
@@ -120,6 +125,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	
 	@Override
 	public User updateMe(User request) {
+		log.info("Update logged to username {}", request.getUsername());
+
 		return repository.save(
 			update(getAuthUser().getId(), request)
 		);
@@ -127,6 +134,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public void delete(Long id) {
+		log.info("Delete to id {}", id);
+
 		repository.delete(retrieve(id));
 	}
 
@@ -160,12 +169,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 		if (!user.isEnabled()) 
 			throw new DisabledUserException();
-		
+
+		log.info("Get auth user with username {}", user.getUsername());
 		return user;
 	}
 
 	@Override
 	public JwtAuthenticationResponseDto login(User request) {
+		log.info("Login to username {}", request.getUsername());
+
 		Authentication authentication = authenticationManager
 				.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
 
@@ -193,16 +205,21 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		User user = getAuthUser();
 		user.setPassword(passwordEncoder.encode(request.getPassword()));
 
+		log.info("Change password to username {}", user.getUsername());
+
 		repository.save(user);
 	}
 
 	@Override
 	public void recoverPassword(User request) {
+		log.info("Change password to username {}", request.getUsername());
+
 		User user = findByUsername(request.getUsername()).get();
 		Optional<ConfirmationToken> tokenFound = confirmationTokenService
 				.findByUsernameNotExpiratedAndNotConfirmed(user.getUsername());
 
 		if (tokenFound.isPresent()) {
+			log.warn("Exists token active this request to username {}", request.getUsername());
 			var minutes = Long.toString(Duration.between(LocalDateTime.now(), tokenFound.get().getExpiresAt()).plusMinutes(1L).toMinutes());
 			throw new BadRequestException("Email already sent. Please wait " + minutes + " minutes for new request");
 		}
@@ -218,7 +235,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 		try {
 			mailSenderService.sendRecoverPassword(user, AppUtil.getRootUrlAppConcatPath("/recover-password/" + token));
+			log.info("Send password recovery email to username {}", user.getUsername());
 		} catch (Exception e) {
+			log.error("Error sending password recovery email to username {}", user.getUsername());
 			System.err.println(e.getMessage());
 		}
 
@@ -237,13 +256,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 		confirmationTokenService.setConfirmedAt(token);
 
+		log.info("Recover password to username {}", user.getUsername());
+
 		return user;
 	}
 
 
 	@Override
 	public Optional<User> findByUsername(String username) {
-		log.info("findByUsername user {}", username);
+		log.info("Find username {}", username);
 
 		return Optional.ofNullable(
 			repository.findByUsernameIgnoreCase(username).orElseThrow(
@@ -253,6 +274,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public void favorite(Long ngoId) {
+		log.info("Favorite Ngo id {}", ngoId);
+
 		User userAuth = getAuthUser();
 		Ngo ngo = ngoService.retrieve(ngoId);
 
@@ -267,6 +290,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public Page<Ngo> getFavoriteNgos(Pageable pageable) {
+		log.info("List favorite Ngos id");
+
         int pageSize = pageable.getPageSize();
         int currentPage = pageable.getPageNumber();
         int startItem = currentPage * pageSize;
@@ -293,6 +318,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	public void enableUser(User user) {
 		user.setEnabled(true);
 		repository.save(user);
+
+		log.info("Enabled username {}", user.getUsername());
 	}
 
 	@Override

@@ -8,6 +8,7 @@ import br.com.grupocesw.easyong.repositories.PictureRepository;
 import br.com.grupocesw.easyong.services.PictureService;
 import br.com.grupocesw.easyong.utils.PictureUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +26,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PictureServiceImpl implements PictureService {
 
 	public final String storageDirectoryPath = "storage/pictures/";
@@ -44,6 +46,8 @@ public class PictureServiceImpl implements PictureService {
 
 		picture.setUrl(fileName);
 
+		log.info("Create picture with name {}", fileName);
+
 		return picture;
 	}
 
@@ -57,11 +61,14 @@ public class PictureServiceImpl implements PictureService {
 		Picture picture = retrieve(id);
 		picture.setUrl(request.getUrl());
 
+		log.info("Update picture with name {}", request.getUrl());
+
 		return repository.save(picture);
 	}
 
 	@Override
 	public void delete(Long id) {
+		log.info("Delete picture with id {}", id);
 		repository.delete(retrieve(id));
 	}
 
@@ -74,6 +81,8 @@ public class PictureServiceImpl implements PictureService {
 	@Override
 	@Transactional
     public void upload(MultipartFile file) {
+		log.info("Upload file");
+
 		boolean hasAllowedTypeImage = imageAllowedTypes.stream().anyMatch((type) -> type.equals(file.getContentType()));
 
 		if (!hasAllowedTypeImage)
@@ -102,6 +111,8 @@ public class PictureServiceImpl implements PictureService {
 
 	@Override
     public byte[] getPicture(String url) throws IOException {
+		log.info("Get picture with url {}", url);
+
     	try {           	
     		Path destination = Paths.get(
     			storageDirectoryPath.concat(

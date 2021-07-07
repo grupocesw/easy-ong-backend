@@ -23,6 +23,8 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService {
 
     @Override
     public ConfirmationToken save(ConfirmationToken token) {
+        log.info("Create confirmation token to username {}", token.getUser().getUsername());
+
         return confirmationTokenRepository.save(token);
     }
 
@@ -49,6 +51,8 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService {
 
     @Override
     public String generateToken() {
+        log.info("Generating new token");
+
         return UUID.randomUUID().toString();
     }
 

@@ -6,6 +6,7 @@ import br.com.grupocesw.easyong.exceptions.ResourceNotFoundException;
 import br.com.grupocesw.easyong.repositories.FaqRepository;
 import br.com.grupocesw.easyong.services.FaqService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -16,6 +17,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class FaqServiceImpl implements FaqService {
 
 	private final FaqRepository repository;
@@ -27,8 +29,10 @@ public class FaqServiceImpl implements FaqService {
 
 	@Override
 	@CacheEvict(value = "faqs", allEntries = true)
-	public Faq create(Faq faq) {
-		return repository.save(faq);
+	public Faq create(Faq request) {
+		log.info("Create faq with question {}", request.getQuestion());
+
+		return repository.save(request);
 	}
 
 	@Override
@@ -41,6 +45,8 @@ public class FaqServiceImpl implements FaqService {
 	@Override
 	@CacheEvict(value = "faqs", allEntries = true)
 	public Faq update(Long id, Faq request) {
+		log.info("Update faq with question {}", request.getQuestion());
+
 		Faq faq = retrieve(id);
 		faq.setQuestion(request.getQuestion());
 		faq.setAnswer(request.getAnswer());
@@ -51,6 +57,8 @@ public class FaqServiceImpl implements FaqService {
 	@Override
 	@CacheEvict(value = "faqs", allEntries = true)
 	public void delete(Long id) {
+		log.info("Delete faq with id {}", id);
+
 		repository.delete(retrieve(id));
 	}
 

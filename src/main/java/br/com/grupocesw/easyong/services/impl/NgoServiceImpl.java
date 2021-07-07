@@ -8,6 +8,7 @@ import br.com.grupocesw.easyong.services.CityService;
 import br.com.grupocesw.easyong.services.NgoService;
 import br.com.grupocesw.easyong.services.SocialCauseService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class NgoServiceImpl implements NgoService {
 
 	private final NgoRepository repository;
@@ -28,6 +30,8 @@ public class NgoServiceImpl implements NgoService {
 	@Override
 	@CacheEvict(value = "ngos", allEntries = true)
 	public Ngo create(Ngo request) {
+		log.info("Create ngo with name {}", request.getName());
+
 		cityService.existsOrThrowsException(request.getAddress().getCity().getId());
 		City city = cityService.retrieve(request.getAddress().getCity().getId());
 
@@ -99,6 +103,8 @@ public class NgoServiceImpl implements NgoService {
 	@Override
 	@CacheEvict(value = "ngos", allEntries = true)
 	public Ngo update(Long id, Ngo request) throws Exception {
+		log.info("Update ngo with name {}", request.getName());
+
 		Ngo ngo = retrieve(id);
 		ngo.setName(request.getName());
 		ngo.setCnpj(request.getCnpj());
@@ -176,6 +182,8 @@ public class NgoServiceImpl implements NgoService {
 	@Override
 	@CacheEvict(value = "ngos", allEntries = true)
 	public void delete(Long id) {
+		log.info("Delete ngo with id {}", id);
+
 		repository.delete(retrieve(id));
 	}
 
@@ -198,7 +206,7 @@ public class NgoServiceImpl implements NgoService {
 
 	@Override
 	public Page<Ngo> findSuggested(Pageable pageable) {
-
+		log.info("Find suggested ngos");
 		return repository.findSuggested(pageable);
 	}
 

@@ -6,6 +6,7 @@ import br.com.grupocesw.easyong.exceptions.ResourceNotFoundException;
 import br.com.grupocesw.easyong.repositories.SocialCauseRepository;
 import br.com.grupocesw.easyong.services.SocialCauseService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -19,14 +20,17 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class SocialCauseServiceImpl implements SocialCauseService {
 
 	private final SocialCauseRepository repository;
 
 	@Override
 	@CacheEvict(value = "socialCauses", allEntries = true)
-	public SocialCause create(SocialCause socialCause) {
-		return repository.save(socialCause);
+	public SocialCause create(SocialCause request) {
+		log.info("Create social cause with name {}", request.getName());
+
+		return repository.save(request);
 	}
 
 	@Override
