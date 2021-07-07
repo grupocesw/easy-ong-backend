@@ -29,8 +29,8 @@ spring:
   mail:
     host: ${EMAIL_HOST:smtp.mailtrap.io}
     port: ${EMAIL_PORT:2525}
-    username: ${EMAIL_USERNAME:232046fdf175bc}
-    password: ${EMAIL_PASSWORD:d5a2f3ecb3ff1a}
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
 
     properties:
       mail:
@@ -43,7 +43,23 @@ spring:
           connectiontimeout: 5000
           timeout: 3000
           writetimeout: 5000
-
+#  mail:
+#    host: smtp.gmail.com
+#    port: 587
+#    username: ${EMAIL_USERNAME}
+#    password: ${EMAIL_PASSWORD}
+#
+#    properties:
+#      mail:
+#        smtp:
+#          ssl:
+#            trust: "*"
+#          auth: true
+#          connectiontimeout: 5000
+#          timeout: 5000
+#          writetimeout: 5000
+#          starttls:
+#            enable: true
 
 
 
