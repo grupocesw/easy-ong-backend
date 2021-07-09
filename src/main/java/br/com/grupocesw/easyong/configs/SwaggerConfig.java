@@ -22,31 +22,31 @@ public class SwaggerConfig {
 	@Bean
 	public Docket docket() {
 		return new Docket(DocumentationType.SWAGGER_2)
-				.useDefaultResponseMessages(false)
-				.select()
-				.apis(
-						RequestHandlerSelectors.basePackage("br.com.grupocesw.easyong")
-				)
-				.paths(PathSelectors.any())
-				.build()
-				.apiInfo(apiInfo());
+			.useDefaultResponseMessages(false)
+			.select()
+			.apis(
+					RequestHandlerSelectors.basePackage("br.com.grupocesw.easyong")
+			)
+			.paths(PathSelectors.any())
+			.build()
+			.apiInfo(apiInfo());
 	}
 
 	private Contact contact() {
 		return new Contact(
-				"Grupo C Software Engineer",
-				"https://github.com/grupocesw/easy-ong-backend",
-				"grupocesw@gmail.com"
+			"Grupo C Software Engineer",
+			"https://github.com/grupocesw/easy-ong-backend",
+			"grupocesw@gmail.com"
 		);
 	}
 
 	private ApiInfo apiInfo() {
 		return new ApiInfoBuilder()
-				.title("API EASY ONG")
-				.description("API to Project Bootcamp Impacta Software Engineer 2021")
-				.version("1.0.0")
-				.contact(contact())
-				.build();
+			.title("API EASY ONG")
+			.description("API to Project Bootcamp Impacta Software Engineer 2021")
+			.version("1.0.0")
+			.contact(contact())
+			.build();
 	}
 }
 

@@ -9,7 +9,7 @@ import lombok.*;
 @Builder
 public class JwtAuthenticationResponseDto {
 
-    private String username;
+    private String subject;
     private String accessToken;
     private String expiration;
 

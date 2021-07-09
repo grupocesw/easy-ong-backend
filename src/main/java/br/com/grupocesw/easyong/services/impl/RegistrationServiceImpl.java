@@ -68,7 +68,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 		ConfirmationToken confirmationToken = confirmationTokenService.findByToken(token);
 		User user = confirmationToken.getUser();
 
-		if (user.isEnabled()) {
+		if (user.getEnabled()) {
 			log.warn("Username {} already confirmed.", user.getUsername());
 			throw new UsernameAlreadyConfirmedException();
 		}
@@ -84,7 +84,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 	public void resendConfirmation(User request) {
 		log.info("Resend confirmation user {}", request.getUsername());
 
-		User user = userService.findByUsername(request.getUsername()).get();
+		User user = userService.findByUsernameOrThrowUserNotExistException(request.getUsername());
 
 		Optional<ConfirmationToken> tokenFound = confirmationTokenService
 				.findByUsernameNotExpiratedAndNotConfirmed(user.getUsername());
@@ -94,7 +94,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 			throw new BadRequestException("Email already sent. Please wait " + minutes + " minutes for new request");
 		}
 
-		if (user.isEnabled()) {
+		if (user.getEnabled()) {
 			log.warn("Username {} already confirmed.", user.getUsername());
 			throw new UsernameAlreadyConfirmedException();
 		}
@@ -110,7 +110,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 
 		try {
 			mailSenderService.sendUserRegister(user,
-					AppUtil.getRootUrlAppConcatPath("/confirmation-account/" + token)
+				AppUtil.getRootUrlAppConcatPath("/confirmation-account/" + token)
 			);
 		} catch (Exception e) {
 			System.err.println(e.getMessage());

@@ -1,46 +1,19 @@
 package br.com.grupocesw.easyong.entities;
 
-import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
-
+import br.com.grupocesw.easyong.enums.AuthProvider;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Data
@@ -53,7 +26,7 @@ import lombok.ToString;
 @EqualsAndHashCode(of = {"id", "username"})
 @Builder
 @ToString
-public class User implements UserDetails {
+public class User implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -90,6 +63,14 @@ public class User implements UserDetails {
 
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	private Person person;
+
+	@Builder.Default
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	private AuthProvider provider = AuthProvider.local;
+
+	@Builder.Default
+	private String providerId = AuthProvider.local.toString();
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@OnDelete(action = OnDeleteAction.CASCADE)
@@ -144,43 +125,17 @@ public class User implements UserDetails {
 	}
 
 	public String getUsername() {
-		if (!username.isEmpty())
+		if (username != null && !username.isEmpty())
 			return username.trim().toLowerCase();
 
 		return username;
 	}
 
 	public String getPassword() {
-		if (!password.isEmpty())
+		if (username != null && !password.isEmpty())
 			return password.trim();
 
 		return password;
 	}
 
-	@Override
-	public boolean isAccountNonExpired() {
-		return true;
-	}
-
-	@Override
-	public boolean isAccountNonLocked() {
-		return !locked;
-	}
-
-	@Override
-	public boolean isCredentialsNonExpired() {
-		return true;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		return enabled;
-	}
-
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return getRoles().stream()
-				.map(role -> new SimpleGrantedAuthority(role.getName()))
-				.collect(Collectors.toSet());
-	}
 }

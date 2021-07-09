@@ -4,6 +4,7 @@ import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.entities.SocialCause;
 import br.com.grupocesw.easyong.request.dtos.*;
 import br.com.grupocesw.easyong.response.dtos.UserResponseDto;
+import br.com.grupocesw.easyong.utils.PasswordUtil;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring", imports = { Collectors.class, SocialCause.class })
+@Mapper(componentModel = "spring", imports = { Collectors.class, SocialCause.class, PasswordUtil.class })
 public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 

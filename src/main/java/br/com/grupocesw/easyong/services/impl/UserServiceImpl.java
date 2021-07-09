@@ -4,13 +4,16 @@ import br.com.grupocesw.easyong.entities.ConfirmationToken;
 import br.com.grupocesw.easyong.entities.Ngo;
 import br.com.grupocesw.easyong.entities.SocialCause;
 import br.com.grupocesw.easyong.entities.User;
-import br.com.grupocesw.easyong.exceptions.*;
+import br.com.grupocesw.easyong.exceptions.BadRequestException;
+import br.com.grupocesw.easyong.exceptions.ResourceNotFoundException;
+import br.com.grupocesw.easyong.exceptions.UserNotExistException;
+import br.com.grupocesw.easyong.exceptions.UsernameAlreadyExistsException;
 import br.com.grupocesw.easyong.repositories.UserRepository;
-import br.com.grupocesw.easyong.request.dtos.UserPasswordRequestDto;
 import br.com.grupocesw.easyong.response.dtos.JwtAuthenticationResponseDto;
+import br.com.grupocesw.easyong.security.TokenProvider;
 import br.com.grupocesw.easyong.services.*;
 import br.com.grupocesw.easyong.utils.AppUtil;
-import br.com.grupocesw.easyong.utils.CheckPatternPasswordUtil;
+import br.com.grupocesw.easyong.utils.PasswordUtil;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,9 +24,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class UserServiceImpl implements UserService, UserDetailsService {
+public class UserServiceImpl implements UserService {
 
 	private final UserRepository repository;
 	private final NgoService ngoService;
@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	private final RoleService roleService;
 	private final PasswordEncoder passwordEncoder;
 	private final AuthenticationManager authenticationManager;
-	private final JwtTokenService jwtTokenService;
+    private final TokenProvider tokenProvider;
 	private final ConfirmationTokenService confirmationTokenService;
 	private final EmailSenderService mailSenderService;
 
@@ -77,15 +77,25 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 			request.setCauses(causes);
 		}
 
-		return repository.save(
-			User.builder()
-				.username(request.getUsername())
-				.password(passwordEncoder.encode(request.getPassword()))
-				.person(request.getPerson())
-				.roles(roleService.getDefaultRoles())
-				.causes(request.getCauses())
-				.build()
-		);
+		User user = User.builder()
+			.username(request.getUsername())
+			.password(passwordEncoder.encode(
+				PasswordUtil.isPasswordOk(request.getPassword())
+			))
+			.person(request.getPerson())
+			.roles(roleService.getDefaultRoles())
+			.causes(request.getCauses())
+			.build();
+
+		if(request.getPicture() != null)
+			user.setPicture(request.getPicture());
+
+		if(request.getProvider() != null) {
+			user.setProvider(request.getProvider());
+			user.setProviderId(request.getProviderId());
+		}
+
+		return repository.save(user);
 	}
 
 	@Override
@@ -105,6 +115,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		user.getPerson().setBirthday(request.getPerson().getBirthday());
 		user.getPerson().setGender(request.getPerson().getGender());
 
+		if (request.getPicture() != null)
+			user.getPicture().setUrl(request.getPicture().getUrl());
+
 		if (request.getCauses() != null && request.getCauses().size() > 0) {
 			Set<SocialCause> causes = socialCauseService.findByIdIn(
 				request.getCauses()
@@ -121,15 +134,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		}
 
 		return repository.save(user);
-	}
-	
-	@Override
-	public User updateMe(User request) {
-		log.info("Update logged to username {}", request.getUsername());
-
-		return repository.save(
-			update(getAuthUser().getId(), request)
-		);
 	}
 
 	@Override
@@ -154,25 +158,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	public Page<User> findCheckedAll(Pageable pageable) {
 		return repository.findAll(pageable);
 	}
-	
-	@Override
-	public User getMe() {
-		return getAuthUser();
-	}
-
-	public User getAuthUser() {
-		if (SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser"))
-			throw new UnauthenticatedUserException();
-		
-		User authenticatedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		User user = findByUsername(authenticatedUser.getUsername()).get();
-
-		if (!user.isEnabled()) 
-			throw new DisabledUserException();
-
-		log.info("Get auth user with username {}", user.getUsername());
-		return user;
-	}
 
 	@Override
 	public JwtAuthenticationResponseDto login(User request) {
@@ -181,29 +166,26 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		Authentication authentication = authenticationManager
 				.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
 
-		String token = jwtTokenService.generateToken(authentication);
-		Claims claims = jwtTokenService.getClaimsFromJWT(token);
+		String token = tokenProvider.createToken(authentication);
+		Claims claims = tokenProvider.getClaimsFromJWT(token);
 
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		df.setTimeZone(TimeZone.getTimeZone("America/Sao_Paulo"));
 
 		return new JwtAuthenticationResponseDto()
 				.builder()
-				.username(claims.getSubject())
+				.subject(claims.getSubject())
 				.accessToken(token)
 				.expiration(df.format(claims.getExpiration()))
 				.build();
 	}
-	
+
 	@Override
-	public void changePassword(UserPasswordRequestDto request) {
-		String error = CheckPatternPasswordUtil.isPasswordOk(request.getPassword(), request.getPasswordConfirmation());
-
-		if(!error.isEmpty())
-			throw new BadRequestException(error);
-
-		User user = getAuthUser();
-		user.setPassword(passwordEncoder.encode(request.getPassword()));
+	public void changePassword(Long id, User request) {
+		User user = retrieve(id);
+		user.setPassword(passwordEncoder.encode(
+			PasswordUtil.isPasswordOk(request.getPassword())
+		));
 
 		log.info("Change password to username {}", user.getUsername());
 
@@ -214,7 +196,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	public void recoverPassword(User request) {
 		log.info("Change password to username {}", request.getUsername());
 
-		User user = findByUsername(request.getUsername()).get();
+		User user = findByUsernameOrThrowUserNotExistException(request.getUsername());
 		Optional<ConfirmationToken> tokenFound = confirmationTokenService
 				.findByUsernameNotExpiratedAndNotConfirmed(user.getUsername());
 
@@ -242,17 +224,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		}
 
 	}
+
 	@Override
 	@Transactional
-	public User confirmUserRecoverPassword(String token, UserPasswordRequestDto request) {
-		String error = CheckPatternPasswordUtil.isPasswordOk(request.getPassword(), request.getPasswordConfirmation());
-
-		if(!error.isEmpty())
-			throw new BadRequestException(error);
-
+	public User confirmUserRecoverPassword(String token, User request) {
 		ConfirmationToken confirmationToken = confirmationTokenService.findByToken(token);
 		User user = confirmationToken.getUser();
-		user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+		user.setPassword(passwordEncoder.encode(
+			PasswordUtil.isPasswordOk(request.getPassword())
+		));
 
 		confirmationTokenService.setConfirmedAt(token);
 
@@ -261,22 +242,26 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		return user;
 	}
 
+	@Override
+	public User findByUsernameOrThrowUserNotExistException(String username) {
+		log.info("Find username {} or throw UserNotExistException {}", username);
+
+		return repository.findByUsernameIgnoreCase(username)
+				.orElseThrow(() -> new UserNotExistException());
+	}
 
 	@Override
 	public Optional<User> findByUsername(String username) {
 		log.info("Find username {}", username);
 
-		return Optional.ofNullable(
-			repository.findByUsernameIgnoreCase(username).orElseThrow(
-					() -> new UserNotExistException()
-			));
+		return repository.findByUsernameIgnoreCase(username);
 	}
 
 	@Override
-	public void favorite(Long ngoId) {
-		log.info("Favorite Ngo id {}", ngoId);
+	public void favorite(Long userId, Long ngoId) {
+		log.info("User id {} favorite Ngo id {}", userId, ngoId);
 
-		User userAuth = getAuthUser();
+		User userAuth = retrieve(userId);
 		Ngo ngo = ngoService.retrieve(ngoId);
 
 		if (userAuth.getFavoriteNgos().contains(ngo)) {
@@ -289,14 +274,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	}
 
 	@Override
-	public Page<Ngo> getFavoriteNgos(Pageable pageable) {
+	public Page<Ngo> getFavoriteNgos(Long userId, Pageable pageable) {
 		log.info("List favorite Ngos id");
 
         int pageSize = pageable.getPageSize();
         int currentPage = pageable.getPageNumber();
         int startItem = currentPage * pageSize;
-        
-		List<Ngo> ngos = getAuthUser().getFavoriteNgos().stream().collect(Collectors.toList());
+
+		List<Ngo> ngos = retrieve(userId).getFavoriteNgos().stream().collect(Collectors.toList());
 
         if (ngos.size() < startItem) {
         	ngos = Collections.emptyList();
@@ -304,13 +289,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             int toIndex = Math.min(startItem + pageSize, ngos.size());
             ngos = ngos.subList(startItem, toIndex);
         }
-		
+
 		Page<Ngo> page = new PageImpl<>(
 			ngos,
 			PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()),
 			ngos.size()
 		);
-		
+
 		return page;
 	}
 
@@ -323,13 +308,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	}
 
 	@Override
-	public UserDetails loadUserByUsername(String username) {
-		return findByUsername(username).orElse(new User());
-	}
-
-	@Override
 	public Boolean existsByUsername(String username) {
 		return repository.existsByUsernameIgnoreCase(username);
 	}
-	
+
 }

@@ -10,6 +10,8 @@ import br.com.grupocesw.easyong.response.dtos.ApiStandardResponseDto;
 import br.com.grupocesw.easyong.response.dtos.JwtAuthenticationResponseDto;
 import br.com.grupocesw.easyong.response.dtos.NgoSlimResponseDto;
 import br.com.grupocesw.easyong.response.dtos.UserResponseDto;
+import br.com.grupocesw.easyong.security.CurrentUser;
+import br.com.grupocesw.easyong.security.UserPrincipal;
 import br.com.grupocesw.easyong.services.UserService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,9 +55,11 @@ public class AuthController {
 			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
-	@GetMapping(value = "/me")
-	public ResponseEntity<ApiStandardResponseDto> me(HttpServletRequest httpRequest) {
-		UserResponseDto dto = UserMapper.INSTANCE.entityToResponseDto(service.getMe());
+	@GetMapping("/me")
+	@PreAuthorize("hasAuthority('USER')")
+	public ResponseEntity<ApiStandardResponseDto> getCurrentUser(@CurrentUser UserPrincipal userPrincipal, HttpServletRequest httpRequest) {
+
+		UserResponseDto dto = UserMapper.INSTANCE.entityToResponseDto(service.retrieve(userPrincipal.getId()));
 
 		return ResponseEntity
 			.status(HttpStatus.OK)
@@ -74,14 +79,14 @@ public class AuthController {
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
 	@PutMapping(value = "/me/update")
-	public ResponseEntity<ApiStandardResponseDto> updateProfile(@RequestBody @Valid UserUpdateRequestDto request, HttpServletRequest httpRequest) {
+	public ResponseEntity<ApiStandardResponseDto> updateProfile(@CurrentUser UserPrincipal userPrincipal, @RequestBody @Valid UserUpdateRequestDto request, HttpServletRequest httpRequest) {
 		UserResponseDto dto = UserMapper.INSTANCE.entityToResponseDto(
-				service.updateMe(UserMapper.INSTANCE.requestDtoToEntity(request)));
+				service.update(userPrincipal.getId(), UserMapper.INSTANCE.requestDtoToEntity(request)));
 
 		return ResponseEntity
 			.status(HttpStatus.OK)
 			.body(ApiStandardResponseDto.builder()
-				.message("Updated user profile")
+				.message("Updated logged user")
 				.data(dto)
 				.path(httpRequest.getRequestURI())
 				.build()
@@ -100,8 +105,8 @@ public class AuthController {
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
 	@PutMapping(value = "/change-password")
-	public ResponseEntity<ApiStandardResponseDto> changePassword(@RequestBody @Valid UserPasswordRequestDto request, HttpServletRequest httpRequest) {
-		service.changePassword(request);
+	public ResponseEntity<ApiStandardResponseDto> changePassword(@CurrentUser UserPrincipal userPrincipal, @RequestBody @Valid UserPasswordRequestDto request, HttpServletRequest httpRequest) {
+		service.changePassword(userPrincipal.getId(), UserMapper.INSTANCE.requestDtoToEntity(request));
 
 		return ResponseEntity
 			.status(HttpStatus.OK)
@@ -141,8 +146,9 @@ public class AuthController {
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
 	@PutMapping(value = "/favorite-ngos/{ngoId}")
-	public ResponseEntity<ApiStandardResponseDto> favorite(@PathVariable Long ngoId, HttpServletRequest httpRequest) {
-		service.favorite(ngoId);
+    @PreAuthorize("hasAuthority('USER')")
+	public ResponseEntity<ApiStandardResponseDto> favorite(@CurrentUser UserPrincipal userPrincipal, @PathVariable Long ngoId, HttpServletRequest httpRequest) {
+		service.favorite(userPrincipal.getId(), ngoId);
 
 		return ResponseEntity
 			.status(HttpStatus.OK)
@@ -165,15 +171,17 @@ public class AuthController {
 			@ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
 					+ "Default sort order is ascending. " + "Multiple sort criteria are supported.") })
 	@GetMapping(value = "/favorite-ngos")
+    @PreAuthorize("hasAuthority('USER')")
 	public ResponseEntity<Page<NgoSlimResponseDto>> favoriteNgos(
-			@RequestParam("page") Optional<Integer> page, 
+			@CurrentUser UserPrincipal userPrincipal,
+			@RequestParam("page") Optional<Integer> page,
 			@RequestParam("size") Optional<Integer> size) {
 
 		int currentPage = page.orElse(1);
 		int pageSize = size.orElse(5);
 
 		return ResponseEntity.ok(NgoMapper.INSTANCE.listToSlimResponseDto(
-				service.getFavoriteNgos(PageRequest.of(currentPage - 1, pageSize))
+				service.getFavoriteNgos(userPrincipal.getId(), PageRequest.of(currentPage - 1, pageSize))
 		));
 	}
 }

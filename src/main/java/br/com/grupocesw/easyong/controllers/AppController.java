@@ -1,10 +1,12 @@
 package br.com.grupocesw.easyong.controllers;
 
 import br.com.grupocesw.easyong.entities.User;
+import br.com.grupocesw.easyong.mappers.UserMapper;
 import br.com.grupocesw.easyong.request.dtos.UserPasswordRequestDto;
 import br.com.grupocesw.easyong.services.ConfirmationTokenService;
 import br.com.grupocesw.easyong.services.RegistrationService;
 import br.com.grupocesw.easyong.services.UserService;
+import br.com.grupocesw.easyong.utils.PasswordUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -66,7 +68,9 @@ public class AppController {
 
         try {
             redirectAttr.addFlashAttribute("token", token);
-            User user = userService.confirmUserRecoverPassword(token, request);
+
+            PasswordUtil.isPasswordOkWithConfirmation(request.getPassword(), request.getPasswordConfirmation());
+            User user = userService.confirmUserRecoverPassword(token, UserMapper.INSTANCE.requestDtoToEntity(request));
 
             model.addAttribute("message",
                     String.format("%s, sua senha foi alterada com sucesso!", user.getPerson().getName()));

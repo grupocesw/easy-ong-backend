@@ -141,7 +141,7 @@ public class ResourceExceptionHandler {
 				.message(ex.getMessage())
 				.path(resquest.getRequestURI())
 				.build()
-				);
+			);
 	}
 
 }

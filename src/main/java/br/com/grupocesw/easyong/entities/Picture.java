@@ -51,7 +51,7 @@ public class Picture implements Serializable {
 	public String getUrl() {
 		if (!PictureUtil.isURL(url)) {
 			String pictureName = (url == null) ? noImage : url;			
-			return AppUtil.getRootUrlAppConcatPath(path + "/" + pictureName);
+			return AppUtil.getRootUrlAppConcatPath(path + pictureName);
 		}
 		
 		return url;
