@@ -56,7 +56,6 @@ public class AuthController {
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
 	@GetMapping("/me")
-	@PreAuthorize("hasAuthority('USER')")
 	public ResponseEntity<ApiStandardResponseDto> getCurrentUser(@CurrentUser UserPrincipal userPrincipal, HttpServletRequest httpRequest) {
 
 		UserResponseDto dto = UserMapper.INSTANCE.entityToResponseDto(service.retrieve(userPrincipal.getId()));

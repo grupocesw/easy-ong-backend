@@ -90,6 +90,9 @@ public class UserServiceImpl implements UserService {
 		if(request.getPicture() != null)
 			user.setPicture(request.getPicture());
 
+		if(request.getEnabled() != null)
+			user.setEnabled(request.getEnabled());
+
 		if(request.getProvider() != null) {
 			user.setProvider(request.getProvider());
 			user.setProviderId(request.getProviderId());

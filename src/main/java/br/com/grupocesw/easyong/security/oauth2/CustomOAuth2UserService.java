@@ -72,6 +72,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             .providerId(oAuth2UserInfo.getId())
             .username(oAuth2UserInfo.getEmail())
             .password(PasswordGeneratorUtil.generateStrongPassword())
+            .enabled(true)
             .picture(
                 Picture.builder()
                     .url(oAuth2UserInfo.getImageUrl())

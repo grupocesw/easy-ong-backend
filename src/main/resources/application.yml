@@ -19,10 +19,10 @@ spring:
 
   main:
     banner-mode: CONSOLE
-    
+
   jpa:
     open-in-view: false
-    
+
   data:
     web:
       pageable:
@@ -30,7 +30,7 @@ spring:
         max-page-size: 2000
         one-indexed-parameters: false
         page-parameter: page
-        prefix: 
+        prefix:
         qualifier-delimiter: _
         size-parameter: size
       sort:

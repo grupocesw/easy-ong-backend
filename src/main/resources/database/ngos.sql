@@ -10,16 +10,25 @@ INSERT INTO addresses (id, street, number, complement, zip_code, latitude, longi
 ;
 
 INSERT INTO pictures (id, url) VALUES
-(1, '1.jpeg'),
-(2, '2.png'),
-(3, '3.jpg'),
-(11, 'http://cecosi.org.br/images/logo-cecosi.png'),
+(1, 'https://www.techsoupbrasil.org.br/sites/default/files/images/93bb727d-9a49-4922-bbfc-9abe6dadf5b3.jpeg'),
+(2, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9N2OJxSxQ4RzMeE0Cn3ttfqk2R4y-wssQ1Q&usqp=CAU'),
+(3, 'https://www.opresente.com.br/wp-content/uploads/2019/04/ongs-606x341.png'),
+(4, 'https://nossacausa.com/wp-content/uploads/2017/08/melhores-ongs.jpg'),
 (5, 'http://cecosi.org.br/upload/eyJpdiI6IjBJNURcL2pJV1ZFZXFGUWFiV3VQR0lnPT0iLCJ2YWx1ZSI6Imsyejdua25oZ2lZZ2dhNHFlNlREZnc9PSIsIm1hYyI6IjJlZWFhMTYyNjVmYWU4N2NhNTViMzNjNTY5ZGM5MDI0NzFjZGM1YzFhNzY4ZTk0N2Y0MjI3ZjNjODYyNDA1ZTIifQ==.jpg'),
 (6, 'https://scontent.fcgh14-1.fna.fbcdn.net/v/t1.6435-9/41691147_2352245718126062_1432030963654721536_n.png?_nc_cat=101&ccb=1-3&_nc_sid=09cbfe&_nc_ohc=KxAstR8u8AIAX-Wsyqi&_nc_oc=AQkPQ-8pcKM6zf_5FmVZ00tIrFoea0YMGFuZrOMWSmaDxjSOgu71z_BqEmtc2EGdNlWPbXKSdEPB2T2e7mlv_VNU&_nc_ht=scontent.fcgh14-1.fna&oh=b3ea4e4811c6f61d365591b9ee7d543d&oe=60C05CC7'),
 (7, 'http://www.uropediatria.com.br/wp-content/uploads/2019/04/Doutores.png'),
 (8, 'http://www.uropediatria.com.br/wp-content/uploads/2019/03/da0aba37422a-1.jpg'),
 (9, 'http://www.uropediatria.com.br/wp-content/uploads/2019/03/6f2559d0fe8.jpg'),
-(10, 'http://www.uropediatria.com.br/wp-content/uploads/2019/03/783e3214a07b-1.jpg')
+(10, 'http://www.uropediatria.com.br/wp-content/uploads/2019/03/783e3214a07b-1.jpg'),
+(11, 'http://cecosi.org.br/images/logo-cecosi.png'),
+(12, 'https://inkinspira.com.br/wp-content/uploads/2017/02/MAIORES-ONGS-DO-BRASIL.jpg'),
+(13, 'https://lh3.googleusercontent.com/proxy/CyxHMDNBxPzJyTsnEbomc4h3BmmUSVvWfD5Flsso639yxRNcEcDYTvlqeI4xLqOpuqbUvE8H89cD_rUO809WzMySJ_qXhGehIQuNfjP3S9bsUP6J'),
+(14, 'http://s2.glbimg.com/zHTIn5PVeAlwcHoIfdO3qMZ2QDTXRJMl3UBBE20cSNNIoz-HdGixxa_8qOZvMp3w/s.glbimg.com/og/rg/f/original/2012/11/22/educap_291x388.jpg.jpg'),
+(15, 'https://publicitariopoa.files.wordpress.com/2009/10/logo-educa-tche.jpg'),
+(16, 'https://static.wixstatic.com/media/90cf78_4e120fdf97bf4e5c9a591eca8337279b~mv2.jpg/v1/fill/w_395,h_254,al_c,lg_1,q_80/90cf78_4e120fdf97bf4e5c9a591eca8337279b~mv2.webp'),
+(17, 'https://i.pinimg.com/236x/7c/c5/bb/7cc5bbd7ebf2ca86b4a168d564e165b2.jpg'),
+(18, 'https://catracalivre.com.br/wp-content/uploads/2013/10/quemsomos.jpg'),
+(19, 'https://medias.cnnbrasil.com.br/google-removeu-anuncios-que-desrespeitavam-sua-politica-de-distorcao.jpeg?format=JPEG&image=https://mediastorage.cnnbrasil.com.br/IMAGES/00/00/00/8099_49A09089147DB65C.jpg&width=804&height=452&resize=CROP')
 --(ID, 'URL'),
 ;
 
@@ -102,7 +111,12 @@ INSERT INTO ngo_pictures (ngo_id, picture_id) VALUES
 (1, 3),
 (2, 11),
 (2, 5),
+(2, 4),
 (3, 6),
+(4, 16),
+(5, 12),
+(5, 15),
+(6, 14),
 (7, 7),
 (7, 8),
 (7, 9),

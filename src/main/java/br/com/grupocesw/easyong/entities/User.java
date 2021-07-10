@@ -69,8 +69,7 @@ public class User implements Serializable {
 	@Enumerated(EnumType.STRING)
 	private AuthProvider provider = AuthProvider.local;
 
-	@Builder.Default
-	private String providerId = AuthProvider.local.toString();
+	private String providerId;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@OnDelete(action = OnDeleteAction.CASCADE)
@@ -119,7 +118,9 @@ public class User implements Serializable {
 
 	public Picture getPicture() {
 		if (picture == null)
-			return Picture.builder().build();
+			return Picture.builder()
+					.url(Picture.noImage)
+					.build();
 
 		return picture;
 	}
