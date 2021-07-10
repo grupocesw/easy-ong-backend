@@ -82,6 +82,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         "/api/oauth2/**",
         "/recover-password/**",
         "/recover-change-password/**",
+        "/clean-cache-resources"
     };
 
 	private static final String[] ANONYMOUS_LIST = {

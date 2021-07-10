@@ -9,6 +9,7 @@ import br.com.grupocesw.easyong.services.UserService;
 import br.com.grupocesw.easyong.utils.PasswordVerificationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -81,5 +82,12 @@ public class AppController {
         }
 
         return redirectError;
+    }
+
+    @GetMapping(value = "/clean-cache-resources")
+    @CacheEvict(value = {"ngos", "faqs", "socialCauses"}, allEntries = true)
+    public String clearCacheResources(ModelMap model) {
+        model.addAttribute("message", "Success. Clean Cache!");
+        return "success-page";
     }
 }
