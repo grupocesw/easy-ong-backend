@@ -57,7 +57,7 @@ spring:
               - email
               - public_profile
           github:
-            clientId: ${GITHUB_CLIENT_ID:Iv1.<ADD CLIENT_ID>}
+            clientId: ${GITHUB_CLIENT_ID:<ADD CLIENT_ID>}
             clientSecret: ${GITHUB_CLIENT_SECRET:<ADD CLIENT_SECRET>}
             redirectUri: "{baseUrl}/api/oauth2/callback/{registrationId}"
             scope:
