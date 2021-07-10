@@ -166,6 +166,8 @@ create sequence confirmation_token_sequence start 1 increment 1;
         enabled boolean,
         locked boolean,
         password varchar(100) not null,
+        provider varchar(255) not null,
+        provider_id varchar(255),
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         username varchar(100) not null,
         person_id int8,
