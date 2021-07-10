@@ -1,27 +1,21 @@
 package br.com.grupocesw.easyong.services;
 
-import java.io.IOException;
-import java.util.List;
-
+import br.com.grupocesw.easyong.entities.Picture;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import br.com.grupocesw.easyong.entities.Picture;
+import java.io.IOException;
 
 @Service
 public interface PictureService {
 
-	public List<Picture> findAll();
+	Picture update(Long id, Picture request);
 
-	public Picture findById(Long id);
+	void delete(Long id);
 
-	public Picture insert(MultipartFile file);
+	void existsOrThrowsException(Long id);
 
-	public Picture update(Long id, Picture picture);
+	void upload(MultipartFile picture);
 
-	public void delete(Long id);
-	
-    public void upload(Picture picture, MultipartFile file);
-
-    public byte[] getPicture(String name) throws IOException;
+    byte[] getPicture(String name) throws IOException;
 }

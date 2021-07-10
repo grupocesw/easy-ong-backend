@@ -1,21 +1,10 @@
 package br.com.grupocesw.easyong.entities;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
@@ -34,6 +23,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @Entity
 @Table(name = "ngos")
@@ -45,15 +35,7 @@ import lombok.ToString;
 @Proxy(lazy = false)
 @EqualsAndHashCode(of = {"id", "cnpj"})
 @ToString
-public class Ngo {
-	
-	public Ngo(Ngo ngoDTO) {
-		id = ngoDTO.getId();
-		name = ngoDTO.getName();
-		cnpj = ngoDTO.getCnpj();
-		description = ngoDTO.getDescription();
-		activated = ngoDTO.getActivated();
-	}
+public class Ngo implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -62,27 +44,29 @@ public class Ngo {
 	@Column(name = "name", nullable = false, length = 100)
 	private String name;
 
-	@Column(name = "cnpj", nullable = false, length = 14)
+	@Column(name = "cnpj", length = 14, unique = true, nullable = false)
 	private String cnpj;
 	
-	@Column(name = "description", nullable = false, columnDefinition="TEXT")
+	@Column(name = "description", columnDefinition="TEXT")
 	private String description;
 	
 	@Builder.Default
-	@Column(name = "activated", nullable = false, columnDefinition="boolean default false")
+	@Column(name = "activated", nullable = false, columnDefinition="BOOLEAN DEFAULT true")
 	private Boolean activated = true;
+
+	@Transient
+	private boolean favorited;
 
 	@CreationTimestamp
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
 	@Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-	private LocalDateTime createAt;
+	private LocalDateTime createdAt;
 	
 	@UpdateTimestamp
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
 	@Column(name = "updated_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-	private LocalDateTime updateAt;
+	private LocalDateTime updatedAt;
 	
-	@JsonProperty(required = true)
 	@OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id", referencedColumnName = "id")
 	private Address address;
@@ -90,7 +74,7 @@ public class Ngo {
 	@JsonProperty(required = true)
 	@ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	@JoinTable(name = "ngo_contacts",  joinColumns= @JoinColumn(name = "ngo_id"), inverseJoinColumns = @JoinColumn(name = "contact_id"))
+	@JoinTable(name = "ngo_contacts", joinColumns= @JoinColumn(name = "ngo_id"), inverseJoinColumns = @JoinColumn(name = "contact_id"))
 	private Set<Contact> contacts;
 	
 	@OneToMany(targetEntity = NgoMoreInformation.class, cascade=CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
@@ -103,13 +87,26 @@ public class Ngo {
 	@JoinTable(name = "ngo_social_causes", joinColumns= @JoinColumn(name = "ngo_id"), inverseJoinColumns = @JoinColumn(name = "social_cause_id"))
 	private Set<SocialCause> causes;
 	
-	@ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinTable(name = "ngo_pictures", joinColumns= @JoinColumn(name = "ngo_id"), inverseJoinColumns = @JoinColumn(name = "picture_id"))
 	private Set<Picture> pictures;
 	
 	@JsonIgnore
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	@ManyToMany(mappedBy = "favoriteNgos")
+	@ManyToMany(mappedBy = "favoriteNgos", fetch = FetchType.EAGER, cascade=CascadeType.ALL)
 	private Set<User> users;
+
+	public boolean getFavorited() {
+		if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser") && this.getUsers() != null) {
+			User authenticatedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+			for (User user: this.getUsers()) {
+				if (authenticatedUser.getUsername().equals(user.getUsername()))
+					favorited = true;
+			}
+		}
+
+		return favorited;
+	}
 }

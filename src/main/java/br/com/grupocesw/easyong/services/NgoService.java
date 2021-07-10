@@ -5,27 +5,24 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.com.grupocesw.easyong.entities.Ngo;
-import br.com.grupocesw.easyong.request.dtos.NgoCreateRequestDto;
-import br.com.grupocesw.easyong.request.dtos.NgoUpdateRequestDto;
-import br.com.grupocesw.easyong.response.dtos.NgoFullResponseDto;
-import br.com.grupocesw.easyong.response.dtos.NgoResponseDto;
+import br.com.grupocesw.easyong.response.dtos.NgoSlimResponseDto;
 
 @Service
 public interface NgoService {
-	
-	public Page<NgoFullResponseDto> findByActivatedFull(Pageable pageable);
 
-	public Page<NgoResponseDto> findByActivated(Pageable pageable);
+	Ngo create(Ngo request);
 
-	public Page<NgoResponseDto> findSuggested(Pageable pageable);
+	Ngo retrieve(Long id);
 
-	public NgoResponseDto create(NgoCreateRequestDto ngoDto);
-	
-	public NgoFullResponseDto retrieve(Long id);
+	Ngo update(Long id, Ngo request) throws Exception;
 
-	public NgoResponseDto update(Long id, NgoUpdateRequestDto ngoDto) throws Exception;
-	
-	public Ngo findById(Long id);
+	void delete(Long id);
 
-	public void delete(Long id);
+	void existsOrThrowsException(Long id);
+
+	Page<Ngo> findByActivated(Pageable pageable);
+
+	Page<Ngo> findByActivatedWithFilter(String filter, Pageable pageable);
+
+	Page<Ngo> findSuggested(Pageable pageable);
 }

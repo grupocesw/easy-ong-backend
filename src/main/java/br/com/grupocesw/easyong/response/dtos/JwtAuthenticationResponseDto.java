@@ -1,15 +1,18 @@
 package br.com.grupocesw.easyong.response.dtos;
 
 
-import lombok.Data;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 @Data
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class JwtAuthenticationResponseDto {
 
-    @NonNull
+    private String subject;
     private String accessToken;
+    private String expiration;
+
+    @Builder.Default
     private String tokenType = "Bearer";
 }

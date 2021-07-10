@@ -1,6 +1,5 @@
 package br.com.grupocesw.easyong.entities;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,6 +17,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name = "ngo_more_informations")
 @AllArgsConstructor
@@ -26,16 +27,16 @@ import lombok.ToString;
 @Setter
 @Builder
 @ToString
-public class NgoMoreInformation {
+public class NgoMoreInformation implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "information", nullable = false, length = 255)
+	@Column(name = "information", nullable = false)
 	private String information;
 
 	@JsonIgnore
-	@ManyToOne(targetEntity = Ngo.class, cascade = CascadeType.ALL)
+	@ManyToOne(targetEntity = Ngo.class)
 	private Ngo ngo;
 }

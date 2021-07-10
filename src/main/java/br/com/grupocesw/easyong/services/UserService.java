@@ -1,46 +1,53 @@
 package br.com.grupocesw.easyong.services;
 
-import java.util.List;
-import java.util.Optional;
-
+import br.com.grupocesw.easyong.entities.Ngo;
+import br.com.grupocesw.easyong.entities.User;
+import br.com.grupocesw.easyong.response.dtos.JwtAuthenticationResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import br.com.grupocesw.easyong.entities.User;
-import br.com.grupocesw.easyong.request.dtos.UserPasswordRequestDto;
-import br.com.grupocesw.easyong.response.dtos.UserResponseDto;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public interface UserService {
 
-	public User create(User user);
-	
-	public User retrieve(Long id);
+	User create(User request);
 
-	public User update(Long id, User user);
-	
-	public User updateMe(User user);
-	
-	public void delete(Long id);
-	
-	public List<User> findAll();
-	
-	public Page<User> findCheckedAll(Pageable pageable);
-	
-	public User findById(Long id);
-	
-	public void favorite(Long ngoId);
-	
-	public User getMe();
-	
-    public String login(String username, String password);
-    
-    public UserResponseDto changePassword(UserPasswordRequestDto passwordDto);
-     
-    public Optional<User> findByUsername(String username);
-    
-    public Boolean existsByUsername(String username);
+	User retrieve(Long id);
 
-	public void enableUser(User user);
+	User update(Long id, User request);
+
+//	User updateMe(User request);
+
+	void delete(Long id);
+
+	void existsOrThrowsException(Long id);
+
+	List<User> findAll();
+
+	Page<User> findCheckedAll(Pageable pageable);
+
+	void favorite(Long userId, Long ngoId);
+
+//	User getMe();
+
+	JwtAuthenticationResponseDto login(User request);
+
+    void changePassword(Long id, User request);
+
+    void recoverPassword(User request);
+
+	User confirmUserRecoverPassword(String token, User request);
+
+    User findByUsernameOrThrowUserNotExistException(String username);
+
+    Optional<User> findByUsername(String username);
+
+    Boolean existsByUsername(String username);
+
+	void enableUser(User user);
+
+	Page<Ngo> getFavoriteNgos(Long userId, Pageable pageable);
 }

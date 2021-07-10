@@ -1,12 +1,14 @@
 INSERT INTO social_causes (id, name) VALUES
 (1, 'Educação'),
 (2, 'Proteção Animal'),
-(3, 'Direitos Humanos'),
+(3, 'Luta Contra as Drogas'),
 (4, 'Esporte e Cultura'),
 (5, 'Meio Ambiente'),
-(6, 'Luta Contra Fome'),
+(6, 'Luta Contra Fome e Pobreza'),
 (7, 'Saúde e Bem Estar'),
-(8, 'Direitos Humanos');
+(8, 'Direitos Humanos'),
+(9, 'Crianças'),
+(10, 'Serviço Social');
 
 INSERT INTO roles (id, name) VALUES
 (1, 'ADMIN'),
@@ -44,21 +46,11 @@ INSERT INTO states (id, name, abbreviation, country_id) VALUES
 (26, 'Distrito Federal', 'DF', 1);
 
 INSERT INTO cities (id, name, state_id) VALUES
-(1, 'Belo Horizonte', 11),
-(2, 'São Paulo', 23);
+(1, 'São Paulo', 23);
 
-INSERT INTO districts (id, name, city_id) VALUES
-(1, 'Santa Cecília', 2),
-(2, 'Consolação', 2),
-(3, 'Barra Funda', 2);
-
-INSERT INTO zip_codes (id, number) VALUES
-(1, '01227000'),
-(2, '01304001'),
-(3, '01156050');
-
-INSERT INTO streets (id, name, district_id, zip_code_id) VALUES
-(1, 'Avenida Angélica', 1, 1),
-(2, 'Rua Augusta', 2, 2),
-(3, 'Av. Dr. Adolpho Pinto', 3, 3);
+INSERT INTO faqs (id, question, answer) VALUES
+(1, 'Vocês tem vinculos com alguma ONG?', 'Não, somos totalmente independentes.'),
+(2, 'O app é gratuito?', 'Sim, o app é totalmente gratuíto.'),
+(3, 'Tem opção para IOS?', 'Somente para plataforma android inicialmente.'),
+(4, 'É possível logar com minhas redes sociais?', 'Sim, o app possuí essa funcionalidade que agiliza o cadastro.');
 

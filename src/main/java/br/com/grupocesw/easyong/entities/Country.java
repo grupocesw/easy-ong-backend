@@ -1,5 +1,7 @@
 package br.com.grupocesw.easyong.entities;
 
+
+import java.io.Serializable;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -11,8 +13,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,26 +25,23 @@ import lombok.ToString;
 @Table(name = "countries")
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
 @Setter
+@Getter
 @Builder
 @ToString
-public class Country {
+public class Country implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotEmpty(message = "Name required")
-	@Size(min = 3, max = 255, message = "Name must contain between 3 and 255 characters")
-	@Column(name = "name", nullable = false, length = 255)
+	@Column(name = "name", nullable = false)
 	private String name;
 
-	@NotEmpty(message = "Abbreviation required")
-	@Size(min = 3, max = 3, message = "Abbreviation must contain 3 characters")
 	@Column(name = "abbreviation", nullable = false, length = 3)
 	private String abbreviation;
 	
 	@OneToMany(targetEntity = State.class, mappedBy = "country", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	private Set<State> states;
+
 }

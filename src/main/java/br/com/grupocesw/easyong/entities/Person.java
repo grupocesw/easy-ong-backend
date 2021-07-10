@@ -1,5 +1,6 @@
 package br.com.grupocesw.easyong.entities;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import javax.persistence.CascadeType;
@@ -14,7 +15,7 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import br.com.grupocesw.easyong.enums.GenderEnum;
+import br.com.grupocesw.easyong.enums.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,7 +35,7 @@ import lombok.ToString;
 @Setter
 @EqualsAndHashCode
 @ToString
-public class Person {
+public class Person implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,31 +44,32 @@ public class Person {
 	@Column(name = "name", nullable = false, length = 100)
 	private String name;
 
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-	@Column(name = "birthday", nullable = true)
+	@Column(name = "birthday")
 	private LocalDate birthday;
 
-	@Column(name = "gender", nullable = true)
-	private GenderEnum gender;
-	
+	@Builder.Default
+	@Column(name = "gender")
+	private Gender gender = Gender.UNINFORMED;
+
 	@OneToOne(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "person_id")
+	@ToString.Exclude
 	private User user;
 	
-	public Person(Person person) {
-		this.id = person.id;
-		this.name = person.name;
-		this.birthday = person.birthday;
-		this.gender = person.gender;
-	}
-
-	public Person(String name, LocalDate birthday, GenderEnum gender) {
-		this.name = name;
-		this.birthday = birthday;
-		this.gender = gender;
-	}
-	
-	public Person(String name) {
-		this.name = name;
-	}
+//	public Person(Person person) {
+//		this.id = person.id;
+//		this.name = person.name;
+//		this.birthday = person.birthday;
+//		this.gender = person.gender;
+//	}
+//
+//	public Person(String name, LocalDate birthday, Gender gender) {
+//		this.name = name;
+//		this.birthday = birthday;
+//		this.gender = gender;
+//	}
+//
+//	public Person(String name) {
+//		this.name = name;
+//	}
 }

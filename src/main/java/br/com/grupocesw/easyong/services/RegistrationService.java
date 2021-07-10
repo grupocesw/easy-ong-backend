@@ -1,15 +1,14 @@
 package br.com.grupocesw.easyong.services;
 
-import org.springframework.stereotype.Service;
-
 import br.com.grupocesw.easyong.entities.User;
+import org.springframework.stereotype.Service;
 
 @Service
 public interface RegistrationService {
 
-	public Boolean register(User user);
-	
-	public Boolean confirmToken(String token);
+	User register(User request);
 
-	public Boolean resendConfirmation(String username);
+	User confirmUserAccount(String token);
+
+	void resendConfirmation(User request);
 }

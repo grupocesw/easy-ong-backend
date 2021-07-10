@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name = "ngo_suggestions")
 @AllArgsConstructor
@@ -23,14 +25,14 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class NgoSuggestion {
+public class NgoSuggestion implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	@NotEmpty(message="Message required")
-	@Column(name = "message", nullable = false, columnDefinition="TEXT")
+	@Column(name = "message", nullable = false, columnDefinition = "TEXT")
 	private String message;
 
 	@ManyToOne

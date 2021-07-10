@@ -1,16 +1,12 @@
 package br.com.grupocesw.easyong.utils;
 
-import java.io.File;
-
 import org.apache.commons.io.FilenameUtils;
 
+import java.io.File;
+import java.net.URL;
+
 public class PictureUtil {
-	
-	/**
-	 * @param path
-	 * @param name
-	 * @return
-	 */
+
     public static String getFileNameWithExtension(String path, String name) {
     	File directory = new File(path);
 	  	  for (File file : directory.listFiles()) {
@@ -20,5 +16,14 @@ public class PictureUtil {
 	  	  }
   	  
 	  	  return name;
+    }
+    
+    public static boolean isURL(String url) {
+        try {
+            new URL(url);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

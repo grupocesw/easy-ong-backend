@@ -1,26 +1,17 @@
-debug: false
-
-security:
-  basic:
-    enable: true
-    authorize-mode: NONE
-
-  jwt:
-    uri: /auth/**
-    header: Authorization
-    prefix: Bearer
-    expiration: 86400
-    secret: JwtSecretKey
-        
----
-
 spring:
 
   application:
-    name: Easy ONG
+    name: EASY ONG
+
+  mvc.favicon.enabled: false
+
+  cache:
+    type: redis
+    redis:
+      cache-null-values: false
 
   profiles:
-    active: ${APP_PROFILE:test}    
+    active: ${APP_PROFILE:test}
     include:
       - application-test
       - application-dev
@@ -28,10 +19,10 @@ spring:
 
   main:
     banner-mode: CONSOLE
-    
+
   jpa:
-    open-in-view: false 
-    
+    open-in-view: false
+
   data:
     web:
       pageable:
@@ -39,8 +30,59 @@ spring:
         max-page-size: 2000
         one-indexed-parameters: false
         page-parameter: page
-        prefix: 
+        prefix:
         qualifier-delimiter: _
         size-parameter: size
       sort:
         sort-parameter: sort
+
+  security:
+    basic:
+      enabled: false
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: ${GOOGLE_CLIENT_ID:<ADD CLIENT_ID>}
+            clientSecret: ${GOOGLE_CLIENT_SECRET:<ADD CLIENT_SECRET>}
+            redirectUri: "{baseUrl}/api/oauth2/callback/{registrationId}"
+            scope:
+              - email
+              - profile
+          facebook:
+            clientId: ${FACEBOOK_CLIENT_ID:<ADD CLIENT_ID>}
+            clientSecret: ${FACEBOOK_CLIENT_SECRET:<ADD CLIENT_SECRET>}
+            redirectUri: "{baseUrl}/api/oauth2/callback/{registrationId}" # Note that facebook now mandates the use of https redirect URIs, so make sure your app supports https in production
+            scope:
+              - email
+              - public_profile
+          github:
+            clientId: ${GITHUB_CLIENT_ID:<ADD CLIENT_ID>}
+            clientSecret: ${GITHUB_CLIENT_SECRET:<ADD CLIENT_SECRET>}
+            redirectUri: "{baseUrl}/api/oauth2/callback/{registrationId}"
+            scope:
+              - user:email
+              - read:user
+        provider:
+          facebook:
+            authorizationUri: https://www.facebook.com/v3.0/dialog/oauth
+            tokenUri: https://graph.facebook.com/v3.0/oauth/access_token
+            userInfoUri: https://graph.facebook.com/v3.0/me?fields=id,first_name,middle_name,last_name,name,email,verified,is_verified,picture.width(250).height(250)
+app:
+  auth:
+    tokenSecret: ${AUTH_TOKEN_SECRET:Iv1.QWRXDVGX4JS684QWVNHJ610OILJKJN}
+    tokenExpirationMsec: 864000000
+  oauth2:
+    # After successfully authenticating with the OAuth2 Provider,
+    # we'll be generating an auth token for the user and sending the token to the
+    # redirectUri mentioned by the frontend client in the /oauth2/authorize request.
+    # We're not using cookies because they won't work well in mobile clients.
+    authorizedRedirectUris:
+      - http://localhost:3000/oauth2/redirect
+      - myandroidapp://oauth2/redirect
+      - myiosapp://oauth2/redirect
+
+debug: false
+server:
+  error:
+    include-stacktrace: on_param

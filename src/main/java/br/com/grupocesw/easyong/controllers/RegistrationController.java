@@ -1,64 +1,78 @@
 package br.com.grupocesw.easyong.controllers;
 
-import javax.persistence.NonUniqueResultException;
-import javax.validation.Valid;
-
+import br.com.grupocesw.easyong.mappers.UserMapper;
+import br.com.grupocesw.easyong.request.dtos.UserCreateRequestDto;
+import br.com.grupocesw.easyong.request.dtos.UserUsernameRequestDto;
+import br.com.grupocesw.easyong.response.dtos.ApiStandardResponseDto;
+import br.com.grupocesw.easyong.response.dtos.UserResponseDto;
+import br.com.grupocesw.easyong.services.RegistrationService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.grupocesw.easyong.request.dtos.UserCreateRequestDto;
-import br.com.grupocesw.easyong.response.dtos.ApiResponseDto;
-import br.com.grupocesw.easyong.services.RegistrationService;
-import br.com.grupocesw.easyong.services.exceptions.UserNotExistException;
-import br.com.grupocesw.easyong.services.exceptions.UsernameAlreadyExistsException;
-import lombok.AllArgsConstructor;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping(path = "api/registration")
-@AllArgsConstructor
+@Api(tags = "Registration Controller")
 public class RegistrationController {
 
 	private final RegistrationService registrationService;
 
+	@ApiOperation(value = "Register new user")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Register new user successfully"),
+			@ApiResponse(code = 400, message = "Validation failed for arguments or error input data | Username already exists"),
+			@ApiResponse(code = 500, message = "An exception was generated")
+	})
 	@PostMapping
-	public ResponseEntity<?> register(@RequestBody @Valid UserCreateRequestDto request) {
-		try {	        
-	        registrationService.register(request.build());
-	        
-			return ResponseEntity.status(201).body(new ApiResponseDto(true, "Registered User. Please confirm your email."));
-		} catch (UsernameAlreadyExistsException e) {
-			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
-		}
-	}
-	
-	@GetMapping(path = "resend-confirmation/{username}")
-	public ResponseEntity<?> resendConfirmation(@PathVariable String username) {
-		try {
-			registrationService.resendConfirmation(username);
-			return ResponseEntity.ok().body(new ApiResponseDto(true, "Confirmation sent. Please confirm your email."));
-		} catch (UsernameAlreadyExistsException|UserNotExistException e) {
-			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
-		} catch (NonUniqueResultException e) {
-			return ResponseEntity.badRequest().body(new ApiResponseDto(false, "User already confirmed."));
-		} catch (Exception e) {
-			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
-		}
+	public ResponseEntity<ApiStandardResponseDto> register(@RequestBody @Valid UserCreateRequestDto request, HttpServletRequest httpRequest) {
+		UserResponseDto dto =
+			UserMapper.INSTANCE.entityToResponseDto(registrationService.register(
+					UserMapper.INSTANCE.requestDtoToEntity(request)
+			));
+
+		return ResponseEntity
+			.status(HttpStatus.CREATED)
+			.body(ApiStandardResponseDto.builder()
+				.message("Registered User. Please verify your email")
+				.data(dto)
+				.path(httpRequest.getRequestURI())
+				.build()
+			);
 	}
 
-	@GetMapping(path = "confirm/{token}")
-	public ResponseEntity<?> confirm(@PathVariable String token) {
-		try {
-			registrationService.confirmToken(token);
-			return ResponseEntity.ok().body(new ApiResponseDto(true, "Usuário confirmado com sucesso!"));
-		} catch (UsernameAlreadyExistsException|UserNotExistException e) {
-			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
-		} catch (Exception e) {
-			return ResponseEntity.badRequest().body(new ApiResponseDto(false, e.getMessage()));
-		}	
+	@ApiOperation(value = "Resend email for user account activation")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Email sent successfully"),
+			@ApiResponse(code = 400, message = "Validation failed for arguments or error input data | " +
+					"Username already exists | " +
+					"User not exists | " +
+					"User already confirmed in the system | " +
+					"Email already sent. Please wait 15 minutes for new request"),
+			@ApiResponse(code = 500, message = "An exception was generated")
+	})
+	@PostMapping(path = "resend-confirmation")
+	public ResponseEntity<ApiStandardResponseDto> resendConfirmation(@RequestBody @Valid UserUsernameRequestDto request, HttpServletRequest httpRequest) {
+		registrationService.resendConfirmation(UserMapper.INSTANCE.requestDtoToEntity(request));
+
+		return ResponseEntity
+			.status(HttpStatus.OK)
+			.body(ApiStandardResponseDto.builder()
+				.message("Confirmation sent. Please verify your email")
+				.path(httpRequest.getRequestURI())
+				.build()
+			);
 	}
+
 }

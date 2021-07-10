@@ -30,16 +30,27 @@ spring:
 ---
 
 spring:
+  cache:
+    type: redis
+    redis:
+      cache-null-values: false
+
+  redis:
+    host: localhost
+    password:
+    port: 6379
+
   datasource:
-    platform: postgresql
     url: jdbc:postgresql://localhost:5432/easyong
     username: postgres
     password: postgres
+    splatform: postgres
+    driver-class-name: org.postgresql.Driver
     initialization-mode: never
-#    data: classpath:/database/initial-data.sql, classpath:/database/initial-data-dev.sql, classpath:/database/update-sequence.sql
+#    data: classpath:/database/initial-data.sql, classpath:/database/ngos.sql, classpath:/database/users.sql, classpath:/database/update-sequence.sql
   
   jpa:
-    open-in-view: false
+    open-in-view: true
     hibernate:
       ddl-auto: none
       
@@ -50,10 +61,10 @@ spring:
     show-sql: true
 
   mail:
-    host: localhost
-    port: 1025
-    username: hello
-    password: hello
+    host: ${MAIL_HOST:localhost}
+    port: ${MAIL_PORT:1025}
+    username: ${MAIL_USERNAME:hello}
+    password: ${MAIL_PASSWORD:hello}
 
     properties:
       mail:

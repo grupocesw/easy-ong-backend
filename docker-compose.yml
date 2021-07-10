@@ -1,0 +1,82 @@
+version: "3"
+services:
+#    web:
+#        # image: easyong-backend:0.0.1-SNAPSHOT
+#        build: .
+#        container_name: easyong-backend-v0.0.1
+#        ports:
+#            - "8080:8080"
+#        environment:
+#            - APP_PROFILE=test
+#            - DATABASE_URL=jdbc:postgres://postgres:postgres@192.168.10.10:5432/easyong
+#            - REDIS_URL=redis://:@192.168.10.10:6379
+#            - EMAIL_HOST=192.168.10.10
+#            - EMAIL_PORT=1025
+#            - EMAIL_USERNAME=hello
+#            - EMAIL_PASSWORD=hello
+#        volumes:
+#            - ./target:/opt/app
+#        links:
+#            - db-cache
+#            - db
+#            - email-sender
+#        depends_on:
+#            - db-cache
+#            - db
+#            - email-sender
+#        networks:
+#            - easyong-network
+
+    email-sender:
+        image: maildev/maildev
+        container_name: maildev
+        ports:
+            - "1080:80"
+            - "1025:25"
+        networks:
+            - easyong-network
+
+    db:
+        image: postgres:13-alpine
+        container_name: postgres-v13
+        restart: unless-stopped
+        ports:
+            - "5432:5432"
+        volumes:
+            - ./postgres/data:/var/lib/postgresql/data
+        environment:
+            - POSTGRES_PASSWORD=postgres
+        networks:
+            - easyong-network
+
+    db-cache:
+        image: redis:6-alpine
+        container_name: redis-v6
+        ports:
+            - "6379:6379"            
+        networks:
+            - easyong-network
+
+#    sso-id:
+#        image: quay.io/keycloak/keycloak:13.0.1
+#        container_name: keycloak-v13
+#        ports:
+#            - "8081:8080"
+#        environment:
+#            - KEYCLOAK_USER=admin
+#            - KEYCLOAK_PASSWORD=admin
+#        networks:
+#            - easyong-network
+
+#    qa-server:
+#        image: sonarqube:8-community
+#        container_name: sonarqube-v8
+#        ports:
+#            - "9000:9000"
+#            - "9002:9002"
+#        networks:
+#            - easyong-network
+
+networks:
+    easyong-network:
+        driver: bridge

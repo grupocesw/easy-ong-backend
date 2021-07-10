@@ -12,9 +12,10 @@ import br.com.grupocesw.easyong.entities.Faq;
 @Repository
 public interface FaqRepository extends JpaRepository<Faq, Long> {
 
-	@Query("SELECT faq FROM Faq faq"
-			+ " WHERE"
-			+ " CONCAT(LOWER(faq.question), ' ', LOWER(faq.answer))"
-			+ " LIKE CONCAT('%', LOWER(:filter), '%')")
+	@Query(" SELECT DISTINCT faq FROM Faq faq "
+			+ " WHERE "
+			+ " CONCAT(LOWER(faq.question), ' ', LOWER(faq.answer)) "
+			+ " LIKE CONCAT('%', LOWER(:filter), '%') "
+			+ " GROUP BY faq.id, faq.question, faq.answer ")
 	Page<Faq> findByQuestionAndAnswer(@Param("filter") String filter, Pageable pageable);
 }

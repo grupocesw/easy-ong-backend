@@ -1,98 +1,82 @@
 package br.com.grupocesw.easyong.services.impl;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityNotFoundException;
-
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
+import br.com.grupocesw.easyong.entities.Faq;
+import br.com.grupocesw.easyong.exceptions.BadRequestException;
+import br.com.grupocesw.easyong.exceptions.ResourceNotFoundException;
+import br.com.grupocesw.easyong.repositories.FaqRepository;
+import br.com.grupocesw.easyong.services.FaqService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import br.com.grupocesw.easyong.entities.Faq;
-import br.com.grupocesw.easyong.repositories.FaqRepository;
-import br.com.grupocesw.easyong.request.dtos.FaqCreateRequestDto;
-import br.com.grupocesw.easyong.request.dtos.FaqUpdateRequestDto;
-import br.com.grupocesw.easyong.response.dtos.FaqResponseDto;
-import br.com.grupocesw.easyong.services.FaqService;
-import br.com.grupocesw.easyong.services.exceptions.DatabaseException;
-import br.com.grupocesw.easyong.services.exceptions.ResourceNotFoundException;
-import lombok.AllArgsConstructor;
+import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
+@Slf4j
 public class FaqServiceImpl implements FaqService {
 
-	private FaqRepository repository;
+	private final FaqRepository repository;
 
 	@Override
-	public List<FaqResponseDto> findAll() {		
-		List<FaqResponseDto> result = repository.findAll()
-				.stream()
-				.map(obj -> new FaqResponseDto(obj))
-				.collect(Collectors.toList());
-		
-		return result;
-	}
-	
-	@Override
-	public FaqResponseDto create(FaqCreateRequestDto faqDto) {		
-		try {
-			return new FaqResponseDto(repository.save(faqDto.build()));
-		} catch (DataIntegrityViolationException e) {
-			throw new DatabaseException(e.getMessage());
-		}
-	}
-	
-	@Override
-	public FaqResponseDto retrieve(Long id) {
-		Optional<Faq> optional = repository.findById(id);
-		optional.orElseThrow(() -> new ResourceNotFoundException(id));
-
-		return new FaqResponseDto(optional.get());
+	public List<Faq> findAll() {
+		return repository.findAll();
 	}
 
 	@Override
-	public FaqResponseDto update(Long id, FaqUpdateRequestDto faqDto) {
-		try {
-			Optional<Faq> optional = repository.findById(id);
-			optional.orElseThrow(() -> new ResourceNotFoundException(id));
-			
-			Faq faq = optional.get();
-			
-			faq.setQuestion(faqDto.getQuestion());
-			faq.setAnswer(faqDto.getAnswer());
+	@CacheEvict(value = "faqs", allEntries = true)
+	public Faq create(Faq request) {
+		log.info("Create faq with question {}", request.getQuestion());
 
-			return new FaqResponseDto(repository.save(faq));
-		} catch (EntityNotFoundException e) {
-			throw new ResourceNotFoundException(id);
-		}		
+		return repository.save(request);
 	}
 
 	@Override
+	@Cacheable(value = "faqs", key = "#id")
+	public Faq retrieve(Long id) {
+		return repository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(id));
+	}
+
+	@Override
+	@CacheEvict(value = "faqs", allEntries = true)
+	public Faq update(Long id, Faq request) {
+		log.info("Update faq with question {}", request.getQuestion());
+
+		Faq faq = retrieve(id);
+		faq.setQuestion(request.getQuestion());
+		faq.setAnswer(request.getAnswer());
+
+		return repository.save(faq);
+	}
+
+	@Override
+	@CacheEvict(value = "faqs", allEntries = true)
 	public void delete(Long id) {
-		try {
-			repository.deleteById(id);
-		} catch (EmptyResultDataAccessException e) {
-			throw new ResourceNotFoundException(id);
-		} catch (DataIntegrityViolationException e) {
-			throw new DatabaseException(e.getMessage());
-		}
+		log.info("Delete faq with id {}", id);
+
+		repository.delete(retrieve(id));
 	}
 
 	@Override
-	public Page<FaqResponseDto> findAll(Pageable pageable) {		
-		Page<Faq> result = repository.findAll(pageable);
-		return result.map(obj -> new FaqResponseDto(obj));
+	public void existsOrThrowsException(Long id) {
+		if (!repository.existsById(id))
+			throw new BadRequestException("Faq not found. Id " + id);
 	}
-	
+
 	@Override
-	public Page<FaqResponseDto> findByQuestionAndAnswer(String filter, Pageable pageable) {
-		Page<Faq> result = repository.findByQuestionAndAnswer(filter, pageable);
-		return result.map(obj -> new FaqResponseDto(obj));		
+	@Cacheable(value = "faqs", key = "#pageable.pageSize")
+	public Page<Faq> findAll(Pageable pageable) {
+		return repository.findAll(pageable);
+	}
+
+	@Override
+	public Page<Faq> findByQuestionAndAnswer(String filter, Pageable pageable) {
+		return repository.findByQuestionAndAnswer(filter, pageable);
 	}
 
 }

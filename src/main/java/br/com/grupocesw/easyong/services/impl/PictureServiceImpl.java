@@ -1,103 +1,104 @@
 package br.com.grupocesw.easyong.services.impl;
 
+import br.com.grupocesw.easyong.entities.Picture;
+import br.com.grupocesw.easyong.exceptions.BadRequestException;
+import br.com.grupocesw.easyong.exceptions.NotAllowedTypeFileException;
+import br.com.grupocesw.easyong.exceptions.ResourceNotFoundException;
+import br.com.grupocesw.easyong.repositories.PictureRepository;
+import br.com.grupocesw.easyong.services.PictureService;
+import br.com.grupocesw.easyong.utils.PictureUtil;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-
-import javax.persistence.EntityNotFoundException;
-
-import org.apache.commons.io.IOUtils;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
-
-import br.com.grupocesw.easyong.entities.Picture;
-import br.com.grupocesw.easyong.repositories.PictureRepository;
-import br.com.grupocesw.easyong.services.PictureService;
-import br.com.grupocesw.easyong.services.exceptions.DatabaseException;
-import br.com.grupocesw.easyong.services.exceptions.ResourceNotFoundException;
-import br.com.grupocesw.easyong.utils.PictureUtil;
-import lombok.AllArgsConstructor;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
+@Slf4j
 public class PictureServiceImpl implements PictureService {
 
 	public final String storageDirectoryPath = "storage/pictures/";
 	
-	private PictureRepository repository;
+	private final PictureRepository repository;
 
-	@Override
-	public List<Picture> findAll() {
-		return repository.findAll();
+	public static List imageAllowedTypes = Arrays.asList("image/jpg", "image/jpeg", "image/png");
+
+	@Transactional
+	private Picture create(MultipartFile file) {
+		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+		Picture picture = repository.save(
+			Picture.builder()
+				.url(fileName)
+				.build()
+		);
+
+		picture.setUrl(fileName);
+
+		log.info("Create picture with name {}", fileName);
+
+		return picture;
+	}
+
+	private Picture retrieve(Long id) {
+		return repository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 
 	@Override
-	public Picture findById(Long id) {
-		Optional<Picture> optional = repository.findById(id);
+	public Picture update(Long id, Picture request) {
+		Picture picture = retrieve(id);
+		picture.setUrl(request.getUrl());
 
-		return optional.orElseThrow(() -> new ResourceNotFoundException(id));
-	}
+		log.info("Update picture with name {}", request.getUrl());
 
-	@Override
-	public Picture insert(MultipartFile file) {		
-		try {
-			String fileName = StringUtils.cleanPath(file.getOriginalFilename());			
-			Picture picture = repository.save(new Picture(fileName));
-			
-			this.upload(picture, file);
-			
-			return picture;
-		} catch (DataIntegrityViolationException e) {
-			throw new DatabaseException(e.getMessage());
-		}
-	}
-
-	@Override
-	public Picture update(Long id, Picture picture) {
-		try {
-			Picture entity = repository.getOne(id);
-			this.updateData(entity, picture);
-
-			return repository.save(entity);
-		} catch (EntityNotFoundException e) {
-			throw new ResourceNotFoundException(id);
-		}		
-	}
-
-	private void updateData(Picture entity, Picture picture) {
-		entity.setName(picture.getName());
+		return repository.save(picture);
 	}
 
 	@Override
 	public void delete(Long id) {
-		try {
-			repository.deleteById(id);
-		} catch (EmptyResultDataAccessException e) {
-			throw new ResourceNotFoundException(id);
-		} catch (DataIntegrityViolationException e) {
-			throw new DatabaseException(e.getMessage());
-		}
+		log.info("Delete picture with id {}", id);
+		repository.delete(retrieve(id));
+	}
+
+	@Override
+	public void existsOrThrowsException(Long id) {
+		if (!repository.existsById(id))
+			throw new BadRequestException("Picture not found. Id " + id);
 	}
 	
 	@Override
-    public void upload(Picture picture, MultipartFile file) {
+	@Transactional
+    public void upload(MultipartFile file) {
+		log.info("Upload file");
+
+		boolean hasAllowedTypeImage = imageAllowedTypes.stream().anyMatch((type) -> type.equals(file.getContentType()));
+
+		if (!hasAllowedTypeImage)
+			throw new NotAllowedTypeFileException("Not allowed type file. Use only these: " + imageAllowedTypes.toString());
 
         Path storageDirectory = Paths.get(storageDirectoryPath);
 
-        if(!Files.exists(storageDirectory)){
+        if (!Files.exists(storageDirectory)){
             try {
                 Files.createDirectories(storageDirectory);
-            }catch (Exception e){
+            } catch (Exception e){
                 e.printStackTrace();
             }
         }
+
+		Picture picture = create(file);
 
         Path destination = Paths.get(storageDirectory.toString().concat("/").concat(picture.getName()));
 
@@ -109,11 +110,13 @@ public class PictureServiceImpl implements PictureService {
     }
 
 	@Override
-    public byte[] getPicture(String name) throws IOException {
+    public byte[] getPicture(String url) throws IOException {
+		log.info("Get picture with url {}", url);
+
     	try {           	
     		Path destination = Paths.get(
     			storageDirectoryPath.concat(
-    				PictureUtil.getFileNameWithExtension(storageDirectoryPath, name)
+    				PictureUtil.getFileNameWithExtension(storageDirectoryPath, url)
     			)
     		);
             

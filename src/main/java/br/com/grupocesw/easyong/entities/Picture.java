@@ -1,22 +1,14 @@
 package br.com.grupocesw.easyong.entities;
 
+import java.io.Serializable;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
+import br.com.grupocesw.easyong.utils.AppUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import br.com.grupocesw.easyong.utils.PictureUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,41 +24,40 @@ import lombok.ToString;
 @Setter
 @Builder
 @ToString
-public class Picture {
+public class Picture implements Serializable {
 	
-	private static final String path = "/api/pictures/";
-	
+	private static final String path = "/api/pictures/";	
 	public static final String noImage = "no_image.png";
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
-	@Column(name = "name", nullable = false)
+
+	@Column(name = "url", nullable = false, columnDefinition = "TEXT")
+	private String url;
+
+	@Transient
 	private String name;
 
-	@OneToOne(mappedBy = "picture", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(mappedBy = "picture")
 	@JoinColumn(name = "picture_id")
+	@ToString.Exclude
 	private User user;
 	
 	@JsonIgnore
 	@ManyToMany(mappedBy = "pictures")
 	private Set<Ngo> ngos;
 	
-	public Picture (String name) {
-		this.name = name;
-	}
-	
 	public String getUrl() {
+		if (!PictureUtil.isURL(url)) {
+			String pictureName = (url == null) ? noImage : url;			
+			return AppUtil.getRootUrlAppConcatPath(path + pictureName);
+		}
 		
-		String pictureName = (name == null) ? noImage : name;
-		
-		return ServletUriComponentsBuilder
-			.fromCurrentContextPath()
-			.build()
-			.toUriString()
-			.concat(path)
-			.concat(pictureName);
+		return url;
 	}
 
+	public String getName() {
+		return url;
+	}
 }
