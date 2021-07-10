@@ -9,6 +9,7 @@ import br.com.grupocesw.easyong.security.UserPrincipal;
 import br.com.grupocesw.easyong.security.oauth2.user.OAuth2UserInfo;
 import br.com.grupocesw.easyong.security.oauth2.user.OAuth2UserInfoFactory;
 import br.com.grupocesw.easyong.services.UserService;
+import br.com.grupocesw.easyong.utils.PasswordGeneratorUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
@@ -70,7 +71,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             .provider(AuthProvider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()))
             .providerId(oAuth2UserInfo.getId())
             .username(oAuth2UserInfo.getEmail())
-            .password("12345678aB@")
+            .password(PasswordGeneratorUtil.generateStrongPassword())
             .picture(
                 Picture.builder()
                     .url(oAuth2UserInfo.getImageUrl())

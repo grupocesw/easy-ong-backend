@@ -4,7 +4,7 @@ import br.com.grupocesw.easyong.exceptions.BadRequestException;
 
 import java.util.regex.Pattern;
 
-public class PasswordUtil {
+public class PasswordVerificationUtil {
 
     public static String isPasswordOkWithConfirmation(String password, String confirmationPassword) {
         passwordsLength(password);

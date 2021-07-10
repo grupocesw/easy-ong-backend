@@ -13,7 +13,7 @@ import br.com.grupocesw.easyong.response.dtos.JwtAuthenticationResponseDto;
 import br.com.grupocesw.easyong.security.TokenProvider;
 import br.com.grupocesw.easyong.services.*;
 import br.com.grupocesw.easyong.utils.AppUtil;
-import br.com.grupocesw.easyong.utils.PasswordUtil;
+import br.com.grupocesw.easyong.utils.PasswordVerificationUtil;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
 		User user = User.builder()
 			.username(request.getUsername())
 			.password(passwordEncoder.encode(
-				PasswordUtil.isPasswordOk(request.getPassword())
+				PasswordVerificationUtil.isPasswordOk(request.getPassword())
 			))
 			.person(request.getPerson())
 			.roles(roleService.getDefaultRoles())
@@ -184,7 +184,7 @@ public class UserServiceImpl implements UserService {
 	public void changePassword(Long id, User request) {
 		User user = retrieve(id);
 		user.setPassword(passwordEncoder.encode(
-			PasswordUtil.isPasswordOk(request.getPassword())
+			PasswordVerificationUtil.isPasswordOk(request.getPassword())
 		));
 
 		log.info("Change password to username {}", user.getUsername());
@@ -232,7 +232,7 @@ public class UserServiceImpl implements UserService {
 		User user = confirmationToken.getUser();
 
 		user.setPassword(passwordEncoder.encode(
-			PasswordUtil.isPasswordOk(request.getPassword())
+			PasswordVerificationUtil.isPasswordOk(request.getPassword())
 		));
 
 		confirmationTokenService.setConfirmedAt(token);

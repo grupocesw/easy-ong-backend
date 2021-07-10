@@ -1,7 +1,7 @@
 spring:
 
   application:
-    name: Easy ONG
+    name: EASY ONG
 
   mvc.favicon.enabled: false
 
@@ -43,22 +43,22 @@ spring:
       client:
         registration:
           google:
-            clientId: 5014057553-8gm9um6vnli3cle5rgigcdjpdrid14m9.apps.googleusercontent.com
-            clientSecret: tWZKVLxaD_ARWsriiiUFYoIk
+            clientId: ${GOOGLE_CLIENT_ID:<ADD CLIENT_ID>}
+            clientSecret: ${GOOGLE_CLIENT_SECRET:<ADD CLIENT_SECRET>}
             redirectUri: "{baseUrl}/api/oauth2/callback/{registrationId}"
             scope:
               - email
               - profile
           facebook:
-            clientId: <FACEBOOK_CLIENT_ID>
-            clientSecret: <FACEBOOK_CLIENT_SECRET>
+            clientId: ${FACEBOOK_CLIENT_ID:<ADD CLIENT_ID>}
+            clientSecret: ${FACEBOOK_CLIENT_SECRET:<ADD CLIENT_SECRET>}
             redirectUri: "{baseUrl}/api/oauth2/callback/{registrationId}" # Note that facebook now mandates the use of https redirect URIs, so make sure your app supports https in production
             scope:
               - email
               - public_profile
           github:
-            clientId: Iv1.450587c3caf568c2
-            clientSecret: cc5a5199bc9e494646d2fa4971b54ab2e07c69db
+            clientId: ${GITHUB_CLIENT_ID:Iv1.<ADD CLIENT_ID>}
+            clientSecret: ${GITHUB_CLIENT_SECRET:<ADD CLIENT_SECRET>}
             redirectUri: "{baseUrl}/api/oauth2/callback/{registrationId}"
             scope:
               - user:email
@@ -70,7 +70,7 @@ spring:
             userInfoUri: https://graph.facebook.com/v3.0/me?fields=id,first_name,middle_name,last_name,name,email,verified,is_verified,picture.width(250).height(250)
 app:
   auth:
-    tokenSecret: 926D96C90030DD58429D2751AC1BDBBC
+    tokenSecret: ${AUTH_TOKEN_SECRET:Iv1.QWRXDVGX4JS684QWVNHJ610OILJKJN}
     tokenExpirationMsec: 864000000
   oauth2:
     # After successfully authenticating with the OAuth2 Provider,

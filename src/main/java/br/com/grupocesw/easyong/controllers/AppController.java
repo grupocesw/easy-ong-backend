@@ -6,7 +6,7 @@ import br.com.grupocesw.easyong.request.dtos.UserPasswordRequestDto;
 import br.com.grupocesw.easyong.services.ConfirmationTokenService;
 import br.com.grupocesw.easyong.services.RegistrationService;
 import br.com.grupocesw.easyong.services.UserService;
-import br.com.grupocesw.easyong.utils.PasswordUtil;
+import br.com.grupocesw.easyong.utils.PasswordVerificationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -69,7 +69,7 @@ public class AppController {
         try {
             redirectAttr.addFlashAttribute("token", token);
 
-            PasswordUtil.isPasswordOkWithConfirmation(request.getPassword(), request.getPasswordConfirmation());
+            PasswordVerificationUtil.isPasswordOkWithConfirmation(request.getPassword(), request.getPasswordConfirmation());
             User user = userService.confirmUserRecoverPassword(token, UserMapper.INSTANCE.requestDtoToEntity(request));
 
             model.addAttribute("message",
