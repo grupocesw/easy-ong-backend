@@ -1,7 +1,17 @@
 package br.com.grupocesw.easyong.enums;
 
 public enum ContactType {
-	EMAIL(0), FACEBOOK(1), INSTAGRAM(2), LINKEDIN(3), PHONE(4), TELEGRAM(5), TIK_TOK(6), TWITTER(7), WEB_SITE(8), WHATSAPP(9),YOUTUBE(10);
+	EMAIL(0),
+	FACEBOOK(1),
+	INSTAGRAM(2),
+	LINKEDIN(3),
+	PHONE(4),
+	TELEGRAM(5),
+	TIK_TOK(6),
+	TWITTER(7),
+	WEB_SITE(8),
+	WHATSAPP(9),
+	YOUTUBE(10);
 	
 	private Integer code;
 

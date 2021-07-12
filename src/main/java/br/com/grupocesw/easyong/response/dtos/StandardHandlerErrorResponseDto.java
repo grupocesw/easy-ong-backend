@@ -22,7 +22,7 @@ public class StandardHandlerErrorResponseDto implements Serializable {
 	private LocalDateTime timestamp = LocalDateTime.now();
 	private Integer code;
 	private String error;
-	private String message;
+	private Object message;
 	private String path;
 
 }

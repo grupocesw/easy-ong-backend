@@ -85,7 +85,7 @@ public class User implements Serializable {
 	@JoinTable(name = "user_social_causes", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "social_cause_id"))
 	private Set<SocialCause> causes;
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinTable(name = "user_favorite_ngos", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "ngo_id"))
 	private Set<Ngo> favoriteNgos;
@@ -95,9 +95,9 @@ public class User implements Serializable {
 	@JoinTable(name = "user_notifications", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "notification_id"))
 	private Set<Notification> notifications;
 
-	@OneToMany(targetEntity = NgoSuggestion.class, mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	@OneToMany(targetEntity = AppContact.class, mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	private Set<NgoSuggestion> ngoSuggestions;
+	private Set<AppContact> appContacts;
 
 	public User(User user) {
 		this.id = user.id;

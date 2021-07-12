@@ -1,7 +1,7 @@
 package br.com.grupocesw.easyong.services;
 
-import br.com.grupocesw.easyong.entities.Ngo;
 import br.com.grupocesw.easyong.entities.User;
+import br.com.grupocesw.easyong.request.dtos.UserPasswordRequestDto;
 import br.com.grupocesw.easyong.response.dtos.JwtAuthenticationResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +19,7 @@ public interface UserService {
 
 	User update(Long id, User request);
 
-//	User updateMe(User request);
+	User updateMe(User request);
 
 	void delete(Long id);
 
@@ -29,13 +29,9 @@ public interface UserService {
 
 	Page<User> findCheckedAll(Pageable pageable);
 
-	void favorite(Long userId, Long ngoId);
-
-//	User getMe();
-
 	JwtAuthenticationResponseDto login(User request);
 
-    void changePassword(Long id, User request);
+    void changePassword(UserPasswordRequestDto dto);
 
     void recoverPassword(User request);
 
@@ -49,5 +45,6 @@ public interface UserService {
 
 	void enableUser(User user);
 
-	Page<Ngo> getFavoriteNgos(Long userId, Pageable pageable);
+	User getCurrentUser();
+
 }

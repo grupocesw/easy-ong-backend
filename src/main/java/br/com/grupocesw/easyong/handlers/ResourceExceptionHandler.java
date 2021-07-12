@@ -4,13 +4,34 @@ import br.com.grupocesw.easyong.exceptions.*;
 import br.com.grupocesw.easyong.response.dtos.StandardHandlerErrorResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestControllerAdvice
 public class ResourceExceptionHandler {
+
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<StandardHandlerErrorResponseDto> handleException(Exception ex, HttpServletRequest resquest) {
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+			.body(StandardHandlerErrorResponseDto.builder()
+				.code(0)
+				.error("Unexpected error")
+				.message(ex.getMessage())
+				.path(resquest.getRequestURI())
+				.build()
+			);
+	}
 
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<StandardHandlerErrorResponseDto> resourceNotFound(ResourceNotFoundException ex, HttpServletRequest resquest) {
@@ -133,12 +154,77 @@ public class ResourceExceptionHandler {
 	}
 
 	@ExceptionHandler(InvalidTokenException.class)
-	public ResponseEntity<StandardHandlerErrorResponseDto> invalideToken(InvalidTokenException ex, HttpServletRequest resquest) {
+	public ResponseEntity<StandardHandlerErrorResponseDto> invalidToken(InvalidTokenException ex, HttpServletRequest resquest) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST.value())
 			.body(StandardHandlerErrorResponseDto.builder()
 				.code(11)
 				.error("Invalid Token")
 				.message(ex.getMessage())
+				.path(resquest.getRequestURI())
+				.build()
+			);
+	}
+
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<StandardHandlerErrorResponseDto> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpServletRequest resquest) {
+		List<String> errors = new ArrayList<>();
+
+		for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+			errors.add(error.getField() + ": " + error.getDefaultMessage());
+		}
+
+		for (ObjectError error : ex.getBindingResult().getGlobalErrors()) {
+			errors.add(error.getObjectName() + ": " + error.getDefaultMessage());
+		}
+
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST.value())
+			.body(StandardHandlerErrorResponseDto.builder()
+				.code(12)
+				.error("Invalid request arguments")
+				.message(errors)
+				.path(resquest.getRequestURI())
+				.build()
+			);
+	}
+
+	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
+	public ResponseEntity<StandardHandlerErrorResponseDto> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex, HttpServletRequest resquest) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST.value())
+			.body(StandardHandlerErrorResponseDto.builder()
+				.code(13)
+				.error("Argument type mismatch")
+				.message(ex.getName() + " should be of type " + ex.getRequiredType().getName())
+				.path(resquest.getRequestURI())
+				.build()
+			);
+	}
+
+	@ExceptionHandler(MissingServletRequestParameterException.class)
+	public ResponseEntity<StandardHandlerErrorResponseDto> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpServletRequest resquest) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST.value())
+			.body(StandardHandlerErrorResponseDto.builder()
+				.code(14)
+				.error("Missing Servlet Request Parameter")
+				.message(ex.getParameterName() + " parameter is missing")
+				.path(resquest.getRequestURI())
+				.build()
+			);
+	}
+
+	@ExceptionHandler(ConstraintViolationException.class)
+	public ResponseEntity<StandardHandlerErrorResponseDto> handleConstraintViolation(ConstraintViolationException ex, HttpServletRequest resquest) {
+		List<String> errors = new ArrayList<>();
+
+		for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
+			errors.add(violation.getRootBeanClass().getName() + " " +
+					violation.getPropertyPath() + ": " + violation.getMessage());
+		}
+
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST.value())
+			.body(StandardHandlerErrorResponseDto.builder()
+				.code(15)
+				.error("Constraint Violation")
+				.message(errors)
 				.path(resquest.getRequestURI())
 				.build()
 			);

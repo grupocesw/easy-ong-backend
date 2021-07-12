@@ -1,17 +1,17 @@
 package br.com.grupocesw.easyong.controllers;
 
+import br.com.grupocesw.easyong.mappers.AppContactMapper;
 import br.com.grupocesw.easyong.mappers.NgoMapper;
 import br.com.grupocesw.easyong.mappers.UserMapper;
-import br.com.grupocesw.easyong.request.dtos.LoginRequestDto;
-import br.com.grupocesw.easyong.request.dtos.UserPasswordRequestDto;
-import br.com.grupocesw.easyong.request.dtos.UserUpdateRequestDto;
-import br.com.grupocesw.easyong.request.dtos.UserUsernameRequestDto;
+import br.com.grupocesw.easyong.request.dtos.*;
 import br.com.grupocesw.easyong.response.dtos.ApiStandardResponseDto;
 import br.com.grupocesw.easyong.response.dtos.JwtAuthenticationResponseDto;
 import br.com.grupocesw.easyong.response.dtos.NgoSlimResponseDto;
 import br.com.grupocesw.easyong.response.dtos.UserResponseDto;
 import br.com.grupocesw.easyong.security.CurrentUser;
 import br.com.grupocesw.easyong.security.UserPrincipal;
+import br.com.grupocesw.easyong.services.AppContactService;
+import br.com.grupocesw.easyong.services.NgoService;
 import br.com.grupocesw.easyong.services.UserService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +33,8 @@ import java.util.Optional;
 public class AuthController {
 
 	private final UserService service;
+	private final AppContactService appContactService;
+	private final NgoService ngoService;
 
 	@ApiOperation(value = "Authentication user")
 	@ApiResponses(value = {
@@ -56,9 +58,8 @@ public class AuthController {
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
 	@GetMapping("/me")
-	public ResponseEntity<ApiStandardResponseDto> getCurrentUser(@CurrentUser UserPrincipal userPrincipal, HttpServletRequest httpRequest) {
-
-		UserResponseDto dto = UserMapper.INSTANCE.entityToResponseDto(service.retrieve(userPrincipal.getId()));
+	public ResponseEntity<ApiStandardResponseDto> getCurrentUser(HttpServletRequest httpRequest) {
+		UserResponseDto dto = UserMapper.INSTANCE.entityToResponseDto(service.getCurrentUser());
 
 		return ResponseEntity
 			.status(HttpStatus.OK)
@@ -78,9 +79,9 @@ public class AuthController {
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
 	@PutMapping(value = "/me/update")
-	public ResponseEntity<ApiStandardResponseDto> updateProfile(@CurrentUser UserPrincipal userPrincipal, @RequestBody @Valid UserUpdateRequestDto request, HttpServletRequest httpRequest) {
+	public ResponseEntity<ApiStandardResponseDto> updateProfile(@RequestBody @Valid UserUpdateRequestDto request, HttpServletRequest httpRequest) {
 		UserResponseDto dto = UserMapper.INSTANCE.entityToResponseDto(
-				service.update(userPrincipal.getId(), UserMapper.INSTANCE.requestDtoToEntity(request)));
+				service.updateMe(UserMapper.INSTANCE.requestDtoToEntity(request)));
 
 		return ResponseEntity
 			.status(HttpStatus.OK)
@@ -104,8 +105,8 @@ public class AuthController {
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
 	@PutMapping(value = "/change-password")
-	public ResponseEntity<ApiStandardResponseDto> changePassword(@CurrentUser UserPrincipal userPrincipal, @RequestBody @Valid UserPasswordRequestDto request, HttpServletRequest httpRequest) {
-		service.changePassword(userPrincipal.getId(), UserMapper.INSTANCE.requestDtoToEntity(request));
+	public ResponseEntity<ApiStandardResponseDto> changePassword(@RequestBody @Valid UserPasswordRequestDto request, HttpServletRequest httpRequest) {
+		service.changePassword(request);
 
 		return ResponseEntity
 			.status(HttpStatus.OK)
@@ -146,8 +147,8 @@ public class AuthController {
 	})
 	@PutMapping(value = "/favorite-ngos/{ngoId}")
     @PreAuthorize("hasAuthority('USER')")
-	public ResponseEntity<ApiStandardResponseDto> favorite(@CurrentUser UserPrincipal userPrincipal, @PathVariable Long ngoId, HttpServletRequest httpRequest) {
-		service.favorite(userPrincipal.getId(), ngoId);
+	public ResponseEntity<ApiStandardResponseDto> favorite(@PathVariable Long ngoId, HttpServletRequest httpRequest) {
+		ngoService.favorite(ngoId);
 
 		return ResponseEntity
 			.status(HttpStatus.OK)
@@ -172,7 +173,6 @@ public class AuthController {
 	@GetMapping(value = "/favorite-ngos")
     @PreAuthorize("hasAuthority('USER')")
 	public ResponseEntity<Page<NgoSlimResponseDto>> favoriteNgos(
-			@CurrentUser UserPrincipal userPrincipal,
 			@RequestParam("page") Optional<Integer> page,
 			@RequestParam("size") Optional<Integer> size) {
 
@@ -180,7 +180,28 @@ public class AuthController {
 		int pageSize = size.orElse(5);
 
 		return ResponseEntity.ok(NgoMapper.INSTANCE.listToSlimResponseDto(
-				service.getFavoriteNgos(userPrincipal.getId(), PageRequest.of(currentPage - 1, pageSize))
+				ngoService.getFavoriteNgos(PageRequest.of(currentPage - 1, pageSize))
 		));
 	}
+
+	@ApiOperation(value = "User app contact")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Created message contact app successfully"),
+			@ApiResponse(code = 400, message = "Validation failed for arguments or error input data | " +
+					"User not exists"),
+			@ApiResponse(code = 500, message = "An exception was generated")
+	})
+	@PostMapping(value = "/create-app-contact")
+	public ResponseEntity<ApiStandardResponseDto> createAppContact(@RequestBody @Valid AppContactRequestDto request, HttpServletRequest httpRequest) {
+		appContactService.create(AppContactMapper.INSTANCE.requestDtoToEntity(request));
+
+		return ResponseEntity
+			.status(HttpStatus.OK)
+			.body(ApiStandardResponseDto.builder()
+				.message("Success. Created message contact app")
+				.path(httpRequest.getRequestURI())
+				.build()
+			);
+	}
+
 }

@@ -7,14 +7,20 @@ import br.com.grupocesw.easyong.repositories.NgoRepository;
 import br.com.grupocesw.easyong.services.CityService;
 import br.com.grupocesw.easyong.services.NgoService;
 import br.com.grupocesw.easyong.services.SocialCauseService;
+import br.com.grupocesw.easyong.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,6 +32,7 @@ public class NgoServiceImpl implements NgoService {
 	private final NgoRepository repository;
 	private final CityService cityService;
 	private final SocialCauseService socialCauseService;
+	private final UserService userService;
 
 	@Override
 	@CacheEvict(value = "ngos", allEntries = true)
@@ -208,6 +215,48 @@ public class NgoServiceImpl implements NgoService {
 	public Page<Ngo> findSuggested(Pageable pageable) {
 		log.info("Find suggested ngos");
 		return repository.findSuggested(pageable);
+	}
+
+	@Transactional
+	@Override
+	public void favorite(Long ngoId) {
+		User currentUser = userService.getCurrentUser();
+		log.info("Username {} favorite Ngo id {}", currentUser.getUsername(), ngoId);
+
+		Ngo ngo = repository.findNgoByNgoIdAndUserId(currentUser.getId(), retrieve(ngoId).getId()).orElse(null);
+
+		if (ngo == null) {
+			repository.saveFavoriteNgo(currentUser.getId(), ngoId);
+		} else {
+			repository.deleteFavoriteNgo(currentUser.getId(), ngoId);
+		}
+
+	}
+
+	@Override
+	public Page<Ngo> getFavoriteNgos(Pageable pageable) {
+		log.info("List favorite NGOs");
+
+		int pageSize = pageable.getPageSize();
+		int currentPage = pageable.getPageNumber();
+		int startItem = currentPage * pageSize;
+
+		List<Ngo> ngos = repository.getFavoriteNgosByUser(userService.getCurrentUser());
+
+		if (ngos.size() < startItem) {
+			ngos = Collections.emptyList();
+		} else {
+			int toIndex = Math.min(startItem + pageSize, ngos.size());
+			ngos = ngos.subList(startItem, toIndex);
+		}
+
+		Page<Ngo> page = new PageImpl<>(
+				ngos,
+				PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()),
+				ngos.size()
+		);
+
+		return page;
 	}
 
 }
