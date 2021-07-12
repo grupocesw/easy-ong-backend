@@ -90,7 +90,7 @@ public class User implements Serializable {
 	@JoinTable(name = "user_favorite_ngos", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "ngo_id"))
 	private Set<Ngo> favoriteNgos;
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinTable(name = "user_notifications", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "notification_id"))
 	private Set<Notification> notifications;
