@@ -214,7 +214,12 @@ public class NgoServiceImpl implements NgoService {
 	@Override
 	public Page<Ngo> findSuggested(Pageable pageable) {
 		log.info("Find suggested ngos");
-		return repository.findSuggested(pageable);
+		User currentUser = userService.getCurrentUserOrNull();
+
+		if (currentUser == null)
+			return repository.findSuggested(pageable);
+
+		return repository.findSuggestedByLoggedUser(pageable, currentUser.getId());
 	}
 
 	@Transactional

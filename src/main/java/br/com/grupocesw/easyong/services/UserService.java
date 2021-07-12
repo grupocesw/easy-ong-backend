@@ -47,4 +47,6 @@ public interface UserService {
 
 	User getCurrentUser();
 
+	User getCurrentUserOrNull();
+
 }

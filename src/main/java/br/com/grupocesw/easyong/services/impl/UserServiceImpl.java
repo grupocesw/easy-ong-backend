@@ -265,6 +265,17 @@ public class UserServiceImpl implements UserService {
 		return findByUsernameOrThrowUserNotExistException(userPrincipal.getEmail());
 	}
 
+	@Override
+	public User getCurrentUserOrNull() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+		if (authentication instanceof AnonymousAuthenticationToken) {
+			return null;
+		}
+
+		return getCurrentUser();
+	}
+
 	private User updateUser(User user, User request) {
 		log.info("Update to username {}", user.getUsername());
 

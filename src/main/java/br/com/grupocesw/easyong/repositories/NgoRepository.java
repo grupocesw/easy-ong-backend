@@ -1,5 +1,6 @@
 package br.com.grupocesw.easyong.repositories;
 
+import br.com.grupocesw.easyong.entities.Ngo;
 import br.com.grupocesw.easyong.entities.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -8,8 +9,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import br.com.grupocesw.easyong.entities.Ngo;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +28,15 @@ public interface NgoRepository extends JpaRepository<Ngo, Long> {
 	
 	@Query("SELECT n FROM Ngo n WHERE n.activated = true ORDER BY RAND()")
 	Page<Ngo> findSuggested(Pageable pageable);
+
+	@Query(value = "SELECT n FROM Ngo n " +
+			"LEFT JOIN n.causes c " +
+			"LEFT JOIN c.users u " +
+			"WHERE n.activated = true " +
+			"AND u.id = :userId " +
+			"GROUP BY n " +
+			"ORDER BY RAND()")
+	Page<Ngo> findSuggestedByLoggedUser(Pageable pageable, @Param("userId") Long userId);
 
 	@Query("SELECT DISTINCT n FROM Ngo n JOIN FETCH n.users u WHERE u = :user")
 	List<Ngo> getFavoriteNgosByUser(@Param("user") User user);
