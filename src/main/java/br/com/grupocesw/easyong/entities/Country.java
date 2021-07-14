@@ -28,7 +28,7 @@ import lombok.ToString;
 @Setter
 @Getter
 @Builder
-@ToString
+@ToString(exclude = "states")
 public class Country implements Serializable {
 
 	@Id

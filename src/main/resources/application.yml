@@ -83,6 +83,3 @@ app:
       - myiosapp://oauth2/redirect
 
 debug: false
-server:
-  error:
-    include-stacktrace: on_param

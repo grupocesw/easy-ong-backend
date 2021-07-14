@@ -1,6 +1,6 @@
 package br.com.grupocesw.easyong.response.dtos;
 
-import br.com.grupocesw.easyong.enums.AppReasonContact;
+import br.com.grupocesw.easyong.enums.NotificationType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,11 +8,14 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppContactResponseDto {
+public class NotificationResponseDto {
 
     private static final long serialVersionUID = 1L;
 
     private Long id;
-    private String message;
-    private AppReasonContact reason;
+    private NotificationType type;
+    private PictureResponseDto picture;
+    private String title;
+    private String description;
+
 }

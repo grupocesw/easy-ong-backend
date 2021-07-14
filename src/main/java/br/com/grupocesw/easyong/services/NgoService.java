@@ -29,4 +29,8 @@ public interface NgoService {
 	void favorite(Long ngoId);
 
 	Page<Ngo> getFavoriteNgos(Pageable pageable);
+
+	Page<Ngo> getFavoriteNgosWithFilter(String filter, Pageable pageable);
+
+	boolean existsFavoriteNgosByLoggedUser();
 }

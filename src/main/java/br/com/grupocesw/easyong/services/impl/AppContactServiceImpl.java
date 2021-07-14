@@ -23,10 +23,15 @@ public class AppContactServiceImpl implements AppContactService {
 
 	@Override
 	public AppContact create(AppContact request) {
-		User currentUser = userService.getCurrentUser();
-		log.info("Create contact message with user {}", currentUser.getPerson().getName());
+		User currentUser = userService.getCurrentUserOrNull();
+		log.info("Create contact message");
 
-		request.setUser(currentUser);
+		if (currentUser != null) {
+			log.info("Create contact message with user {}", currentUser.getPerson().getName());
+			request.setName(currentUser.getPerson().getName());
+			request.setEmail(currentUser.getUsername());
+			request.setUser(currentUser);
+		}
 
 		return repository.save(request);
 	}

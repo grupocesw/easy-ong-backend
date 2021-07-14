@@ -2,12 +2,10 @@ package br.com.grupocesw.easyong.services.impl;
 
 import br.com.grupocesw.easyong.entities.*;
 import br.com.grupocesw.easyong.exceptions.BadRequestException;
+import br.com.grupocesw.easyong.exceptions.NgoAlreadyExistsException;
 import br.com.grupocesw.easyong.exceptions.ResourceNotFoundException;
 import br.com.grupocesw.easyong.repositories.NgoRepository;
-import br.com.grupocesw.easyong.services.CityService;
-import br.com.grupocesw.easyong.services.NgoService;
-import br.com.grupocesw.easyong.services.SocialCauseService;
-import br.com.grupocesw.easyong.services.UserService;
+import br.com.grupocesw.easyong.services.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
@@ -23,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -33,20 +32,28 @@ public class NgoServiceImpl implements NgoService {
 	private final CityService cityService;
 	private final SocialCauseService socialCauseService;
 	private final UserService userService;
+	private final NotificationService notificationService;
 
 	@Override
 	@CacheEvict(value = "ngos", allEntries = true)
 	public Ngo create(Ngo request) {
 		log.info("Create ngo with name {}", request.getName());
 
+		if (repository.existsByCnpj(request.getCnpj())) {
+			log.warn("Ngo with cnpj {} already exists", request.getCnpj());
+
+			throw new NgoAlreadyExistsException(
+				String.format("Ngo with cnpj %s already exists", request.getCnpj()));
+		}
+
 		cityService.existsOrThrowsException(request.getAddress().getCity().getId());
 		City city = cityService.retrieve(request.getAddress().getCity().getId());
 
 		Set<SocialCause> causes = socialCauseService.findByIdIn(
-				request.getCauses()
-					.stream()
-					.map(c -> c.getId())
-					.collect(Collectors.toSet())
+			request.getCauses()
+				.stream()
+				.map(c -> c.getId())
+				.collect(Collectors.toSet())
 		);
 
 		if (causes.size() < 1)
@@ -98,6 +105,11 @@ public class NgoServiceImpl implements NgoService {
 				).collect(Collectors.toSet()))
 			.build();
 
+		notificationService.simpleCreate(
+			"Nova ONG",
+			String.format("A ONG \"%s\", com mesma causa que a sua foi criada.", ngo.getName()),
+			userService.findAllBySocialCauses(ngo.getCauses()));
+
 		return repository.save(ngo);
 	}
 
@@ -114,9 +126,11 @@ public class NgoServiceImpl implements NgoService {
 
 		Ngo ngo = retrieve(id);
 		ngo.setName(request.getName());
-		ngo.setCnpj(request.getCnpj());
 		ngo.setDescription(request.getDescription());
 		ngo.setActivated(request.getActivated());
+
+		if (!request.getCnpj().equals(ngo.getCnpj()))
+			ngo.setCnpj(request.getCnpj());
 
 		if (request.getContacts() != null && request.getContacts().size() > 0) {
 			ngo.getContacts().clear();
@@ -161,12 +175,12 @@ public class NgoServiceImpl implements NgoService {
 		if (request.getMoreInformations() != null && request.getMoreInformations().size() > 0) {
 			ngo.getMoreInformations().clear();
 			ngo.getMoreInformations().addAll(
-					request.getMoreInformations().stream()
-					.map(obj ->
-						NgoMoreInformation.builder()
-							.information(obj.getInformation())
-							.build()
-					).collect(Collectors.toSet())
+				request.getMoreInformations().stream()
+				.map(obj ->
+					NgoMoreInformation.builder()
+						.information(obj.getInformation())
+						.build()
+				).collect(Collectors.toSet())
 			);
 		}
 
@@ -182,6 +196,11 @@ public class NgoServiceImpl implements NgoService {
 			ngo.getCauses().clear();
 			ngo.getCauses().addAll(causes);
 		}
+
+		notificationService.simpleCreate(
+			"Atualização de ONG",
+			String.format("A ONG \"%s\", com mesma causa que a sua foi atualizada.", ngo.getName()),
+			userService.findAllBySocialCauses(ngo.getCauses()));
 
 		return repository.save(ngo);
 	}
@@ -216,10 +235,25 @@ public class NgoServiceImpl implements NgoService {
 		log.info("Find suggested ngos");
 		User currentUser = userService.getCurrentUserOrNull();
 
-		if (currentUser == null)
-			return repository.findSuggested(pageable);
+		if (currentUser != null) {
+			Page<Ngo> ngos = repository.findSuggestedByLoggedUser(pageable, currentUser.getId());
 
-		return repository.findSuggestedByLoggedUser(pageable, currentUser.getId());
+			if (ngos.getTotalElements() >= pageable.getPageSize())
+				return ngos;
+
+			List<Ngo> suggestedNgos = Stream
+				.concat(ngos.stream(), repository.findSuggested(pageable)
+				.stream())
+				.distinct()
+				.collect(Collectors.toList());
+
+			final int start = (int) pageable.getOffset();
+			final int end = Math.min((start + pageable.getPageSize()), suggestedNgos.size());
+
+			return new PageImpl<>(suggestedNgos.subList(start, end), pageable, suggestedNgos.size());
+		}
+
+		return repository.findSuggested(pageable);
 	}
 
 	@Transactional
@@ -235,12 +269,11 @@ public class NgoServiceImpl implements NgoService {
 		} else {
 			repository.deleteFavoriteNgo(currentUser.getId(), ngoId);
 		}
-
 	}
 
 	@Override
 	public Page<Ngo> getFavoriteNgos(Pageable pageable) {
-		log.info("List favorite NGOs");
+		log.info("List favorite Ngos");
 
 		int pageSize = pageable.getPageSize();
 		int currentPage = pageable.getPageNumber();
@@ -255,13 +288,43 @@ public class NgoServiceImpl implements NgoService {
 			ngos = ngos.subList(startItem, toIndex);
 		}
 
-		Page<Ngo> page = new PageImpl<>(
-				ngos,
-				PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()),
-				ngos.size()
+		return new PageImpl<>(
+			ngos,
+			PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()),
+			ngos.size()
 		);
+	}
 
-		return page;
+	@Override
+	public Page<Ngo> getFavoriteNgosWithFilter(String filter, Pageable pageable) {
+		log.info("List favorite Ngos with filters");
+
+		int pageSize = pageable.getPageSize();
+		int currentPage = pageable.getPageNumber();
+		int startItem = currentPage * pageSize;
+
+		List<Ngo> ngos = repository.getFavoriteNgosByUserAndFilter(filter, userService.getCurrentUser());
+
+		if (ngos.size() < startItem) {
+			ngos = Collections.emptyList();
+		} else {
+			int toIndex = Math.min(startItem + pageSize, ngos.size());
+			ngos = ngos.subList(startItem, toIndex);
+		}
+
+		return new PageImpl<>(
+			ngos,
+			PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()),
+			ngos.size()
+		);
+	}
+
+	@Override
+	public boolean existsFavoriteNgosByLoggedUser() {
+		User currentUser = userService.getCurrentUser();
+		log.info("Exists notifications by username {}", currentUser.getUsername());
+
+		return repository.existsNgoByUsers(currentUser);
 	}
 
 }

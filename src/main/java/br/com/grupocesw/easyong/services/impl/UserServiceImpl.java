@@ -241,11 +241,11 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void enableUser(User user) {
-		user.setEnabled(true);
-		repository.save(user);
-
+	public User enable(User user) {
 		log.info("Enabled username {}", user.getUsername());
+		user.setEnabled(true);
+
+		return repository.save(user);
 	}
 
 	@Override
@@ -302,6 +302,11 @@ public class UserServiceImpl implements UserService {
 		}
 
 		return repository.save(user);
+	}
+
+	@Override
+	public Set<User> findAllBySocialCauses(Set<SocialCause> causes) {
+		return repository.findAllByCausesIn(causes);
 	}
 
 }

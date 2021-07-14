@@ -16,7 +16,7 @@ import lombok.*;
 @Setter
 @Builder
 @EqualsAndHashCode(exclude = "users")
-@ToString
+@ToString(of = { "id", "name" })
 public class SocialCause implements Serializable {
 
     @Id

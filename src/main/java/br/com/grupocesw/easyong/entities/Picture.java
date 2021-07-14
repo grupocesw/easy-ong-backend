@@ -23,12 +23,12 @@ import lombok.ToString;
 @Getter
 @Setter
 @Builder
-@ToString
+@ToString(of = { "id", "url" })
 public class Picture implements Serializable {
 	
 	private static final String path = "/api/pictures/";	
 	public static final String noImage = "no_image.png";
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -39,9 +39,14 @@ public class Picture implements Serializable {
 	@Transient
 	private String name;
 
+	@JsonIgnore
 	@OneToOne(mappedBy = "picture")
 	@JoinColumn(name = "picture_id")
-	@ToString.Exclude
+	private Notification notification;
+
+	@JsonIgnore
+	@OneToOne(mappedBy = "picture")
+	@JoinColumn(name = "picture_id")
 	private User user;
 	
 	@JsonIgnore

@@ -41,6 +41,16 @@ public interface NgoRepository extends JpaRepository<Ngo, Long> {
 	@Query("SELECT DISTINCT n FROM Ngo n JOIN FETCH n.users u WHERE u = :user")
 	List<Ngo> getFavoriteNgosByUser(@Param("user") User user);
 
+	@Query(" SELECT DISTINCT n FROM Ngo n LEFT JOIN n.causes sc "
+			+ " LEFT JOIN n.users u "
+			+ " WHERE CONCAT(LOWER(n.name), ' ', LOWER(n.description), ' ', LOWER(sc.name)) "
+			+ " LIKE CONCAT('%', LOWER(:filter), '%') "
+			+ " AND n.activated = TRUE "
+			+ " AND u = :user "
+			+ " GROUP BY n "
+			+ " ORDER BY n.name ")
+	List<Ngo> getFavoriteNgosByUserAndFilter(String filter, @Param("user") User user);
+
 	@Query("SELECT n FROM Ngo n JOIN FETCH n.users u WHERE u.id = :userId AND n.id = :ngoId")
 	Optional<Ngo> findNgoByNgoIdAndUserId(@Param("userId") Long userId, @Param("ngoId") Long ngoId);
 
@@ -51,5 +61,9 @@ public interface NgoRepository extends JpaRepository<Ngo, Long> {
 	@Modifying
 	@Query(value = "DELETE FROM user_favorite_ngos WHERE user_id = :userId AND ngo_id = :ngoId", nativeQuery = true)
 	void deleteFavoriteNgo(@Param("userId") Long userId, @Param("ngoId") Long ngoId);
+
+	boolean existsNgoByUsers(User user);
+
+	boolean existsByCnpj(String cnpj);
 
 }

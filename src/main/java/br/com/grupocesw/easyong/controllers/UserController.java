@@ -1,5 +1,6 @@
 package br.com.grupocesw.easyong.controllers;
 
+import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.mappers.UserMapper;
 import br.com.grupocesw.easyong.request.dtos.UserCreateRequestDto;
 import br.com.grupocesw.easyong.request.dtos.UserUpdateRequestDto;
@@ -56,10 +57,10 @@ public class UserController {
 	@ResponseBody
 	@PostMapping
 	public ResponseEntity<ApiStandardResponseDto> create(@RequestBody @Valid UserCreateRequestDto request, HttpServletRequest httpRequest) {
-		UserResponseDto dto =
-			UserMapper.INSTANCE.entityToResponseDto(service.create(
-					UserMapper.INSTANCE.requestDtoToEntity(request)
-			));
+		User user = UserMapper.INSTANCE.requestDtoToEntity(request);
+		user.setEnabled(true);
+
+		UserResponseDto dto = UserMapper.INSTANCE.entityToResponseDto(service.create(user));
 
 		return ResponseEntity
 			.status(HttpStatus.CREATED)
@@ -122,6 +123,28 @@ public class UserController {
 			.status(HttpStatus.OK)
 			.body(ApiStandardResponseDto.builder()
 				.message("Deleted user")
+				.path(httpRequest.getRequestURI())
+				.build()
+			);
+	}
+
+	@ApiOperation(value = "Update specific user")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Updated successfully"),
+			@ApiResponse(code = 400, message = "Validation failed for arguments or error input data"),
+			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
+			@ApiResponse(code = 404, message = "Resource not found"),
+			@ApiResponse(code = 500, message = "An exception was generated")
+	})
+	@PutMapping(value = "/{id}/enable")
+	public ResponseEntity<ApiStandardResponseDto> enable(@PathVariable Long id, HttpServletRequest httpRequest) {
+		UserResponseDto dto = UserMapper.INSTANCE.entityToResponseDto(service.enable(service.retrieve(id)));
+
+		return ResponseEntity
+			.status(HttpStatus.OK)
+			.body(ApiStandardResponseDto.builder()
+				.message("Enabled user")
+				.data(dto)
 				.path(httpRequest.getRequestURI())
 				.build()
 			);

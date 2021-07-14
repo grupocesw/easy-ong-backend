@@ -1,5 +1,6 @@
 package br.com.grupocesw.easyong.services;
 
+import br.com.grupocesw.easyong.entities.SocialCause;
 import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.request.dtos.UserPasswordRequestDto;
 import br.com.grupocesw.easyong.response.dtos.JwtAuthenticationResponseDto;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public interface UserService {
@@ -43,10 +45,12 @@ public interface UserService {
 
     Boolean existsByUsername(String username);
 
-	void enableUser(User user);
+	User enable(User user);
 
 	User getCurrentUser();
 
 	User getCurrentUserOrNull();
+
+	Set<User> findAllBySocialCauses(Set<SocialCause> causes);
 
 }

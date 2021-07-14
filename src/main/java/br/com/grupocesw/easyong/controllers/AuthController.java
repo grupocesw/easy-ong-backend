@@ -2,21 +2,19 @@ package br.com.grupocesw.easyong.controllers;
 
 import br.com.grupocesw.easyong.mappers.AppContactMapper;
 import br.com.grupocesw.easyong.mappers.NgoMapper;
+import br.com.grupocesw.easyong.mappers.NotificationMapper;
 import br.com.grupocesw.easyong.mappers.UserMapper;
 import br.com.grupocesw.easyong.request.dtos.*;
-import br.com.grupocesw.easyong.response.dtos.ApiStandardResponseDto;
-import br.com.grupocesw.easyong.response.dtos.JwtAuthenticationResponseDto;
-import br.com.grupocesw.easyong.response.dtos.NgoSlimResponseDto;
-import br.com.grupocesw.easyong.response.dtos.UserResponseDto;
-import br.com.grupocesw.easyong.security.CurrentUser;
-import br.com.grupocesw.easyong.security.UserPrincipal;
+import br.com.grupocesw.easyong.response.dtos.*;
 import br.com.grupocesw.easyong.services.AppContactService;
 import br.com.grupocesw.easyong.services.NgoService;
+import br.com.grupocesw.easyong.services.NotificationService;
 import br.com.grupocesw.easyong.services.UserService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,6 +33,7 @@ public class AuthController {
 	private final UserService service;
 	private final AppContactService appContactService;
 	private final NgoService ngoService;
+	private final NotificationService notificationService;
 
 	@ApiOperation(value = "Authentication user")
 	@ApiResponses(value = {
@@ -145,15 +144,33 @@ public class AuthController {
 			@ApiResponse(code = 404, message = "Ngo not found"),
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
-	@PutMapping(value = "/favorite-ngos/{ngoId}")
+	@PutMapping(value = "/favorite/ngos/{id}")
     @PreAuthorize("hasAuthority('USER')")
-	public ResponseEntity<ApiStandardResponseDto> favorite(@PathVariable Long ngoId, HttpServletRequest httpRequest) {
-		ngoService.favorite(ngoId);
+	public ResponseEntity<ApiStandardResponseDto> favorite(@PathVariable Long id, HttpServletRequest httpRequest) {
+		ngoService.favorite(id);
 
 		return ResponseEntity
 			.status(HttpStatus.OK)
 			.body(ApiStandardResponseDto.builder()
-				.message(String.format("Success. Action applied Ngo. Id %d", ngoId))
+				.message(String.format("Success. Action applied Ngo. Id %d", id))
+				.path(httpRequest.getRequestURI())
+				.build()
+			);
+	}
+
+	@ApiOperation(value = "Notification verification by logged user")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Notification verification successfully"),
+			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
+			@ApiResponse(code = 500, message = "An exception was generated")
+	})
+	@GetMapping(value = "/favorite/ngos/exists")
+	public ResponseEntity<ApiStandardResponseDto> existsFavoritesByLoggedUser(HttpServletRequest httpRequest) {
+		return ResponseEntity
+			.status(HttpStatus.OK)
+			.body(ApiStandardResponseDto.builder()
+				.message("Exists favorite NGOs")
+				.data(ngoService.existsFavoriteNgosByLoggedUser())
 				.path(httpRequest.getRequestURI())
 				.build()
 			);
@@ -170,18 +187,24 @@ public class AuthController {
 			@ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", value = "Number of records per page."),
 			@ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
 					+ "Default sort order is ascending. " + "Multiple sort criteria are supported.") })
-	@GetMapping(value = "/favorite-ngos")
+	@GetMapping(value = "/favorite/ngos")
     @PreAuthorize("hasAuthority('USER')")
 	public ResponseEntity<Page<NgoSlimResponseDto>> favoriteNgos(
+			@RequestParam(required = false) String filter,
 			@RequestParam("page") Optional<Integer> page,
 			@RequestParam("size") Optional<Integer> size) {
 
 		int currentPage = page.orElse(1);
 		int pageSize = size.orElse(5);
 
-		return ResponseEntity.ok(NgoMapper.INSTANCE.listToSlimResponseDto(
+		if (filter != null)
+			return ResponseEntity.ok(NgoMapper.INSTANCE.listToSlimResponseDto(
+				ngoService.getFavoriteNgosWithFilter(filter, PageRequest.of(currentPage - 1, pageSize))
+			));
+		else
+			return ResponseEntity.ok(NgoMapper.INSTANCE.listToSlimResponseDto(
 				ngoService.getFavoriteNgos(PageRequest.of(currentPage - 1, pageSize))
-		));
+			));
 	}
 
 	@ApiOperation(value = "User app contact")
@@ -191,14 +214,88 @@ public class AuthController {
 					"User not exists"),
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
-	@PostMapping(value = "/create-app-contact")
-	public ResponseEntity<ApiStandardResponseDto> createAppContact(@RequestBody @Valid AppContactRequestDto request, HttpServletRequest httpRequest) {
+	@PostMapping(value = "/contact-us")
+	public ResponseEntity<ApiStandardResponseDto> appContactUs(@RequestBody @Valid AppContactRequestDto request, HttpServletRequest httpRequest) {
 		appContactService.create(AppContactMapper.INSTANCE.requestDtoToEntity(request));
 
 		return ResponseEntity
 			.status(HttpStatus.OK)
 			.body(ApiStandardResponseDto.builder()
-				.message("Success. Created message contact app")
+				.message("Success. Created message contact us")
+				.path(httpRequest.getRequestURI())
+				.build()
+			);
+	}
+
+	@ApiOperation(value = "Return pageable list of notifications to logged user by default 20 items")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Return list successfully"),
+			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
+			@ApiResponse(code = 500, message = "An exception was generated")
+	})
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "page", dataType = "integer", paramType = "query", value = "Results page you want to retrieve (0..N)"),
+			@ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", value = "Number of records per page."),
+			@ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
+					+ "Default sort order is ascending. " + "Multiple sort criteria are supported.") })
+	@GetMapping(value = "/notifications")
+	public ResponseEntity<Page<NotificationResponseDto>> getNotifications(Pageable pageable) {
+		return ResponseEntity.ok(NotificationMapper.INSTANCE.listToResponseDto(
+				notificationService.getNotifications(pageable)
+		));
+	}
+
+	@ApiOperation(value = "Delete specific notification to logged user")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Deleted successfully"),
+			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
+			@ApiResponse(code = 500, message = "An exception was generated")
+	})
+	@DeleteMapping(value = "/notifications/{id}")
+	public ResponseEntity<ApiStandardResponseDto> deleteNotification(@PathVariable Long id, HttpServletRequest httpRequest) {
+		notificationService.deleteByLoggedUser(id);
+
+		return ResponseEntity
+			.status(HttpStatus.OK)
+			.body(ApiStandardResponseDto.builder()
+				.message("Deleted notification by logged user")
+				.path(httpRequest.getRequestURI())
+				.build()
+			);
+	}
+
+	@ApiOperation(value = "Delete all notifications to logged user")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Deleted successfully"),
+			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
+			@ApiResponse(code = 500, message = "An exception was generated")
+	})
+	@DeleteMapping(value = "/notifications")
+	public ResponseEntity<ApiStandardResponseDto> deleteAllNotifications(HttpServletRequest httpRequest) {
+		notificationService.deleteAllByLoggedUser();
+
+		return ResponseEntity
+			.status(HttpStatus.OK)
+			.body(ApiStandardResponseDto.builder()
+				.message("Deleted all notifications by logged user")
+				.path(httpRequest.getRequestURI())
+				.build()
+			);
+	}
+
+	@ApiOperation(value = "Notification verification to logged user")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Notification verification successfully"),
+			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
+			@ApiResponse(code = 500, message = "An exception was generated")
+	})
+	@GetMapping(value = "/notifications/exists")
+	public ResponseEntity<ApiStandardResponseDto> existsNotificationsByLoggedUser(HttpServletRequest httpRequest) {
+		return ResponseEntity
+			.status(HttpStatus.OK)
+			.body(ApiStandardResponseDto.builder()
+				.message("Exists notifications")
+				.data(notificationService.existsNotificationsByLoggedUser())
 				.path(httpRequest.getRequestURI())
 				.build()
 			);

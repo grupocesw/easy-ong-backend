@@ -28,7 +28,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @Builder
-@ToString
+@ToString(exclude = "ngos")
 public class Contact implements Serializable {
 
 	@Id

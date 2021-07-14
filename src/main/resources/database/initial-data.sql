@@ -8,7 +8,8 @@ INSERT INTO social_causes (id, name) VALUES
 (7, 'Saúde e Bem Estar'),
 (8, 'Direitos Humanos'),
 (9, 'Crianças'),
-(10, 'Serviço Social');
+(10, 'Serviço Social'),
+(11, 'Outros');
 
 INSERT INTO roles (id, name) VALUES
 (1, 'ADMIN'),

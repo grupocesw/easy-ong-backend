@@ -27,7 +27,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @Builder
-@ToString
+@ToString(exclude = "users")
 public class Role implements Serializable {
 	
 	@Id

@@ -2,6 +2,7 @@ package br.com.grupocesw.easyong.entities;
 
 import br.com.grupocesw.easyong.enums.AuthProvider;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
@@ -25,7 +26,7 @@ import java.util.Set;
 @Setter
 @EqualsAndHashCode(of = {"id", "username"})
 @Builder
-@ToString
+@ToString(of = { "id", "username" })
 public class User implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -85,14 +86,14 @@ public class User implements Serializable {
 	@JoinTable(name = "user_social_causes", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "social_cause_id"))
 	private Set<SocialCause> causes;
 
+	@JsonIgnore
 	@ManyToMany(fetch = FetchType.LAZY)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinTable(name = "user_favorite_ngos", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "ngo_id"))
 	private Set<Ngo> favoriteNgos;
 
-	@ManyToMany(fetch = FetchType.LAZY)
-	@OnDelete(action = OnDeleteAction.CASCADE)
-	@JoinTable(name = "user_notifications", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "notification_id"))
+	@JsonIgnore
+	@ManyToMany(mappedBy = "users", cascade = CascadeType.ALL)
 	private Set<Notification> notifications;
 
 	@OneToMany(targetEntity = AppContact.class, mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
