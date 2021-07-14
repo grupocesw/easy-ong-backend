@@ -8,7 +8,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -18,7 +17,6 @@ import java.util.Set;
 
 @Entity
 @Data
-@PreAuthorize("hasRole('ADMIN')")
 @Table(name = "users")
 @AllArgsConstructor
 @NoArgsConstructor

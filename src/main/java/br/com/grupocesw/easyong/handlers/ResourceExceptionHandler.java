@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -268,4 +269,15 @@ public class ResourceExceptionHandler {
 			);
 	}
 
+	@ExceptionHandler({AccessDeniedException.class})
+	public ResponseEntity<StandardHandlerErrorResponseDto> handleAccessDeniedException(AccessDeniedException ex, HttpServletRequest request) {
+		return ResponseEntity.status(HttpStatus.FORBIDDEN.value())
+			.body(StandardHandlerErrorResponseDto.builder()
+				.code(19)
+				.error("Access denied")
+				.message(ex.getMessage())
+				.path(request.getRequestURI())
+				.build()
+			);
+	}
 }
