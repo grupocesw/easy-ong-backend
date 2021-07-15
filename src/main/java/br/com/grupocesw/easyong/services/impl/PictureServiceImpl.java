@@ -51,9 +51,15 @@ public class PictureServiceImpl implements PictureService {
 		return picture;
 	}
 
-	private Picture retrieve(Long id) {
+	@Override
+	public Picture retrieve(Long id) {
 		return repository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(id));
+	}
+
+	@Override
+	public Picture findByUrl(String url) {
+		return repository.findByUrlStartingWithIgnoreCase(url);
 	}
 
 	@Override

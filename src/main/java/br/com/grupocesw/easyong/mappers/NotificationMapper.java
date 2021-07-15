@@ -28,7 +28,6 @@ public interface NotificationMapper {
         return entities.map(this::entityToResponseDto);
     }
 
-    @Mapping(target = "picture", expression = "java(PictureMapper.INSTANCE.entityToResponseDto(entity.getPicture()))")
     NotificationResponseDto entityToResponseDto(Notification entity);
 
     @Mapping(target = "id", ignore = true)

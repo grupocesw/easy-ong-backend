@@ -1,6 +1,7 @@
 package br.com.grupocesw.easyong.services.impl;
 
 import br.com.grupocesw.easyong.entities.*;
+import br.com.grupocesw.easyong.enums.NotificationType;
 import br.com.grupocesw.easyong.exceptions.BadRequestException;
 import br.com.grupocesw.easyong.exceptions.NgoAlreadyExistsException;
 import br.com.grupocesw.easyong.exceptions.ResourceNotFoundException;
@@ -106,6 +107,7 @@ public class NgoServiceImpl implements NgoService {
 			.build();
 
 		notificationService.simpleCreate(
+			NotificationType.INFORMATION,
 			"Nova ONG",
 			String.format("A ONG \"%s\", com mesma causa que a sua foi criada.", ngo.getName()),
 			userService.findAllBySocialCauses(ngo.getCauses()));
@@ -198,6 +200,7 @@ public class NgoServiceImpl implements NgoService {
 		}
 
 		notificationService.simpleCreate(
+			NotificationType.INFORMATION,
 			"Atualização de ONG",
 			String.format("A ONG \"%s\", com mesma causa que a sua foi atualizada.", ngo.getName()),
 			userService.findAllBySocialCauses(ngo.getCauses()));

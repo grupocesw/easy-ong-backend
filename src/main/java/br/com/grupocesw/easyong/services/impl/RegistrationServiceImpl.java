@@ -2,6 +2,7 @@ package br.com.grupocesw.easyong.services.impl;
 
 import br.com.grupocesw.easyong.entities.ConfirmationToken;
 import br.com.grupocesw.easyong.entities.User;
+import br.com.grupocesw.easyong.enums.NotificationType;
 import br.com.grupocesw.easyong.exceptions.BadRequestException;
 import br.com.grupocesw.easyong.exceptions.UsernameAlreadyConfirmedException;
 import br.com.grupocesw.easyong.exceptions.UsernameAlreadyExistsException;
@@ -60,6 +61,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 		}
 
 		notificationService.simpleCreate(
+			NotificationType.INFORMATION,
 			"Olá! Seja bem-vindo ao EASY ONG",
 			String.format("É um prazer te receber em nosso sistema, aproveite!", user.getPerson().getName()),
 			Set.of(user));

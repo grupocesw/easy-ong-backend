@@ -10,10 +10,7 @@ INSERT INTO addresses (id, street, number, complement, zip_code, latitude, longi
 ;
 
 INSERT INTO pictures (id, url) VALUES
-(1, 'https://www.techsoupbrasil.org.br/sites/default/files/images/93bb727d-9a49-4922-bbfc-9abe6dadf5b3.jpeg'),
-(2, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9N2OJxSxQ4RzMeE0Cn3ttfqk2R4y-wssQ1Q&usqp=CAU'),
-(3, 'https://www.opresente.com.br/wp-content/uploads/2019/04/ongs-606x341.png'),
-(4, 'https://nossacausa.com/wp-content/uploads/2017/08/melhores-ongs.jpg'),
+(4, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpyIEzorvdG9JxApOvumLOTVxVurw1q1FQEw&usqp=CAU'),
 (5, 'http://cecosi.org.br/upload/eyJpdiI6IjBJNURcL2pJV1ZFZXFGUWFiV3VQR0lnPT0iLCJ2YWx1ZSI6Imsyejdua25oZ2lZZ2dhNHFlNlREZnc9PSIsIm1hYyI6IjJlZWFhMTYyNjVmYWU4N2NhNTViMzNjNTY5ZGM5MDI0NzFjZGM1YzFhNzY4ZTk0N2Y0MjI3ZjNjODYyNDA1ZTIifQ==.jpg'),
 (6, 'https://scontent.fcgh14-1.fna.fbcdn.net/v/t1.6435-9/41691147_2352245718126062_1432030963654721536_n.png?_nc_cat=101&ccb=1-3&_nc_sid=09cbfe&_nc_ohc=KxAstR8u8AIAX-Wsyqi&_nc_oc=AQkPQ-8pcKM6zf_5FmVZ00tIrFoea0YMGFuZrOMWSmaDxjSOgu71z_BqEmtc2EGdNlWPbXKSdEPB2T2e7mlv_VNU&_nc_ht=scontent.fcgh14-1.fna&oh=b3ea4e4811c6f61d365591b9ee7d543d&oe=60C05CC7'),
 (7, 'http://www.uropediatria.com.br/wp-content/uploads/2019/04/Doutores.png'),
@@ -28,7 +25,11 @@ INSERT INTO pictures (id, url) VALUES
 (16, 'https://static.wixstatic.com/media/90cf78_4e120fdf97bf4e5c9a591eca8337279b~mv2.jpg/v1/fill/w_395,h_254,al_c,lg_1,q_80/90cf78_4e120fdf97bf4e5c9a591eca8337279b~mv2.webp'),
 (17, 'https://i.pinimg.com/236x/7c/c5/bb/7cc5bbd7ebf2ca86b4a168d564e165b2.jpg'),
 (18, 'https://catracalivre.com.br/wp-content/uploads/2013/10/quemsomos.jpg'),
-(19, 'https://medias.cnnbrasil.com.br/google-removeu-anuncios-que-desrespeitavam-sua-politica-de-distorcao.jpeg?format=JPEG&image=https://mediastorage.cnnbrasil.com.br/IMAGES/00/00/00/8099_49A09089147DB65C.jpg&width=804&height=452&resize=CROP')
+(19, 'https://medias.cnnbrasil.com.br/google-removeu-anuncios-que-desrespeitavam-sua-politica-de-distorcao.jpeg?format=JPEG&image=https://mediastorage.cnnbrasil.com.br/IMAGES/00/00/00/8099_49A09089147DB65C.jpg&width=804&height=452&resize=CROP'),
+(20, 'https://www.techsoupbrasil.org.br/sites/default/files/images/93bb727d-9a49-4922-bbfc-9abe6dadf5b3.jpeg'),
+(21, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9N2OJxSxQ4RzMeE0Cn3ttfqk2R4y-wssQ1Q&usqp=CAU'),
+(22, 'https://www.opresente.com.br/wp-content/uploads/2019/04/ongs-606x341.png'),
+(23, 'https://nossacausa.com/wp-content/uploads/2017/08/melhores-ongs.jpg')
 --(ID, 'URL'),
 ;
 
@@ -106,12 +107,12 @@ INSERT INTO ngo_social_causes (ngo_id, social_cause_id) VALUES
 ;
 
 INSERT INTO ngo_pictures (ngo_id, picture_id) VALUES
-(1, 1),
-(1, 2),
-(1, 3),
+(1, 20),
+(1, 21),
+(1, 23),
 (2, 11),
 (2, 5),
-(2, 4),
+(2, 22),
 (3, 6),
 (4, 16),
 (5, 12),

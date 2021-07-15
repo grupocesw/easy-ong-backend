@@ -13,6 +13,17 @@ create sequence confirmation_token_sequence start 1 increment 1;
         primary key (id)
     );
 
+    create table app_contacts (
+       id  bigserial not null,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        email varchar(100),
+        message TEXT not null,
+        name varchar(100),
+        reason int4,
+        user_id int8,
+        primary key (id)
+    );
+
     create table cities (
        id  bigserial not null,
         name varchar(255) not null,
@@ -76,13 +87,6 @@ create sequence confirmation_token_sequence start 1 increment 1;
         primary key (ngo_id, social_cause_id)
     );
 
-    create table ngo_suggestions (
-       id  bigserial not null,
-        message TEXT not null,
-        user_id int8,
-        primary key (id)
-    );
-
     create table ngos (
        id  bigserial not null,
         activated BOOLEAN DEFAULT true not null,
@@ -95,10 +99,18 @@ create sequence confirmation_token_sequence start 1 increment 1;
         primary key (id)
     );
 
+    create table notification_users (
+       notification_id int8 not null,
+        user_id int8 not null,
+        primary key (notification_id, user_id)
+    );
+
     create table notifications (
        id  bigserial not null,
-        description TEXT not null,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        description TEXT,
         title varchar(100) not null,
+        type int4 not null,
         primary key (id)
     );
 
@@ -142,12 +154,6 @@ create sequence confirmation_token_sequence start 1 increment 1;
         primary key (user_id, ngo_id)
     );
 
-    create table user_notifications (
-       user_id int8 not null,
-        notification_id int8 not null,
-        primary key (user_id, notification_id)
-    );
-
     create table user_roles (
        user_id int8 not null,
         role_id int8 not null,
@@ -186,6 +192,12 @@ create sequence confirmation_token_sequence start 1 increment 1;
        foreign key (city_id) 
        references cities;
 
+    alter table app_contacts 
+       add constraint FKpnc1mryfgnh0dx0j1w461ygex 
+       foreign key (user_id) 
+       references users 
+       on delete cascade;
+
     alter table cities 
        add constraint FKsu54e1tlhaof4oklvv7uphsli 
        foreign key (state_id) 
@@ -200,7 +212,8 @@ create sequence confirmation_token_sequence start 1 increment 1;
     alter table ngo_contacts 
        add constraint FKf3n40noaya6w31bv4n5sguf47 
        foreign key (contact_id) 
-       references contacts;
+       references contacts 
+       on delete cascade;
 
     alter table ngo_contacts 
        add constraint FKa8rj3kotuf5i60jncnyw43jka 
@@ -216,7 +229,8 @@ create sequence confirmation_token_sequence start 1 increment 1;
     alter table ngo_pictures 
        add constraint FKpsjgmrcwc0t4qo6g3j0ivok7y 
        foreign key (picture_id) 
-       references pictures;
+       references pictures 
+       on delete cascade;
 
     alter table ngo_pictures 
        add constraint FK2mveoidm3siprmjv8cpqggiwo 
@@ -226,23 +240,29 @@ create sequence confirmation_token_sequence start 1 increment 1;
     alter table ngo_social_causes 
        add constraint FK83i2ypim2hetyqenmwutw17fp 
        foreign key (social_cause_id) 
-       references social_causes;
+       references social_causes 
+       on delete cascade;
 
     alter table ngo_social_causes 
        add constraint FKd6siimwpl22ljtx33hovxtcd 
        foreign key (ngo_id) 
        references ngos;
 
-    alter table ngo_suggestions 
-       add constraint FKtej32uluf1sgwc22kwnvgg4ej 
-       foreign key (user_id) 
-       references users 
-       on delete cascade;
-
     alter table ngos 
        add constraint FKsi2u1hokw8jnkngjood0v2gmh 
        foreign key (address_id) 
        references addresses;
+
+    alter table notification_users 
+       add constraint FK2t7gew0g9cmcmtimfjvh4h85j 
+       foreign key (user_id) 
+       references users 
+       on delete cascade;
+
+    alter table notification_users 
+       add constraint FKg8k54m3hj2oj4cal9ekcd6cuo 
+       foreign key (notification_id) 
+       references notifications;
 
     alter table states 
        add constraint FKskkdphjml9vjlrqn4m5hi251y 
@@ -260,20 +280,11 @@ create sequence confirmation_token_sequence start 1 increment 1;
        foreign key (user_id) 
        references users;
 
-    alter table user_notifications 
-       add constraint FKovvx0ab3h8s9lrm6fppuadn7d 
-       foreign key (notification_id) 
-       references notifications;
-
-    alter table user_notifications 
-       add constraint FK9f86wonnl11hos1cuf5fibutl 
-       foreign key (user_id) 
-       references users;
-
     alter table user_roles 
        add constraint FKh8ciramu9cc9q3qcqiv4ue8a6 
        foreign key (role_id) 
-       references roles;
+       references roles 
+       on delete cascade;
 
     alter table user_roles 
        add constraint FKhfh9dx7w3ubf1co1vdev94g3f 
@@ -283,7 +294,8 @@ create sequence confirmation_token_sequence start 1 increment 1;
     alter table user_social_causes 
        add constraint FKinuwsh00e83hchul6agqiuv8s 
        foreign key (social_cause_id) 
-       references social_causes;
+       references social_causes 
+       on delete cascade;
 
     alter table user_social_causes 
        add constraint FK11j68giraaqyy4gdrid1j5l83 

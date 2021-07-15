@@ -2,6 +2,7 @@ package br.com.grupocesw.easyong.services.impl;
 
 import br.com.grupocesw.easyong.entities.Notification;
 import br.com.grupocesw.easyong.entities.User;
+import br.com.grupocesw.easyong.enums.NotificationType;
 import br.com.grupocesw.easyong.exceptions.BadRequestException;
 import br.com.grupocesw.easyong.exceptions.ResourceNotFoundException;
 import br.com.grupocesw.easyong.repositories.NotificationRepository;
@@ -31,9 +32,10 @@ public class NotificationServiceImpl implements NotificationService {
 	}
 
 	@Override
-	public Notification simpleCreate(String title, String description, Set<User> users) {
+	public Notification simpleCreate(NotificationType type, String title, String description, Set<User> users) {
 		return create(
 			Notification.builder()
+				.type(type)
 				.title(title)
 				.description(description)
 				.users(users)

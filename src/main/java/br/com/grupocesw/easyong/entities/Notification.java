@@ -40,9 +40,6 @@ public class Notification implements Serializable {
 	@Column(name = "description", columnDefinition = "TEXT")
 	private String description;
 
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-	private Picture picture;
-
 	@CreationTimestamp
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
 	@Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")

@@ -3,7 +3,7 @@ package br.com.grupocesw.easyong.enums;
 public enum NotificationType {
 	INFORMATION(0),
 	ERROR(1),
-	WARNNING(2);
+	WARNING(2);
 
 	private Integer code;
 

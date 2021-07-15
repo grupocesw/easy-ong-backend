@@ -1,22 +1,15 @@
 package br.com.grupocesw.easyong.entities;
 
-import java.io.Serializable;
-import java.util.Set;
-
-import javax.persistence.*;
-
 import br.com.grupocesw.easyong.utils.AppUtil;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import br.com.grupocesw.easyong.utils.PictureUtil;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Set;
 
 @Entity
 @Table(name = "pictures")
@@ -29,7 +22,7 @@ import org.hibernate.annotations.OnDeleteAction;
 public class Picture implements Serializable {
 	
 	private static final String path = "/api/pictures/";	
-	public static final String noImage = "no_image.png";
+	public static final String noImage = "noImage.png";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,11 +33,6 @@ public class Picture implements Serializable {
 
 	@Transient
 	private String name;
-
-	@JsonIgnore
-	@OneToOne(mappedBy = "picture")
-	@JoinColumn(name = "picture_id")
-	private Notification notification;
 
 	@JsonIgnore
 	@OneToOne(mappedBy = "picture")

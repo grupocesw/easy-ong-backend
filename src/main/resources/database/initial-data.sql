@@ -55,3 +55,6 @@ INSERT INTO faqs (id, question, answer) VALUES
 (3, 'Tem opção para IOS?', 'Somente para plataforma android inicialmente.'),
 (4, 'É possível logar com minhas redes sociais?', 'Sim, o app possuí essa funcionalidade que agiliza o cadastro.');
 
+INSERT INTO pictures (id, url) VALUES
+(1, 'noImage.png');
+
