@@ -91,7 +91,12 @@ public class User implements Serializable {
 	private Set<Ngo> favoriteNgos;
 
 	@JsonIgnore
-	@ManyToMany(mappedBy = "users", cascade = CascadeType.ALL)
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@ManyToMany(mappedBy = "users", cascade = {
+		CascadeType.DETACH,
+		CascadeType.REFRESH,
+		CascadeType.PERSIST,
+		CascadeType.MERGE })
 	private Set<Notification> notifications;
 
 	@OneToMany(targetEntity = AppContact.class, mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)

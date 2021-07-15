@@ -4,6 +4,8 @@ import br.com.grupocesw.easyong.enums.NotificationType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -46,6 +48,7 @@ public class Notification implements Serializable {
 	@Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	private LocalDateTime createdAt;
 
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "notification_users", joinColumns = @JoinColumn(name = "notification_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
 	private Set<User> users;

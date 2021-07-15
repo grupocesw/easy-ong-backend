@@ -15,6 +15,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "pictures")
@@ -50,7 +52,12 @@ public class Picture implements Serializable {
 	private User user;
 	
 	@JsonIgnore
-	@ManyToMany(mappedBy = "pictures")
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@ManyToMany(mappedBy = "pictures", cascade = {
+		CascadeType.DETACH,
+		CascadeType.REFRESH,
+		CascadeType.PERSIST,
+		CascadeType.MERGE })
 	private Set<Ngo> ngos;
 	
 	public String getUrl() {

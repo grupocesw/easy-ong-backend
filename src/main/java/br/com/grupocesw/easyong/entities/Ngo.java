@@ -65,7 +65,11 @@ public class Ngo implements Serializable {
 	private Address address;
 	
 	@JsonProperty(required = true)
-	@ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+	@ManyToMany(fetch = FetchType.EAGER, cascade = {
+		CascadeType.DETACH,
+		CascadeType.REFRESH,
+		CascadeType.PERSIST,
+		CascadeType.MERGE })
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinTable(name = "ngo_contacts", joinColumns= @JoinColumn(name = "ngo_id"), inverseJoinColumns = @JoinColumn(name = "contact_id"))
 	private Set<Contact> contacts;
@@ -80,14 +84,22 @@ public class Ngo implements Serializable {
 	@JoinTable(name = "ngo_social_causes", joinColumns= @JoinColumn(name = "ngo_id"), inverseJoinColumns = @JoinColumn(name = "social_cause_id"))
 	private Set<SocialCause> causes;
 	
-	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@ManyToMany(fetch = FetchType.EAGER, cascade = {
+		CascadeType.DETACH,
+		CascadeType.REFRESH,
+		CascadeType.PERSIST,
+		CascadeType.MERGE })
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinTable(name = "ngo_pictures", joinColumns= @JoinColumn(name = "ngo_id"), inverseJoinColumns = @JoinColumn(name = "picture_id"))
 	private Set<Picture> pictures;
 	
 	@JsonIgnore
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	@ManyToMany(mappedBy = "favoriteNgos", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@ManyToMany(mappedBy = "favoriteNgos", fetch = FetchType.EAGER, cascade = {
+		CascadeType.DETACH,
+		CascadeType.REFRESH,
+		CascadeType.PERSIST,
+		CascadeType.MERGE })
 	private Set<User> users;
 
 	public boolean getFavorited() {

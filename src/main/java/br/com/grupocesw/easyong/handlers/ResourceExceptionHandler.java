@@ -7,6 +7,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -251,7 +252,7 @@ public class ResourceExceptionHandler {
 			.body(StandardHandlerErrorResponseDto.builder()
 				.code(17)
 				.error("Data Integrity Violation")
-				.message(ex.getMostSpecificCause().getCause())
+				.message(ex.getMessage())
 				.path(request.getRequestURI())
 				.build()
 			);
@@ -275,6 +276,18 @@ public class ResourceExceptionHandler {
 			.body(StandardHandlerErrorResponseDto.builder()
 				.code(19)
 				.error("Access denied")
+				.message(ex.getMessage())
+				.path(request.getRequestURI())
+				.build()
+			);
+	}
+
+	@ExceptionHandler({BadCredentialsException.class})
+	public ResponseEntity<StandardHandlerErrorResponseDto> handleBadCredentialsException(BadCredentialsException ex, HttpServletRequest request) {
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED.value())
+			.body(StandardHandlerErrorResponseDto.builder()
+				.code(20)
+				.error("Invalid username or password")
 				.message(ex.getMessage())
 				.path(request.getRequestURI())
 				.build()
