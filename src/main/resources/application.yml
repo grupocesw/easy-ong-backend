@@ -1,7 +1,7 @@
 spring:
 
   application:
-    name: EASY ONG
+    name: "EASY ONG"
 
   mvc.favicon.enabled: false
 
@@ -45,21 +45,21 @@ spring:
           google:
             clientId: ${GOOGLE_CLIENT_ID:<ADD CLIENT_ID>}
             clientSecret: ${GOOGLE_CLIENT_SECRET:<ADD CLIENT_SECRET>}
-            redirectUri: "{baseUrl}/api/oauth2/callback/{registrationId}"
+            redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
             scope:
               - email
               - profile
           facebook:
             clientId: ${FACEBOOK_CLIENT_ID:<ADD CLIENT_ID>}
             clientSecret: ${FACEBOOK_CLIENT_SECRET:<ADD CLIENT_SECRET>}
-            redirectUri: "{baseUrl}/api/oauth2/callback/{registrationId}" # Note that facebook now mandates the use of https redirect URIs, so make sure your app supports https in production
+            redirectUri: "{baseUrl}/oauth2/callback/{registrationId}" # Note that facebook now mandates the use of https redirect URIs, so make sure your app supports https in production
             scope:
               - email
               - public_profile
           github:
             clientId: ${GITHUB_CLIENT_ID:<ADD CLIENT_ID>}
             clientSecret: ${GITHUB_CLIENT_SECRET:<ADD CLIENT_SECRET>}
-            redirectUri: "{baseUrl}/api/oauth2/callback/{registrationId}"
+            redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
             scope:
               - user:email
               - read:user

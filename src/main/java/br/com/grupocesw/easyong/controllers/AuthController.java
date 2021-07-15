@@ -35,7 +35,7 @@ public class AuthController {
 	private final NgoService ngoService;
 	private final NotificationService notificationService;
 
-	@ApiOperation(value = "Authentication user")
+	@ApiOperation(value = "Authentication the user")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Authentication successfully"),
 			@ApiResponse(code = 400, message = "Validation failed for arguments or error input data | " +
@@ -50,7 +50,7 @@ public class AuthController {
 		);
 	}
 
-	@ApiOperation(value = "Get information logged user")
+	@ApiOperation(value = "Retrieves logged user information")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Get informations successfully"),
 			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
@@ -70,7 +70,7 @@ public class AuthController {
 			);
 	}
 
-	@ApiOperation(value = "Update logged user profile")
+	@ApiOperation(value = "Update logged user profile information")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Updated successfully"),
 			@ApiResponse(code = 400, message = "Validation failed for arguments or error input data"),
@@ -92,7 +92,7 @@ public class AuthController {
 			);
 	}
 
-	@ApiOperation(value = "Change password user in your profile")
+	@ApiOperation(value = "Change logged user password")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Changed password successfully"),
 			@ApiResponse(code = 400, message = "Validation failed for arguments or error input data | " +
@@ -116,7 +116,7 @@ public class AuthController {
 			);
 	}
 
-	@ApiOperation(value = "Resend email for change password")
+	@ApiOperation(value = "Resend email with password recovery instructions")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Email sent successfully"),
 			@ApiResponse(code = 400, message = "Validation failed for arguments or error input data | " +
@@ -137,7 +137,7 @@ public class AuthController {
 			);
 	}
 
-	@ApiOperation(value = "Favorite or remove favorite NGO to logged user")
+	@ApiOperation(value = "Favorite or remove favorite NGO from logged user")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "User logged into the system executes the action successfully"),
 			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
@@ -158,7 +158,7 @@ public class AuthController {
 			);
 	}
 
-	@ApiOperation(value = "Notification verification by logged user")
+	@ApiOperation(value = "Checks if there is favorite NGO for user logged into the system")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Notification verification successfully"),
 			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
@@ -176,7 +176,7 @@ public class AuthController {
 			);
 	}
 
-	@ApiOperation(value = "Return pageable list of NGOs by default 20 items")
+	@ApiOperation(value = "Return pageable list of favorite NGOs by default 20 items")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Return list successfully"),
 			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
@@ -207,7 +207,7 @@ public class AuthController {
 			));
 	}
 
-	@ApiOperation(value = "User app contact")
+	@ApiOperation(value = "Send a message to the system team")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Created message contact app successfully"),
 			@ApiResponse(code = 400, message = "Validation failed for arguments or error input data | " +
@@ -227,7 +227,7 @@ public class AuthController {
 			);
 	}
 
-	@ApiOperation(value = "Return pageable list of notifications to logged user by default 20 items")
+	@ApiOperation(value = "Return pageable list of notifications from logged user by default 20 items")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Return list successfully"),
 			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
@@ -245,7 +245,7 @@ public class AuthController {
 		));
 	}
 
-	@ApiOperation(value = "Delete specific notification to logged user")
+	@ApiOperation(value = "Deletes a specific notification from the logged in user")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Deleted successfully"),
 			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
@@ -264,7 +264,7 @@ public class AuthController {
 			);
 	}
 
-	@ApiOperation(value = "Delete all notifications to logged user")
+	@ApiOperation(value = "Deletes all notifications from the logged in user")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Deleted successfully"),
 			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
@@ -283,7 +283,7 @@ public class AuthController {
 			);
 	}
 
-	@ApiOperation(value = "Notification verification to logged user")
+	@ApiOperation(value = "Checks if there is notification for user logged into the system")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Notification verification successfully"),
 			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),

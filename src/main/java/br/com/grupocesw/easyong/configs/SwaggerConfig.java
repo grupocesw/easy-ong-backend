@@ -24,9 +24,7 @@ public class SwaggerConfig {
 		return new Docket(DocumentationType.SWAGGER_2)
 			.useDefaultResponseMessages(false)
 			.select()
-			.apis(
-					RequestHandlerSelectors.basePackage("br.com.grupocesw.easyong")
-			)
+			.apis(RequestHandlerSelectors.basePackage("br.com.grupocesw.easyong"))
 			.paths(PathSelectors.any())
 			.build()
 			.apiInfo(apiInfo());
@@ -34,7 +32,7 @@ public class SwaggerConfig {
 
 	private Contact contact() {
 		return new Contact(
-			"Grupo C Software Engineer",
+			"Group C Software Engineer",
 			"https://github.com/grupocesw/easy-ong-backend",
 			"grupocesw@gmail.com"
 		);
@@ -42,8 +40,8 @@ public class SwaggerConfig {
 
 	private ApiInfo apiInfo() {
 		return new ApiInfoBuilder()
-			.title("API EASY ONG")
-			.description("API to Project Bootcamp Impacta Software Engineer 2021")
+			.title("EASY ONG API")
+			.description("API to Project Bootcamp Impacta MBA Software Engineer 2021")
 			.version("1.0.0")
 			.contact(contact())
 			.build();

@@ -29,7 +29,7 @@ public class RegistrationController {
 
 	private final RegistrationService registrationService;
 
-	@ApiOperation(value = "Register new user")
+	@ApiOperation(value = "Register new user - Endpoint restricted to anonymous users")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Register new user successfully"),
 			@ApiResponse(code = 400, message = "Validation failed for arguments or error input data | Username already exists"),
@@ -52,7 +52,7 @@ public class RegistrationController {
 			);
 	}
 
-	@ApiOperation(value = "Resend email for user account activation")
+	@ApiOperation(value = "Resend email for user account activation - Endpoint restricted to anonymous users")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Email sent successfully"),
 			@ApiResponse(code = 400, message = "Validation failed for arguments or error input data | " +

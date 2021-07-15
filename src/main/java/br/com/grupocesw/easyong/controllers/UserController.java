@@ -24,7 +24,7 @@ import javax.validation.Valid;
 @PreAuthorize("hasAuthority('ADMIN')")
 @RestController
 @RequestMapping(value = "/api/users")
-@Api(tags = "User Controller")
+@Api(tags = "User Controller - All endpoints restricted to admin users")
 public class UserController {
 
 	private final UserService service;
@@ -47,7 +47,7 @@ public class UserController {
 		);
 	}
 
-	@ApiOperation(value = "Return pageable list of users by default 20 items")
+	@ApiOperation(value = "Create new enabled user by default")
 	@ApiResponses(value = {
 			@ApiResponse(code = 201, message = "Created user successfully"),
 			@ApiResponse(code = 400, message = "Validation failed for arguments or error input data | Username already exists"),
