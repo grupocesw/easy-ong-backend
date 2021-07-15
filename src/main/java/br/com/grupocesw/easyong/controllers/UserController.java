@@ -24,7 +24,7 @@ import javax.validation.Valid;
 @PreAuthorize("hasAuthority('ADMIN')")
 @RestController
 @RequestMapping(value = "/api/users")
-@Api(tags = "User Controller - All endpoints restricted to admin users")
+@Api(tags = "User Controller - All endpoints only available to admin users")
 public class UserController {
 
 	private final UserService service;

@@ -35,7 +35,7 @@ public class AuthController {
 	private final NgoService ngoService;
 	private final NotificationService notificationService;
 
-	@ApiOperation(value = "Authentication the user")
+	@ApiOperation(value = "Authentication the user - Endpoint only available to anonymous users")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Authentication successfully"),
 			@ApiResponse(code = 400, message = "Validation failed for arguments or error input data | " +

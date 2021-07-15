@@ -66,7 +66,7 @@ public class NgoController {
 		return NgoMapper.INSTANCE.listToSlimResponseDto(service.findSuggested(pageable));
 	}
 
-	@ApiOperation(value = "Create new NGO - Endpoint restricted to admin users")
+	@ApiOperation(value = "Create new NGO - Endpoint only available to admin users")
 	@ApiResponses(value = {
 			@ApiResponse(code = 201, message = "Created successfully"),
 			@ApiResponse(code = 400, message = "Validation failed for arguments or error input data"),
@@ -101,7 +101,7 @@ public class NgoController {
 		return ResponseEntity.ok(NgoMapper.INSTANCE.entityToResponseDto(service.retrieve(id)));
 	}
 
-	@ApiOperation(value = "Update specific NGO - Endpoint restricted to admin users")
+	@ApiOperation(value = "Update specific NGO - Endpoint only available to admin users")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Updated successfully"),
 			@ApiResponse(code = 400, message = "Validation failed for arguments or error input data"),
@@ -130,7 +130,7 @@ public class NgoController {
 			);
 	}
 
-	@ApiOperation(value = "Delete specific NGO - Endpoint restricted to admin users")
+	@ApiOperation(value = "Delete specific NGO - Endpoint only available to admin users")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Deleted successfully"),
 			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
