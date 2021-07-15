@@ -24,7 +24,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(path = "api/registration")
-@Api(tags = "Registration Controller - All endpoints only available to anonymous users")
+@Api(tags = "Registration Controller")
 public class RegistrationController {
 
 	private final RegistrationService registrationService;

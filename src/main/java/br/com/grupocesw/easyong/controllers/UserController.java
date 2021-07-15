@@ -24,12 +24,12 @@ import javax.validation.Valid;
 @PreAuthorize("hasAuthority('ADMIN')")
 @RestController
 @RequestMapping(value = "/api/users")
-@Api(tags = "User Controller - All endpoints only available to admin users")
+@Api(tags = "User Controller")
 public class UserController {
 
 	private final UserService service;
 
-	@ApiOperation(value = "Return pageable list of users by default 20 items")
+	@ApiOperation(value = "Return pageable list of users by default 20 items - Endpoint only available to admin users")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Return list with success"),
 			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
@@ -47,7 +47,7 @@ public class UserController {
 		);
 	}
 
-	@ApiOperation(value = "Create new enabled user by default")
+	@ApiOperation(value = "Create new enabled user by default - Endpoint only available to admin users")
 	@ApiResponses(value = {
 			@ApiResponse(code = 201, message = "Created user successfully"),
 			@ApiResponse(code = 400, message = "Validation failed for arguments or error input data | Username already exists"),
@@ -72,7 +72,7 @@ public class UserController {
 			);
 	}
 
-	@ApiOperation(value = "Get one user")
+	@ApiOperation(value = "Get one user - Endpoint only available to admin users")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Get one successfully"),
 			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
@@ -84,7 +84,7 @@ public class UserController {
 		return ResponseEntity.ok(UserMapper.INSTANCE.entityToResponseDto(service.retrieve(id)));
 	}
 
-	@ApiOperation(value = "Update specific user")
+	@ApiOperation(value = "Update specific user - Endpoint only available to admin users")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Updated successfully"),
 			@ApiResponse(code = 400, message = "Validation failed for arguments or error input data"),
@@ -108,7 +108,7 @@ public class UserController {
 			);
 	}
 
-	@ApiOperation(value = "Delete specific user")
+	@ApiOperation(value = "Delete specific user - Endpoint only available to admin users")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Deleted successfully"),
 			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
@@ -128,9 +128,9 @@ public class UserController {
 			);
 	}
 
-	@ApiOperation(value = "Update specific user")
+	@ApiOperation(value = "Enable specific user - Endpoint only available to admin users")
 	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Updated successfully"),
+			@ApiResponse(code = 200, message = "Enabled successfully"),
 			@ApiResponse(code = 400, message = "Validation failed for arguments or error input data"),
 			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
 			@ApiResponse(code = 404, message = "Resource not found"),
