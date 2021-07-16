@@ -3,7 +3,7 @@ package br.com.grupocesw.easyong.security.oauth2;
 import br.com.grupocesw.easyong.configs.AppProperties;
 import br.com.grupocesw.easyong.exceptions.BadRequestException;
 import br.com.grupocesw.easyong.security.TokenProvider;
-import br.com.grupocesw.easyong.utils.CookieUtils;
+import br.com.grupocesw.easyong.utils.CookieUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -49,7 +49,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     }
 
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        Optional<String> redirectUri = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
+        Optional<String> redirectUri = CookieUtil.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue);
 
         if(redirectUri.isPresent() && !isAuthorizedRedirectUri(redirectUri.get())) {

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://thymeleaf.org">
+
+    <head th:replace="~{fragments/head :: head}"></head>
+
+    <body>
+
+        <br>
+
+        <div class="container">
+
+            <header th:replace="~{fragments/header}"></header>
+
+<!--            <aside th:replace="~{fragments/aside}"></aside>-->
+
+            <br>
+
+            <div th:replace="~{fragments/alert(
+                     alertMessage=${alertMessage},
+                     color=${#strings.isEmpty(color) ? 'danger' : color}
+                 )}">
+            </div>
+
+            <main layout:fragment="~{main}"></main>
+
+<!--            <footer th:replace="~{fragments/footer}"></footer>-->
+
+        </div>
+
+        <script src="/webjars/jquery/jquery.min.js"></script>
+        <script src="/webjars/popper.js/umd/popper.min.js"></script>
+        <script src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+        <script src="/static/js/app.js"></script>
+    </body>
+
+</html>

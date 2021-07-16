@@ -25,18 +25,6 @@ import java.util.List;
 @RestControllerAdvice
 public class ResourceExceptionHandler {
 
-	@ExceptionHandler(Exception.class)
-	public ResponseEntity<StandardHandlerErrorResponseDto> handleException(Exception ex, HttpServletRequest request) {
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-			.body(StandardHandlerErrorResponseDto.builder()
-				.code(0)
-				.error("Internal server error")
-				.message(ex.getMessage())
-				.path(request.getRequestURI())
-				.build()
-			);
-	}
-
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<StandardHandlerErrorResponseDto> resourceNotFound(ResourceNotFoundException ex, HttpServletRequest request) {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND.value())
@@ -293,4 +281,16 @@ public class ResourceExceptionHandler {
 				.build()
 			);
 	}
+
+//	@ExceptionHandler({UserNotExistException.class})
+//	public ResponseEntity<StandardHandlerErrorResponseDto> handleUserNotExistException(BadCredentialsException ex, HttpServletRequest request) {
+//		return ResponseEntity.status(HttpStatus.BAD_REQUEST.value())
+//			.body(StandardHandlerErrorResponseDto.builder()
+//				.code(21)
+//				.error("User not exists")
+//				.message(ex.getMessage())
+//				.path(request.getRequestURI())
+//				.build()
+//			);
+//	}
 }
