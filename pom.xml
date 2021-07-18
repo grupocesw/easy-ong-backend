@@ -28,8 +28,7 @@
 			<name>Andrê Reges Silva dos Santos</name>
 			<email>andre.reges@aluno.faculdadeimpacta.com.br</email>
 			<roles>
-				<role>Architect</role>
-				<role>Develop</role>
+				<role>Backend Develop</role>
 			</roles>
 			<timezone>America/Sao_Paulo</timezone>
 			<id>arss</id>
@@ -70,7 +69,6 @@
 			<email>nicholas.santos@aluno.faculdadeimpacta.com.br</email>
 			<url>https://www.linkedin.com/in/nicholas-oliveira-3a74a3159/</url>
 			<roles>
-				<role>Mobile Develop</role>
 				<role>Frontend Develop</role>
 			</roles>
 			<properties>
@@ -101,7 +99,11 @@
 		<org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
 		<bootstrap.version>4.0.0-2</bootstrap.version>
 		<webjars-locator.version>0.30</webjars-locator.version>
+		<commons-io.version>2.6</commons-io.version>
 		<org.apache.maven.version>3.3.9</org.apache.maven.version>
+		<io.jsonwebtoken.version>0.9.0</io.jsonwebtoken.version>
+		<io.springfox.version>3.0.0</io.springfox.version>
+		<io.springfox.version>3.0.0</io.springfox.version>
 	</properties>
 
 	<dependencies>
@@ -151,7 +153,7 @@
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.6</version>
+			<version>${commons-io.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -204,7 +206,7 @@
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt</artifactId>
-			<version>0.9.0</version>
+			<version>${io.jsonwebtoken.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -215,22 +217,22 @@
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>
-			<version>3.0.0</version>
+			<version>${io.springfox.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger-ui</artifactId>
-			<version>3.0.0</version>
+			<version>${io.springfox.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-boot-starter</artifactId>
-			<version>3.0.0</version>
+			<version>${io.springfox.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-bean-validators</artifactId>
-			<version>3.0.0</version>
+			<version>${io.springfox.version}</version>
 		</dependency>
 
 		<!-- Tests -->

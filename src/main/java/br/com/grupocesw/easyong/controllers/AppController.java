@@ -20,13 +20,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import springfox.documentation.annotations.ApiIgnore;
 
 @Controller
 @RequestMapping("/")
 @RequiredArgsConstructor
 @Slf4j
-@ApiIgnore
 public class AppController {
 
     private static final Model pomModel = MavenPomPropertyUtil.getPom();

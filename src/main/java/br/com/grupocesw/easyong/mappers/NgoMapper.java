@@ -2,9 +2,12 @@ package br.com.grupocesw.easyong.mappers;
 
 import br.com.grupocesw.easyong.entities.Ngo;
 import br.com.grupocesw.easyong.entities.SocialCause;
+import br.com.grupocesw.easyong.enums.ContactType;
 import br.com.grupocesw.easyong.request.dtos.NgoCreateRequestDto;
 import br.com.grupocesw.easyong.request.dtos.NgoUpdateRequestDto;
+import br.com.grupocesw.easyong.response.dtos.NgoMobileResponseDto;
 import br.com.grupocesw.easyong.response.dtos.NgoResponseDto;
+import br.com.grupocesw.easyong.response.dtos.NgoSlimMobileResponseDto;
 import br.com.grupocesw.easyong.response.dtos.NgoSlimResponseDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring", imports = { Collectors.class, SocialCause.class })
+@Mapper(componentModel = "spring", imports = { Collectors.class, SocialCause.class, ContactType.class })
 public interface NgoMapper {
     NgoMapper INSTANCE = Mappers.getMapper(NgoMapper.class);
 
@@ -24,6 +27,12 @@ public interface NgoMapper {
     default Set<NgoSlimResponseDto> listToSlimResponseDtoSet(Set<Ngo> entities) {
         return entities.stream()
                 .map(this::entityToSlimResponseDto)
+                .collect(Collectors.toSet());
+    }
+
+    default Set<NgoSlimMobileResponseDto> listToSlimMobileResponseDtoSet(Set<Ngo> entities) {
+        return entities.stream()
+                .map(this::entityToSlimMobileResponseDto)
                 .collect(Collectors.toSet());
     }
 
@@ -36,8 +45,24 @@ public interface NgoMapper {
             return entities.map(this::entityToSlimResponseDto);
     }
 
+    default Page<NgoSlimMobileResponseDto> listToSlimMobileResponseDto(Page<Ngo> entities) {
+        return entities.map(this::entityToSlimMobileResponseDto);
+    }
+
     @Mapping(target = "picture", expression = "java(PictureMapper.INSTANCE.entityToResponseDto(entity.getPictures().stream().findFirst().orElse(null)))")
     NgoSlimResponseDto entityToSlimResponseDto(Ngo entity);
+
+    @Mapping(target = "title", expression = "java(entity.getName())")
+    @Mapping(target = "website", expression = "java(entity.getContacts()" +
+            ".stream()" +
+            ".filter(contact -> contact.getType().equals(ContactType.WEB_SITE))" +
+            ".findFirst().isPresent() ? entity.getContacts()" +
+            ".stream()" +
+            ".filter(contact -> contact.getType().equals(ContactType.WEB_SITE))" +
+            ".findFirst().get().getContent() : \"\")")
+    @Mapping(target = "url", expression = "java(entity.getPictures().stream().findFirst().isPresent() ?" +
+            "entity.getPictures().stream().findFirst().get().getUrl() : \"\")")
+    NgoSlimMobileResponseDto entityToSlimMobileResponseDto(Ngo entity);
 
     @Mapping(target = "address", expression = "java(AddressMapper.INSTANCE.entityToResponseDto(entity.getAddress()))")
     @Mapping(target = "causes", expression = "java(SocialCauseMapper.INSTANCE.listToResponseDtoSet(entity.getCauses()))")
@@ -45,6 +70,11 @@ public interface NgoMapper {
     @Mapping(target = "moreInformations", expression = "java(NgoMoreInformationMapper.INSTANCE.listToResponseDtoSet(entity.getMoreInformations()))")
     @Mapping(target = "pictures", expression = "java(PictureMapper.INSTANCE.listToResponseDtoSet(entity.getPictures()))")
     NgoResponseDto entityToResponseDto(Ngo entity);
+
+    @Mapping(target = "contact", expression = "java(SimpleContactMapper.INSTANCE.entityToResponseDto(entity))")
+    @Mapping(target = "location", expression = "java(LocationMapper.INSTANCE.entityToResponseDto(entity.getAddress()))")
+    @Mapping(target = "picture", expression = "java(PictureMapper.INSTANCE.entityToResponseDto(entity.getPictures().stream().findFirst().orElse(null)))")
+    NgoMobileResponseDto entityToMobileResponseDto(Ngo entity);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "activated", ignore = true)

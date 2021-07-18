@@ -6,6 +6,7 @@ import org.apache.maven.model.Model;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -24,12 +25,26 @@ public class SwaggerConfig {
 	private static final Model pomModel = MavenPomPropertyUtil.getPom();
 
 	@Bean
-	public Docket docket() {
+	@Primary
+	public Docket docketV1() {
 		return new Docket(DocumentationType.SWAGGER_2)
+			.groupName(pomModel.getName() + " API Version 1")
 			.useDefaultResponseMessages(false)
 			.select()
-			.apis(RequestHandlerSelectors.basePackage("br.com.grupocesw.easyong"))
-			.paths(PathSelectors.any())
+			.apis(RequestHandlerSelectors.basePackage("br.com.grupocesw.easyong.controllers"))
+			.paths(PathSelectors.ant("/api/**/v1/**"))
+			.build()
+			.apiInfo(apiInfo());
+	}
+
+	@Bean
+	public Docket docketV2() {
+		return new Docket(DocumentationType.SWAGGER_2)
+			.groupName(pomModel.getName() + " API Version 2")
+			.useDefaultResponseMessages(false)
+			.select()
+			.apis(RequestHandlerSelectors.basePackage("br.com.grupocesw.easyong.controllers"))
+			.paths(PathSelectors.ant("/api/**/v2/**"))
 			.build()
 			.apiInfo(apiInfo());
 	}

@@ -35,7 +35,7 @@ public class SocialCauseController {
 			@ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", value = "Number of records per page."),
 			@ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
 					+ "Default sort order is ascending. " + "Multiple sort criteria are supported.") })
-	@GetMapping
+	@GetMapping("v1")
 	public Page<SocialCauseResponseDto> list(@RequestParam(required = false) String filter, Pageable pageable) {
 		if (filter == null)
 			return SocialCauseMapper.INSTANCE.listToResponseDto(service.findAll(pageable));
@@ -50,7 +50,7 @@ public class SocialCauseController {
 			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
-	@PostMapping
+	@PostMapping("v1")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<ApiStandardResponseDto> create(@RequestBody @Valid SocialCauseRequestDto request, HttpServletRequest httpRequest) {
 		SocialCauseResponseDto dto = SocialCauseMapper.INSTANCE.entityToResponseDto(
@@ -73,7 +73,7 @@ public class SocialCauseController {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
-	@GetMapping(value = "/{id}")
+	@GetMapping(value = "v1/{id}")
 	public ResponseEntity<SocialCauseResponseDto> retrieve(@PathVariable Long id) {
 		return ResponseEntity.ok(SocialCauseMapper.INSTANCE.entityToResponseDto(service.retrieve(id)));
 	}
@@ -86,7 +86,7 @@ public class SocialCauseController {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
-	@PutMapping(value = "/{id}")
+	@PutMapping(value = "v1/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<ApiStandardResponseDto> update(
 			@PathVariable Long id,
@@ -114,7 +114,7 @@ public class SocialCauseController {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
-	@DeleteMapping(value = "/{id}")
+	@DeleteMapping(value = "v1/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<ApiStandardResponseDto> delete(@PathVariable Long id, HttpServletRequest httpRequest) {
 		service.delete(id);

@@ -35,7 +35,7 @@ public class RegistrationController {
 			@ApiResponse(code = 400, message = "Validation failed for arguments or error input data | Username already exists"),
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
-	@PostMapping
+	@PostMapping("v1")
 	public ResponseEntity<ApiStandardResponseDto> register(@RequestBody @Valid UserCreateRequestDto request, HttpServletRequest httpRequest) {
 		UserResponseDto dto =
 			UserMapper.INSTANCE.entityToResponseDto(registrationService.register(
@@ -62,7 +62,7 @@ public class RegistrationController {
 					"Email already sent. Please wait 15 minutes for new request"),
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
-	@PostMapping(path = "resend-confirmation")
+	@PostMapping(path = "v1/resend-confirmation")
 	public ResponseEntity<ApiStandardResponseDto> resendConfirmation(@RequestBody @Valid UserUsernameRequestDto request, HttpServletRequest httpRequest) {
 		registrationService.resendConfirmation(UserMapper.INSTANCE.requestDtoToEntity(request));
 

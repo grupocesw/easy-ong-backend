@@ -29,7 +29,7 @@ public class PictureController {
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
 	@ResponseBody
-	@PostMapping(value = "upload", produces = { MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })
+	@PostMapping(value = "v1/upload", produces = { MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })
 	public ResponseEntity<?> upload(@RequestPart(required = true) MultipartFile file, HttpServletRequest httpRequest) {
 		service.upload(file);
 		return ResponseEntity.ok().build();
@@ -40,7 +40,7 @@ public class PictureController {
 			@ApiResponse(code = 200, message = "Show successfully")
 	})
 	@ResponseBody
-	@GetMapping(value = "/{name}", produces = { MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })
+	@GetMapping(value = "v1/{name}", produces = { MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })
 	public byte[] showPicture(@PathVariable("name") String name, HttpServletRequest request) throws IOException {
 		return service.getPicture(name);
 	}

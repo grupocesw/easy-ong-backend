@@ -1,12 +1,12 @@
-INSERT INTO addresses (id, street, number, complement, zip_code, latitude, longitude, district, city_id) VALUES
-(1, 'Avenida Angélica', '19', 'Próximo ao metrô Santa Cecília', '01227000', '37.4267861', '-122.0806032', 'Santa Cecília', 1),
-(2, 'Rua Paulo Carneiro', '30', '', '02442090', '', '', 'Lauzane Paulista', 1),
-(3, 'Rua Djalma Dutra', '70', 'COMPLEMENT', '01103010', '', '', 'Luz', 1),
-(4, 'Rua iguaçu', '132', '', '01107050', '', '', 'Luz', 1),
-(5, 'Rua Maria Luisa de Pinho', '30', '', '03124090', '', '', 'Moóca', 1),
-(6, 'R. Cruz de Malta', '765', '', '02248001', '', '', 'Parada Inglesa', 1),
-(7, 'Rua Maestro Cardim', '560', 'Conjunto 215', '01323000', '', '', 'Paraíso', 1)
---(ID, 'STREET', 'NUMBER', 'COMPLEMENT', 'ZIP_CODE', '', '', 'DISTRICT', 1),
+INSERT INTO addresses (id, title, description, street, number, complement, zip_code, latitude, longitude, district, city_id) VALUES
+(1, 'Associação Apoio Meninas Meninos Região Sé', 'Clínica de Reabilitação', 'Avenida Angélica', '19', 'Próximo ao metrô Santa Cecília', '01227000', '37.4267861', '-122.0806032', 'Santa Cecília', 1),
+(2, '', '', 'Rua Paulo Carneiro', '30', '', '02442090', '', '', 'Lauzane Paulista', 1),
+(3, '', '', 'Rua Djalma Dutra', '70', 'COMPLEMENT', '01103010', '', '', 'Luz', 1),
+(4, '', '', 'Rua iguaçu', '132', '', '01107050', '', '', 'Luz', 1),
+(5, '', '', 'Rua Maria Luisa de Pinho', '30', '', '03124090', '', '', 'Moóca', 1),
+(6, '', '', 'R. Cruz de Malta', '765', '', '02248001', '', '', 'Parada Inglesa', 1),
+(7, '', '', 'Rua Maestro Cardim', '560', 'Conjunto 215', '01323000', '', '', 'Paraíso', 1)
+--(ID, 'TITLE', 'DESCRIPTION', 'STREET', 'NUMBER', 'COMPLEMENT', 'ZIP_CODE', '', '', 'DISTRICT', 1),
 ;
 
 INSERT INTO pictures (id, url) VALUES
@@ -51,14 +51,14 @@ INSERT INTO ngo_more_informations (id, information, ngo_id) VALUES
 
 INSERT INTO contacts (id, type, content) VALUES
 (1, 0, 'cantinho.feliz@gmail.com'),
-(2, 9, '11954563652'),
+(2, 9, '(11) 95456-3652'),
 (3, 8, 'https://cantinhofeliz.com.br'),
-(4, 4, '112223333'),
+(4, 4, '(11) 2222-3333'),
 (5, 7, '@cantinhofeliz2020'),
 (6, 0, 'cecosi@globo.com'),
-(7, 9, '1122325973'),
+(7, 9, '(11) 2232-5973'),
 (8, 8, 'http://cecosi.org.br/'),
-(9, 9, '1132293935'),
+(9, 9, '(11) 3229-3935'),
 (10, 0, 'aacrianca@uol.com.br'),
 (11, 8, 'http://www.aacrianca.com.br/'),
 (12, 1, 'https://www.facebook.com/cedeca.se/'),
