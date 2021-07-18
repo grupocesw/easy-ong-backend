@@ -44,13 +44,33 @@ public class AppController {
         return "pages/terms";
     }
 
+    @GetMapping("v2/terms")
+    public String termsV2(ModelMap model) {
+        model.addAttribute("hideHeader", true);
+        return "pages/terms";
+    }
+
     @GetMapping("/privacy-policy")
     public String privacyPolicy() {
         return "pages/privacy-policy";
     }
 
+    @GetMapping("v2/privacy-policy")
+    public String privacyPolicyV2(ModelMap model) {
+        model.addAttribute("hideHeader", true);
+
+        return "pages/privacy-policy";
+    }
+
     @GetMapping("/about")
     public String about() {
+        return "pages/about";
+    }
+
+    @GetMapping("v2/about")
+    public String aboutV2(ModelMap model) {
+        model.addAttribute("hideHeader", true);
+
         return "pages/about";
     }
 
