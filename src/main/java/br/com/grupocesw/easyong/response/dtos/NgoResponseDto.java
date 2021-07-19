@@ -18,7 +18,7 @@ public class NgoResponseDto implements Serializable {
 	private String name;
 	private String cnpj;
 	private String description;
-	private boolean favorited;
+	private boolean favorite;
 	private AddressResponseDto address;
 	private Set<SocialCauseResponseDto> causes;
 	private Set<ContactResponseDto> contacts;

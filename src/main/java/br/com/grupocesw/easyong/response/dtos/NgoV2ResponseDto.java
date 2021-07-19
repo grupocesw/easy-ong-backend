@@ -17,7 +17,7 @@ public class NgoV2ResponseDto implements Serializable {
 	private Long id;
 	private String name;
 	private String description;
-	private boolean favorited;
+	private boolean favorite;
 	private SimpleContactResponseDto contact;
 	private PictureResponseDto picture;
 	private LocationResponseDto location;

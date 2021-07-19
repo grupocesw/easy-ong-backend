@@ -48,7 +48,7 @@ public class Ngo implements Serializable {
 	private Boolean activated = true;
 
 	@Transient
-	private boolean favorited;
+	private boolean favorite;
 
 	@CreationTimestamp
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
@@ -102,7 +102,7 @@ public class Ngo implements Serializable {
 		CascadeType.MERGE })
 	private Set<User> users;
 
-	public boolean getFavorited() {
+	public boolean getFavorite() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
 		if (!(authentication instanceof AnonymousAuthenticationToken) && this.getUsers() != null) {
@@ -110,10 +110,10 @@ public class Ngo implements Serializable {
 
 			for (User user: this.getUsers()) {
 				if (userPrincipal.getEmail().equals(user.getUsername()))
-					favorited = true;
+					favorite = true;
 			}
 		}
 
-		return favorited;
+		return favorite;
 	}
 }

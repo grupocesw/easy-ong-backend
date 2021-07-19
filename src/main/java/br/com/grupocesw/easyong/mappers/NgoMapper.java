@@ -28,7 +28,7 @@ public interface NgoMapper {
                 .collect(Collectors.toSet());
     }
 
-    @Mapping(target = "favorited", expression = "java(entity.getFavorited())")
+    @Mapping(target = "favorite", expression = "java(entity.getFavorite())")
     default Page<NgoResponseDto> listToResponseDto(Page<Ngo> entities) {
         return entities.map(this::entityToResponseDto);
     }
