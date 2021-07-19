@@ -10,7 +10,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class NgoMobileResponseDto implements Serializable {
+public class NgoV2ResponseDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

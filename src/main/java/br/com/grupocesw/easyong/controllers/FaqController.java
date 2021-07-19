@@ -19,7 +19,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/faqs")
+@RequestMapping(value = "/api/v1/faqs")
 @Api(tags = "FAQ Controller")
 public class FaqController {
 
@@ -35,7 +35,7 @@ public class FaqController {
 			@ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", value = "Number of records per page."),
 			@ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
 					+ "Default sort order is ascending. " + "Multiple sort criteria are supported.") })
-	@GetMapping("v1")
+	@GetMapping
 	public Page<FaqResponseDto> list(@RequestParam(required = false) String filter, Pageable pageable) {
 		if (filter == null)
 			return FaqMapper.INSTANCE.listToResponseDto(service.findAll(pageable));
@@ -50,7 +50,7 @@ public class FaqController {
 			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
-	@PostMapping("v1")
+	@PostMapping
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<ApiStandardResponseDto> create(@RequestBody @Valid FaqRequestDto request, HttpServletRequest httpRequest) {
 		FaqResponseDto dto = FaqMapper.INSTANCE.entityToResponseDto(
@@ -73,7 +73,7 @@ public class FaqController {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
-	@GetMapping(value = "v1/{id}")
+	@GetMapping(value = "/{id}")
 	public ResponseEntity<FaqResponseDto> retrieve(@PathVariable Long id) {
 		return ResponseEntity.ok(FaqMapper.INSTANCE.entityToResponseDto(service.retrieve(id)));
 	}
@@ -86,7 +86,7 @@ public class FaqController {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
-	@PutMapping(value = "v1/{id}")
+	@PutMapping(value = "/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<ApiStandardResponseDto> update(
 			@PathVariable Long id,
@@ -114,7 +114,7 @@ public class FaqController {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
-	@DeleteMapping(value = "v1/{id}")
+	@DeleteMapping(value = "/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<ApiStandardResponseDto> delete(@PathVariable Long id, HttpServletRequest httpRequest) {
 		service.delete(id);

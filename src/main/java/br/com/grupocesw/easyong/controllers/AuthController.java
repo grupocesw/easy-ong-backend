@@ -25,7 +25,7 @@ import javax.validation.Valid;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/auth")
+@RequestMapping(value = "/api/v1/auth")
 @RestController
 @Api(tags = "Auth Controller")
 public class AuthController {
@@ -43,7 +43,7 @@ public class AuthController {
 			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
-	@PostMapping("v1/login")
+	@PostMapping("/login")
 	public ResponseEntity<JwtAuthenticationResponseDto> login(@Valid @RequestBody LoginRequestDto request) {
 		return ResponseEntity.ok(
 				service.login(UserMapper.INSTANCE.requestDtoToEntity(request))
@@ -56,7 +56,7 @@ public class AuthController {
 			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
-	@GetMapping("v1/me")
+	@GetMapping("/me")
 	public ResponseEntity<ApiStandardResponseDto> getCurrentUser(HttpServletRequest httpRequest) {
 		UserResponseDto dto = UserMapper.INSTANCE.entityToResponseDto(service.getCurrentUser());
 
@@ -77,7 +77,7 @@ public class AuthController {
 			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
-	@PutMapping(value = "v1/me/update")
+	@PutMapping(value = "/me/update")
 	public ResponseEntity<ApiStandardResponseDto> updateProfile(@RequestBody @Valid UserUpdateRequestDto request, HttpServletRequest httpRequest) {
 		UserResponseDto dto = UserMapper.INSTANCE.entityToResponseDto(
 				service.updateMe(UserMapper.INSTANCE.requestDtoToEntity(request)));
@@ -103,7 +103,7 @@ public class AuthController {
 					"Password must contain between 6 and 100 characters"),
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
-	@PutMapping(value = "v1/change-password")
+	@PutMapping(value = "/change-password")
 	public ResponseEntity<ApiStandardResponseDto> changePassword(@RequestBody @Valid UserPasswordRequestDto request, HttpServletRequest httpRequest) {
 		service.changePassword(request);
 
@@ -124,7 +124,7 @@ public class AuthController {
 					"Email already sent. Please wait 15 minutes for new request"),
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
-	@PostMapping(value = "v1/recover-password")
+	@PostMapping(value = "/recover-password")
 	public ResponseEntity<ApiStandardResponseDto> recoverPassword(@RequestBody @Valid UserUsernameRequestDto request, HttpServletRequest httpRequest) {
 		service.recoverPassword(UserMapper.INSTANCE.requestDtoToEntity(request));
 
@@ -144,7 +144,7 @@ public class AuthController {
 			@ApiResponse(code = 404, message = "Ngo not found"),
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
-	@PutMapping(value = "v1/favorite/ngos/{id}")
+	@PutMapping(value = "/favorite/ngos/{id}")
     @PreAuthorize("hasAuthority('USER')")
 	public ResponseEntity<ApiStandardResponseDto> favorite(@PathVariable Long id, HttpServletRequest httpRequest) {
 		ngoService.favorite(id);
@@ -164,7 +164,7 @@ public class AuthController {
 			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
-	@GetMapping(value = "v1/favorite/ngos/exists")
+	@GetMapping(value = "/favorite/ngos/exists")
 	public ResponseEntity<ApiStandardResponseDto> existsFavoritesByLoggedUser(HttpServletRequest httpRequest) {
 		return ResponseEntity
 			.status(HttpStatus.OK)
@@ -187,7 +187,7 @@ public class AuthController {
 			@ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", value = "Number of records per page."),
 			@ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
 					+ "Default sort order is ascending. " + "Multiple sort criteria are supported.") })
-	@GetMapping(value = "v1/favorite/ngos")
+	@GetMapping(value = "/favorite/ngos")
     @PreAuthorize("hasAuthority('USER')")
 	public ResponseEntity<Page<NgoSlimResponseDto>> favoriteNgos(
 			@RequestParam(required = false) String filter,
@@ -214,7 +214,7 @@ public class AuthController {
 					"User not exists"),
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
-	@PostMapping(value = "v1/contact-us")
+	@PostMapping(value = "/contact-us")
 	public ResponseEntity<ApiStandardResponseDto> appContactUs(@RequestBody @Valid AppContactRequestDto request, HttpServletRequest httpRequest) {
 		appContactService.create(AppContactMapper.INSTANCE.requestDtoToEntity(request));
 
@@ -238,7 +238,7 @@ public class AuthController {
 			@ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", value = "Number of records per page."),
 			@ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
 					+ "Default sort order is ascending. " + "Multiple sort criteria are supported.") })
-	@GetMapping(value = "v1/notifications")
+	@GetMapping(value = "/notifications")
 	public ResponseEntity<Page<NotificationResponseDto>> getNotifications(Pageable pageable) {
 		return ResponseEntity.ok(NotificationMapper.INSTANCE.listToResponseDto(
 				notificationService.getNotifications(pageable)
@@ -251,7 +251,7 @@ public class AuthController {
 			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
-	@DeleteMapping(value = "v1/notifications/{id}")
+	@DeleteMapping(value = "/notifications/{id}")
 	public ResponseEntity<ApiStandardResponseDto> deleteNotification(@PathVariable Long id, HttpServletRequest httpRequest) {
 		notificationService.deleteByLoggedUser(id);
 
@@ -270,7 +270,7 @@ public class AuthController {
 			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
-	@DeleteMapping(value = "v1/notifications")
+	@DeleteMapping(value = "/notifications")
 	public ResponseEntity<ApiStandardResponseDto> deleteAllNotifications(HttpServletRequest httpRequest) {
 		notificationService.deleteAllByLoggedUser();
 
@@ -289,7 +289,7 @@ public class AuthController {
 			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
-	@GetMapping(value = "v1/notifications/exists")
+	@GetMapping(value = "/notifications/exists")
 	public ResponseEntity<ApiStandardResponseDto> existsNotificationsByLoggedUser(HttpServletRequest httpRequest) {
 		return ResponseEntity
 			.status(HttpStatus.OK)

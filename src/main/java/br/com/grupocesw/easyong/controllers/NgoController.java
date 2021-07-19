@@ -3,7 +3,9 @@ package br.com.grupocesw.easyong.controllers;
 import br.com.grupocesw.easyong.mappers.NgoMapper;
 import br.com.grupocesw.easyong.request.dtos.NgoCreateRequestDto;
 import br.com.grupocesw.easyong.request.dtos.NgoUpdateRequestDto;
-import br.com.grupocesw.easyong.response.dtos.*;
+import br.com.grupocesw.easyong.response.dtos.ApiStandardResponseDto;
+import br.com.grupocesw.easyong.response.dtos.NgoResponseDto;
+import br.com.grupocesw.easyong.response.dtos.NgoSlimResponseDto;
 import br.com.grupocesw.easyong.services.NgoService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/ngos")
+@RequestMapping(value = "/api/v1/ngos")
 @RestController
 @Api(tags = "NGO Controller")
 public class NgoController {
@@ -38,8 +40,8 @@ public class NgoController {
 			@ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", value = "Number of records per page."),
 			@ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
 					+ "Default sort order is ascending. " + "Multiple sort criteria are supported.") })
-	@GetMapping("v1")
-	public Page<NgoSlimResponseDto> listV1(
+	@GetMapping
+	public Page<NgoSlimResponseDto> list(
 			@RequestParam(required = false) String filter,
 			@ApiIgnore final Pageable pageable) {
 
@@ -47,28 +49,6 @@ public class NgoController {
 			return NgoMapper.INSTANCE.listToSlimResponseDto(service.findByActivatedWithFilter(filter, pageable));
 		else
 			return NgoMapper.INSTANCE.listToSlimResponseDto(service.findByActivated(pageable));
-	}
-
-	@ApiOperation(value = "Return pageable list of NGOs by default 20 items and also you can also use name, description " +
-			"and social cause name filters")
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Return list successfully"),
-			@ApiResponse(code = 500, message = "An exception was generated")
-	})
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = "page", dataType = "integer", paramType = "query", value = "Results page you want to retrieve (0..N)"),
-			@ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", value = "Number of records per page."),
-			@ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
-					+ "Default sort order is ascending. " + "Multiple sort criteria are supported.") })
-	@GetMapping("v2")
-	public Page<NgoSlimMobileResponseDto> listV2(
-			@RequestParam(required = false) String filter,
-			@ApiIgnore final Pageable pageable) {
-
-		if (filter != null)
-			return NgoMapper.INSTANCE.listToSlimMobileResponseDto(service.findByActivatedWithFilter(filter, pageable));
-		else
-			return NgoMapper.INSTANCE.listToSlimMobileResponseDto(service.findByActivated(pageable));
 	}
 
 	@ApiOperation(value = "Return suggested pageable list of NGOs by default 5 items to logged and anonymous user")
@@ -81,7 +61,7 @@ public class NgoController {
 			@ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", value = "Number of records per page."),
 			@ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
 					+ "Default sort order is ascending. " + "Multiple sort criteria are supported.") })
-	@GetMapping(value = "v1/suggested")
+	@GetMapping(value = "/suggested")
 	public Page<NgoSlimResponseDto> findSuggested(@PageableDefault(page = 0, size = 5) Pageable pageable) {
 		return NgoMapper.INSTANCE.listToSlimResponseDto(service.findSuggested(pageable));
 	}
@@ -93,7 +73,7 @@ public class NgoController {
 			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
-	@PostMapping("v1")
+	@PostMapping
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<ApiStandardResponseDto> create(@Valid @RequestBody NgoCreateRequestDto request, HttpServletRequest httpRequest) {
 		NgoSlimResponseDto dto = NgoMapper.INSTANCE.entityToSlimResponseDto(
@@ -116,20 +96,9 @@ public class NgoController {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
-	@GetMapping(value = "v1/{id}")
+	@GetMapping(value = "/{id}")
 	public ResponseEntity<NgoResponseDto> retrieve(@PathVariable Long id) {
 		return ResponseEntity.ok(NgoMapper.INSTANCE.entityToResponseDto(service.retrieve(id)));
-	}
-
-	@ApiOperation(value = "Get one NGO")
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Get one successfully"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "An exception was generated")
-	})
-	@GetMapping(value = "v2/{id}")
-	public ResponseEntity<NgoMobileResponseDto> retrieveV2(@PathVariable Long id) {
-		return ResponseEntity.ok(NgoMapper.INSTANCE.entityToMobileResponseDto(service.retrieve(id)));
 	}
 
 	@ApiOperation(value = "Update specific NGO - Endpoint only available to admin users")
@@ -140,7 +109,7 @@ public class NgoController {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
-	@PutMapping(value = "v1/{id}")
+	@PutMapping(value = "/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<ApiStandardResponseDto> update(
 			@PathVariable Long id,
@@ -168,7 +137,7 @@ public class NgoController {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
-	@DeleteMapping(value = "v1/{id}")
+	@DeleteMapping(value = "/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<ApiStandardResponseDto> delete(@PathVariable Long id, HttpServletRequest httpRequest) {
 		service.delete(id);

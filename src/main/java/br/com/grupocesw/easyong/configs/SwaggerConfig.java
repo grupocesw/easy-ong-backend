@@ -32,7 +32,7 @@ public class SwaggerConfig {
 			.useDefaultResponseMessages(false)
 			.select()
 			.apis(RequestHandlerSelectors.basePackage("br.com.grupocesw.easyong.controllers"))
-			.paths(PathSelectors.ant("/api/**/v1/**"))
+			.paths(PathSelectors.ant("/api/v1/**"))
 			.build()
 			.apiInfo(apiInfo());
 	}
@@ -44,7 +44,7 @@ public class SwaggerConfig {
 			.useDefaultResponseMessages(false)
 			.select()
 			.apis(RequestHandlerSelectors.basePackage("br.com.grupocesw.easyong.controllers"))
-			.paths(PathSelectors.ant("/api/**/v2/**"))
+			.paths(PathSelectors.ant("/api/v2/**"))
 			.build()
 			.apiInfo(apiInfo());
 	}

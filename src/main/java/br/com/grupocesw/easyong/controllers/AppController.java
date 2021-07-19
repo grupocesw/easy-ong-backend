@@ -44,7 +44,7 @@ public class AppController {
         return "pages/terms";
     }
 
-    @GetMapping("v2/terms")
+    @GetMapping("/terms-without-header")
     public String termsV2(ModelMap model) {
         model.addAttribute("hideHeader", true);
         return "pages/terms";
@@ -55,7 +55,7 @@ public class AppController {
         return "pages/privacy-policy";
     }
 
-    @GetMapping("v2/privacy-policy")
+    @GetMapping("/privacy-policy-without-header")
     public String privacyPolicyV2(ModelMap model) {
         model.addAttribute("hideHeader", true);
 
@@ -67,7 +67,7 @@ public class AppController {
         return "pages/about";
     }
 
-    @GetMapping("v2/about")
+    @GetMapping("/about-without-header")
     public String aboutV2(ModelMap model) {
         model.addAttribute("hideHeader", true);
 

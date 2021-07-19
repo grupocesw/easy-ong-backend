@@ -23,7 +23,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @PreAuthorize("hasAuthority('ADMIN')")
 @RestController
-@RequestMapping(value = "/api/users")
+@RequestMapping(value = "/api/v1/users")
 @Api(tags = "User Controller")
 public class UserController {
 
@@ -40,7 +40,7 @@ public class UserController {
 			@ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", value = "Number of records per page."),
 			@ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
 					+ "Default sort order is ascending. " + "Multiple sort criteria are supported.") })
-	@GetMapping("v1")
+	@GetMapping
 	public ResponseEntity<Page<UserResponseDto>> list(@ApiIgnore final Pageable pageable) {
 		return ResponseEntity.ok(
 				UserMapper.INSTANCE.listToResponseDto(service.findCheckedAll(pageable))
@@ -54,7 +54,7 @@ public class UserController {
 			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
-	@PostMapping("v1")
+	@PostMapping
 	public ResponseEntity<ApiStandardResponseDto> create(@RequestBody @Valid UserCreateRequestDto request, HttpServletRequest httpRequest) {
 		User user = UserMapper.INSTANCE.requestDtoToEntity(request);
 		user.setEnabled(true);
@@ -78,7 +78,7 @@ public class UserController {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
-	@GetMapping(value = "v1/{id}")
+	@GetMapping(value = "/{id}")
 	public ResponseEntity<UserResponseDto> retrieve(@PathVariable Long id) {
 		return ResponseEntity.ok(UserMapper.INSTANCE.entityToResponseDto(service.retrieve(id)));
 	}
@@ -91,7 +91,7 @@ public class UserController {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
-	@PutMapping(value = "v1/{id}")
+	@PutMapping(value = "/{id}")
 	public ResponseEntity<ApiStandardResponseDto> update(@PathVariable Long id, @RequestBody @Valid UserUpdateRequestDto request, HttpServletRequest httpRequest) {
 		UserResponseDto dto = UserMapper.INSTANCE.entityToResponseDto(
 				service.update(id, UserMapper.INSTANCE.requestDtoToEntity(request))
@@ -114,7 +114,7 @@ public class UserController {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
-	@DeleteMapping(value = "v1/{id}")
+	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<ApiStandardResponseDto> delete(@PathVariable Long id, HttpServletRequest httpRequest) {
 		service.delete(id);
 
@@ -135,7 +135,7 @@ public class UserController {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
-	@PutMapping(value = "v1/{id}/enable")
+	@PutMapping(value = "/{id}/enable")
 	public ResponseEntity<ApiStandardResponseDto> enable(@PathVariable Long id, HttpServletRequest httpRequest) {
 		UserResponseDto dto = UserMapper.INSTANCE.entityToResponseDto(service.enable(service.retrieve(id)));
 
