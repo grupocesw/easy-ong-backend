@@ -13,5 +13,5 @@ import java.util.Set;
 public interface SocialCauseRepository extends JpaRepository<SocialCause, Long> {
 	Page<SocialCause> findByNameContainingIgnoreCase(String name, Pageable pageable);
 	Optional<SocialCause> findById(Long id);
-	Optional<Set<SocialCause>> findByIdIn(Set<Long> ids);
+	Set<SocialCause> findByIdIn(Set<Long> ids);
 }

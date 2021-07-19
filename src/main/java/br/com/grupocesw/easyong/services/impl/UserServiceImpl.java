@@ -3,7 +3,10 @@ package br.com.grupocesw.easyong.services.impl;
 import br.com.grupocesw.easyong.entities.ConfirmationToken;
 import br.com.grupocesw.easyong.entities.SocialCause;
 import br.com.grupocesw.easyong.entities.User;
-import br.com.grupocesw.easyong.exceptions.*;
+import br.com.grupocesw.easyong.exceptions.BadRequestException;
+import br.com.grupocesw.easyong.exceptions.UnauthenticatedUserException;
+import br.com.grupocesw.easyong.exceptions.UserNotExistException;
+import br.com.grupocesw.easyong.exceptions.UsernameAlreadyExistsException;
 import br.com.grupocesw.easyong.repositories.UserRepository;
 import br.com.grupocesw.easyong.request.dtos.UserPasswordRequestDto;
 import br.com.grupocesw.easyong.response.dtos.JwtAuthenticationResponseDto;
@@ -34,7 +37,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TimeZone;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -64,7 +66,7 @@ public class UserServiceImpl implements UserService {
 		}
 
 		if (request.getCauses() != null && request.getCauses().size() > 0) {
-			Set<SocialCause> causes = socialCauseService.retrieveInOrThrowsException(request.getCauses());
+			Set<SocialCause> causes = socialCauseService.retrieveIn(request.getCauses());
 			request.setCauses(causes);
 		}
 
@@ -94,10 +96,8 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User retrieve(Long id) {
-		User user = repository.findById(id)
+		return repository.findById(id)
 				.orElseThrow(() -> new BadRequestException("User", id));
-
-		return user;
 	}
 
 	@Override
@@ -278,7 +278,7 @@ public class UserServiceImpl implements UserService {
 			user.getPicture().setUrl(request.getPicture().getUrl());
 
 		if (request.getCauses() != null && request.getCauses().size() > 0) {
-			Set<SocialCause> causes = socialCauseService.retrieveInOrThrowsException(request.getCauses());
+			Set<SocialCause> causes = socialCauseService.retrieveIn(request.getCauses());
 
 			if (causes.isEmpty())
 				throw new IllegalArgumentException("Social causes not found");

@@ -53,10 +53,10 @@ public class Address implements Serializable {
 	@Column(name = "zip_code", length = 8)
 	private String zipCode;
 
-	@Column(name = "latitude", length = 12)
+	@Column(name = "latitude")
 	private String latitude;
 
-	@Column(name = "longitude", length = 12)
+	@Column(name = "longitude")
 	private String longitude;
 
 	@Column(name = "district", nullable = false)

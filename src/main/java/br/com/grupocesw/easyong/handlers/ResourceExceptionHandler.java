@@ -284,7 +284,7 @@ public class ResourceExceptionHandler {
 
 	@ExceptionHandler(BadRequestException.class)
 	public ResponseEntity<StandardHandlerErrorResponseDto> handleBadRequestException(BadRequestException ex, HttpServletRequest request) {
-		return ResponseEntity.status(HttpStatus.NOT_FOUND.value())
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST.value())
 			.body(StandardHandlerErrorResponseDto.builder()
 				.code(21)
 				.error("Entity not found")

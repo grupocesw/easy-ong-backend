@@ -21,7 +21,7 @@ public interface SocialCauseService {
 
 	void delete(Long id);
 
-	Set<SocialCause> retrieveInOrThrowsException(Set<SocialCause> causes);
+	Set<SocialCause> retrieveIn(Set<SocialCause> causes);
 
 	void existsOrThrowsException(Long id);
 

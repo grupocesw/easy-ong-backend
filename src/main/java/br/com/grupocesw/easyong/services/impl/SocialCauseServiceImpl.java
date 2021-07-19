@@ -43,10 +43,10 @@ public class SocialCauseServiceImpl implements SocialCauseService {
 	}
 
 	@Override
-	public Set<SocialCause> retrieveInOrThrowsException(Set<SocialCause> causes) {
+	public Set<SocialCause> retrieveIn(Set<SocialCause> causes) {
 		Set<Long> ids = causes.stream().map(cause -> cause.getId()).collect(Collectors.toSet());
 
-		return repository.findByIdIn(ids).orElseThrow(() -> new BadRequestException("Social cause " + ids));
+		return repository.findByIdIn(ids);
 	}
 
 	@Override

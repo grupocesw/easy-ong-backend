@@ -48,16 +48,16 @@ public class NgoServiceImpl implements NgoService {
 		}
 
 		City city = cityService.retrieve(request.getAddress().getCity().getId());
-		Set<SocialCause> causes = socialCauseService.retrieveInOrThrowsException(request.getCauses());
+		Set<SocialCause> causes = socialCauseService.retrieveIn(request.getCauses());
 
 		if (causes.size() < 1)
-			throw new IllegalArgumentException("At least one cause required");
+			throw new BadRequestException("Social Cause not found");
 
 		if (request.getPictures() != null) {
 			request.getPictures().stream()
 				.forEach(obj -> {
 					if (obj.getUrl().isEmpty())
-						throw new IllegalArgumentException("URL can't empty");
+						throw new BadRequestException("URL can't empty");
 				});
 		}
 
@@ -184,7 +184,7 @@ public class NgoServiceImpl implements NgoService {
 		}
 
 		if (request.getCauses() != null && request.getCauses().size() > 0) {
-			Set<SocialCause> causes = socialCauseService.retrieveInOrThrowsException(request.getCauses());
+			Set<SocialCause> causes = socialCauseService.retrieveIn(request.getCauses());
 			ngo.getCauses().clear();
 			ngo.getCauses().addAll(causes);
 		}
