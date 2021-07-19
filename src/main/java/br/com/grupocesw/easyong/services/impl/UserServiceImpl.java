@@ -64,16 +64,7 @@ public class UserServiceImpl implements UserService {
 		}
 
 		if (request.getCauses() != null && request.getCauses().size() > 0) {
-			Set<SocialCause> causes = socialCauseService.findByIdIn(
-					request.getCauses().stream().map(c -> c.getId())
-							.collect(Collectors.toSet())
-			);
-
-			if (causes.isEmpty()) {
-				log.warn("Social cause not found {} already exists", request.getCauses());
-				throw new IllegalArgumentException("Social causes not found");
-			}
-
+			Set<SocialCause> causes = socialCauseService.retrieveInOrThrowsException(request.getCauses());
 			request.setCauses(causes);
 		}
 
@@ -104,7 +95,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User retrieve(Long id) {
 		User user = repository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(id));
+				.orElseThrow(() -> new BadRequestException("User", id));
 
 		return user;
 	}
@@ -287,12 +278,7 @@ public class UserServiceImpl implements UserService {
 			user.getPicture().setUrl(request.getPicture().getUrl());
 
 		if (request.getCauses() != null && request.getCauses().size() > 0) {
-			Set<SocialCause> causes = socialCauseService.findByIdIn(
-				request.getCauses()
-					.stream()
-					.map(c -> c.getId())
-					.collect(Collectors.toSet())
-			);
+			Set<SocialCause> causes = socialCauseService.retrieveInOrThrowsException(request.getCauses());
 
 			if (causes.isEmpty())
 				throw new IllegalArgumentException("Social causes not found");

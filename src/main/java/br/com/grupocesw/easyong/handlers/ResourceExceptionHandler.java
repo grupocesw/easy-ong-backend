@@ -282,15 +282,16 @@ public class ResourceExceptionHandler {
 			);
 	}
 
-//	@ExceptionHandler({UserNotExistException.class})
-//	public ResponseEntity<StandardHandlerErrorResponseDto> handleUserNotExistException(BadCredentialsException ex, HttpServletRequest request) {
-//		return ResponseEntity.status(HttpStatus.BAD_REQUEST.value())
-//			.body(StandardHandlerErrorResponseDto.builder()
-//				.code(21)
-//				.error("User not exists")
-//				.message(ex.getMessage())
-//				.path(request.getRequestURI())
-//				.build()
-//			);
-//	}
+	@ExceptionHandler(BadRequestException.class)
+	public ResponseEntity<StandardHandlerErrorResponseDto> handleBadRequestException(BadRequestException ex, HttpServletRequest request) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND.value())
+			.body(StandardHandlerErrorResponseDto.builder()
+				.code(21)
+				.error("Entity not found")
+				.message(ex.getMessage())
+				.path(request.getRequestURI())
+				.build()
+			);
+	}
+	
 }

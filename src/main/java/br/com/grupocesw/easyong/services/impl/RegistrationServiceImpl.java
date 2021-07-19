@@ -10,7 +10,6 @@ import br.com.grupocesw.easyong.services.*;
 import br.com.grupocesw.easyong.utils.AppUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.cfg.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -54,7 +54,7 @@ public class PictureServiceImpl implements PictureService {
 	@Override
 	public Picture retrieve(Long id) {
 		return repository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(id));
+				.orElseThrow(() -> new BadRequestException("Picture id: " + id + " not found"));
 	}
 
 	@Override

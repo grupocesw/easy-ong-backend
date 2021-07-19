@@ -24,7 +24,7 @@ public class RoleServiceImpl implements RoleService {
 	@Override
 	public void existsOrThrowsException(Long id) {
 		if (!repository.existsById(id))
-			throw new BadRequestException("Role not found. Id " + id);
+			throw new BadRequestException("Role", id);
 	}
 
 	@Override

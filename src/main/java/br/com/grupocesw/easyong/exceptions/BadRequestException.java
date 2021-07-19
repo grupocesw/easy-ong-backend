@@ -12,6 +12,10 @@ public class BadRequestException extends RuntimeException {
         super(message);
     }
 
+    public BadRequestException(String entityName, Long id) {
+        super(String.format("%s not found. Id %d", entityName, id));
+    }
+
     public BadRequestException(String message, Throwable cause) {
         super(message, cause);
     }

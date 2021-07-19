@@ -39,7 +39,7 @@ public class FaqServiceImpl implements FaqService {
 	@Cacheable(value = "faqs", key = "#id")
 	public Faq retrieve(Long id) {
 		return repository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(id));
+				.orElseThrow(() -> new BadRequestException("FAQ", id));
 	}
 
 	@Override

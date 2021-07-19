@@ -30,7 +30,7 @@ public class CityServiceImpl implements CityService {
 	@Override
 	public City retrieve(Long id) {
 		return repository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(id));
+				.orElseThrow(() -> new BadRequestException("City", id));
 	}
 
 	@Override

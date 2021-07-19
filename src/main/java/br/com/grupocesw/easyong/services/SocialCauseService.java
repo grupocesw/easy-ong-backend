@@ -21,6 +21,8 @@ public interface SocialCauseService {
 
 	void delete(Long id);
 
+	Set<SocialCause> retrieveInOrThrowsException(Set<SocialCause> causes);
+
 	void existsOrThrowsException(Long id);
 
 	List<SocialCause> findAll();
@@ -29,5 +31,4 @@ public interface SocialCauseService {
 
 	Page<SocialCause> findByName(String name, Pageable pageable);
 
-	Set<SocialCause> findByIdIn(Set<Long> ids);
 }

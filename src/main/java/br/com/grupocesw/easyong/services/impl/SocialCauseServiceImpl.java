@@ -14,8 +14,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,7 +39,14 @@ public class SocialCauseServiceImpl implements SocialCauseService {
 	@Cacheable(value = "socialCauses", key = "#id")
 	public SocialCause retrieve(Long id) {
 		return repository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(id));
+				.orElseThrow(() -> new BadRequestException("Social cause", id));
+	}
+
+	@Override
+	public Set<SocialCause> retrieveInOrThrowsException(Set<SocialCause> causes) {
+		Set<Long> ids = causes.stream().map(cause -> cause.getId()).collect(Collectors.toSet());
+
+		return repository.findByIdIn(ids).orElseThrow(() -> new BadRequestException("Social cause " + ids));
 	}
 
 	@Override
@@ -77,8 +86,4 @@ public class SocialCauseServiceImpl implements SocialCauseService {
 		return repository.findByNameContainingIgnoreCase(name, pageable);
 	}
 
-	@Override
-	public Set<SocialCause> findByIdIn(Set<Long> ids) {
-		return repository.findByIdIn(ids);
-	}
 }

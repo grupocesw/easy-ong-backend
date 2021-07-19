@@ -14,7 +14,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring", imports = { Collectors.class, SocialCause.class, PasswordVerificationUtil.class })
+@Mapper(componentModel = "spring", imports = {
+        Collectors.class, SocialCause.class, PasswordVerificationUtil.class })
 public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 

@@ -47,15 +47,8 @@ public class NgoServiceImpl implements NgoService {
 				String.format("Ngo with cnpj %s already exists", request.getCnpj()));
 		}
 
-		cityService.existsOrThrowsException(request.getAddress().getCity().getId());
 		City city = cityService.retrieve(request.getAddress().getCity().getId());
-
-		Set<SocialCause> causes = socialCauseService.findByIdIn(
-			request.getCauses()
-				.stream()
-				.map(c -> c.getId())
-				.collect(Collectors.toSet())
-		);
+		Set<SocialCause> causes = socialCauseService.retrieveInOrThrowsException(request.getCauses());
 
 		if (causes.size() < 1)
 			throw new IllegalArgumentException("At least one cause required");
@@ -69,6 +62,8 @@ public class NgoServiceImpl implements NgoService {
 		}
 
 		Address address = Address.builder()
+			.title(request.getAddress().getTitle())
+			.description(request.getAddress().getDescription())
 			.number(request.getAddress().getNumber())
 			.street(request.getAddress().getStreet())
 			.complement(request.getAddress().getComplement())
@@ -118,7 +113,7 @@ public class NgoServiceImpl implements NgoService {
 	@Override
 	public Ngo retrieve(Long id) {
 		return repository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(id));
+				.orElseThrow(() -> new BadRequestException("NGO", id));
 	}
 
 	@Override
@@ -148,6 +143,8 @@ public class NgoServiceImpl implements NgoService {
 		}
 
 		if (request.getAddress() != null) {
+			ngo.getAddress().setTitle(request.getAddress().getTitle());
+			ngo.getAddress().setDescription(request.getAddress().getDescription());
 			ngo.getAddress().setNumber(request.getAddress().getNumber());
 			ngo.getAddress().setStreet(request.getAddress().getStreet());
 			ngo.getAddress().setComplement(request.getAddress().getComplement());
@@ -187,14 +184,7 @@ public class NgoServiceImpl implements NgoService {
 		}
 
 		if (request.getCauses() != null && request.getCauses().size() > 0) {
-			Set<SocialCause> causes = socialCauseService.findByIdIn(
-					request.getCauses().stream().map(c -> c.getId())
-							.collect(Collectors.toSet())
-			);
-
-			if (causes.size() < 1)
-				throw new IllegalArgumentException("At least one cause required");
-
+			Set<SocialCause> causes = socialCauseService.retrieveInOrThrowsException(request.getCauses());
 			ngo.getCauses().clear();
 			ngo.getCauses().addAll(causes);
 		}

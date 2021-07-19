@@ -46,7 +46,7 @@ public class NotificationServiceImpl implements NotificationService {
 	@Override
 	public Notification retrieve(Long id) {
 		return repository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(id));
+				.orElseThrow(() -> new BadRequestException("Notification", id));
 	}
 
 	@Override
