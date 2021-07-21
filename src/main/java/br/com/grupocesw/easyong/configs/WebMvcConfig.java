@@ -15,6 +15,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
             .allowedOrigins("*")
             .allowedOrigins("http://localhost:3000")
+            .allowedOrigins("https://goofy-almeida-c15740.netlify.app/")
             .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
             .allowedHeaders("*")
             .allowCredentials(true)
