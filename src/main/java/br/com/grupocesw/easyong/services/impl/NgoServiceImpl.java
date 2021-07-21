@@ -36,6 +36,7 @@ public class NgoServiceImpl implements NgoService {
 	private final NotificationService notificationService;
 
 	@Override
+	@Transactional
 	@CacheEvict(value = "ngos", allEntries = true)
 	public Ngo create(Ngo request) {
 		log.info("Create ngo with name {}", request.getName());

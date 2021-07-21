@@ -13,8 +13,7 @@ INSERT INTO social_causes (id, name) VALUES
 
 INSERT INTO roles (id, name) VALUES
 (1, 'ADMIN'),
-(2, 'MANAGER'),
-(3, 'USER');
+(2, 'USER');
 
 INSERT INTO countries (id, name, abbreviation) VALUES
 (1, 'Brasil', 'BRA');
@@ -49,12 +48,20 @@ INSERT INTO states (id, name, abbreviation, country_id) VALUES
 INSERT INTO cities (id, name, state_id) VALUES
 (1, 'São Paulo', 23);
 
-INSERT INTO faqs (id, question, answer) VALUES
-(1, 'Vocês tem vinculos com alguma ONG?', 'Não, somos totalmente independentes.'),
-(2, 'O app é gratuito?', 'Sim, o app é totalmente gratuíto.'),
-(3, 'Tem opção para IOS?', 'Somente para plataforma android inicialmente.'),
-(4, 'É possível logar com minhas redes sociais?', 'Sim, o app possuí essa funcionalidade que agiliza o cadastro.');
-
 INSERT INTO pictures (id, url) VALUES
-(1, 'noImage.png');
+(1, 'noImage.png'),
+(2, 'admin.png')
+;
 
+INSERT INTO people (id, name, birthday, gender) VALUES
+(1, 'Administrator', '2000-01-01', 2)
+;
+
+-- Default password: Admin@2021
+INSERT INTO users (id, username, password, locked, enabled, person_id, picture_id, provider, provider_id) VALUES
+(1, 'admin@easyong.com.br', '$2a$10$S98Kf2UDNGvpZc7hCiXFc.22KAsXNl44xmzS7.I2elHQJP3gjpkfG', false, true, 1, 2, 'local', null)
+;
+
+INSERT INTO user_roles (user_id, role_id) VALUES
+(1, 1)
+;

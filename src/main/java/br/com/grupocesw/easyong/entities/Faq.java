@@ -25,10 +25,10 @@ public class Faq implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "question", nullable = false)
+	@Column(name = "question", columnDefinition = "TEXT", nullable = false)
 	private String question;
 
-	@Column(name = "answer", nullable = false)
+	@Column(name = "answer", columnDefinition = "TEXT", nullable = false)
 	private String answer;
 
 }

@@ -40,11 +40,11 @@ public class Ngo implements Serializable {
 	@Column(name = "cnpj", length = 14, unique = true, nullable = false)
 	private String cnpj;
 	
-	@Column(name = "description", columnDefinition="TEXT")
+	@Column(name = "description", columnDefinition = "TEXT")
 	private String description;
 	
 	@Builder.Default
-	@Column(name = "activated", nullable = false, columnDefinition="BOOLEAN DEFAULT true")
+	@Column(name = "activated", nullable = false, columnDefinition = "BOOLEAN DEFAULT true")
 	private Boolean activated = true;
 
 	@Transient

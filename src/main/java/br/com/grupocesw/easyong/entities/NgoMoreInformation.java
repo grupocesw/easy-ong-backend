@@ -33,7 +33,7 @@ public class NgoMoreInformation implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "information", nullable = false)
+	@Column(name = "information", columnDefinition="TEXT")
 	private String information;
 
 	@JsonIgnore
