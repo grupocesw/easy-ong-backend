@@ -123,11 +123,15 @@ public class NgoServiceImpl implements NgoService {
 		log.info("Update ngo with name {}", request.getName());
 
 		Ngo ngo = retrieve(id);
-		ngo.setName(request.getName());
-		ngo.setDescription(request.getDescription());
 		ngo.setActivated(request.getActivated());
 
-		if (!request.getCnpj().equals(ngo.getCnpj()))
+		if (request.getName() != null && !request.getName().isEmpty())
+			ngo.setName(request.getName());
+
+		if (request.getDescription() != null && !request.getDescription().isEmpty())
+			ngo.setName(request.getDescription());
+
+		if (request.getCnpj() != null && request.getCnpj().isEmpty() && !request.getCnpj().equals(ngo.getCnpj()))
 			ngo.setCnpj(request.getCnpj());
 
 		if (request.getContacts() != null && request.getContacts().size() > 0) {
@@ -144,15 +148,33 @@ public class NgoServiceImpl implements NgoService {
 		}
 
 		if (request.getAddress() != null) {
-			ngo.getAddress().setTitle(request.getAddress().getTitle());
-			ngo.getAddress().setDescription(request.getAddress().getDescription());
-			ngo.getAddress().setNumber(request.getAddress().getNumber());
-			ngo.getAddress().setStreet(request.getAddress().getStreet());
-			ngo.getAddress().setComplement(request.getAddress().getComplement());
-			ngo.getAddress().setZipCode(request.getAddress().getZipCode());
-			ngo.getAddress().setLatitude(request.getAddress().getLatitude());
-			ngo.getAddress().setLongitude(request.getAddress().getLongitude());
-			ngo.getAddress().setDistrict(request.getAddress().getDistrict());
+			if (request.getAddress().getTitle() != null && !request.getAddress().getTitle().isEmpty())
+				ngo.getAddress().setTitle(request.getAddress().getTitle());
+
+			if (request.getAddress().getDescription() != null && !request.getAddress().getDescription().isEmpty())
+				ngo.getAddress().setDescription(request.getAddress().getDescription());
+
+			if (request.getAddress().getNumber() != null && !request.getAddress().getNumber().isEmpty())
+				ngo.getAddress().setNumber(request.getAddress().getNumber());
+
+			if (request.getAddress().getStreet() != null
+					&& !request.getAddress().getStreet().isEmpty())
+				ngo.getAddress().setStreet(request.getAddress().getStreet());
+
+			if (request.getAddress().getComplement() != null && !request.getAddress().getComplement().isEmpty())
+				ngo.getAddress().setComplement(request.getAddress().getComplement());
+
+			if (request.getAddress().getZipCode() != null && !request.getAddress().getZipCode().isEmpty())
+				ngo.getAddress().setZipCode(request.getAddress().getZipCode());
+
+			if (request.getAddress().getLatitude() != null && !request.getAddress().getLatitude().isEmpty())
+				ngo.getAddress().setLatitude(request.getAddress().getLatitude());
+
+			if (request.getAddress().getLongitude() != null && !request.getAddress().getLongitude().isEmpty())
+				ngo.getAddress().setLongitude(request.getAddress().getLongitude());
+
+			if (request.getAddress().getDistrict() != null && !request.getAddress().getDistrict().isEmpty())
+				ngo.getAddress().setDistrict(request.getAddress().getDistrict());
 
 			if (request.getAddress().getCity() != null) {
 				cityService.existsOrThrowsException(request.getAddress().getCity().getId());

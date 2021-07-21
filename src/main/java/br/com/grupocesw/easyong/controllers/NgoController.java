@@ -113,7 +113,7 @@ public class NgoController {
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<ApiStandardResponseDto> update(
 			@PathVariable Long id,
-			@RequestBody @Valid NgoUpdateRequestDto request,
+			@Valid @RequestBody NgoUpdateRequestDto request,
 			HttpServletRequest httpRequest) throws Exception {
 
 		NgoResponseDto dto = NgoMapper.INSTANCE.entityToResponseDto(

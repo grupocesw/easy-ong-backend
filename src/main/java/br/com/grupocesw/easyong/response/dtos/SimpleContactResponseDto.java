@@ -14,7 +14,9 @@ public class SimpleContactResponseDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private String website;
-	private List<String> phones;
+	private List<ContactResponseDto> websites;
+	private List<ContactResponseDto> phones;
+	private List<ContactResponseDto> emails;
+	private List<ContactResponseDto> socialMedias;
 
 }

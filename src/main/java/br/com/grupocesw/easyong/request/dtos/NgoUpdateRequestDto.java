@@ -16,12 +16,10 @@ import java.util.Set;
 public class NgoUpdateRequestDto implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-	
-	@NotEmpty(message = "Name required")
+
 	@Size(min = 3, max = 100, message = "Name must contain between 3 and 100 characters")
 	private String name;
 
-	@NotEmpty(message = "CNPJ required")
 	@Size(min = 14, max = 14, message = "CNPJ must contain 14 digits")
 	private String cnpj;
 	

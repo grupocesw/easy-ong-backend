@@ -27,9 +27,11 @@ public interface NgoV2Mapper {
         return entities.map(this::entityToResponseDto);
     }
 
-    @Mapping(target = "contact", expression = "java(SimpleContactMapper.INSTANCE.entityToResponseDto(entity))")
+    @Mapping(target = "contacts", expression = "java(SimpleContactMapper.INSTANCE.entityToResponseDto(entity))")
+    @Mapping(target = "moreInformations", expression = "java(NgoMoreInformationMapper.INSTANCE.listToResponseDtoSet(entity.getMoreInformations()))")
+    @Mapping(target = "causes", expression = "java(SocialCauseMapper.INSTANCE.listToResponseDtoSet(entity.getCauses()))")
     @Mapping(target = "location", expression = "java(LocationMapper.INSTANCE.entityToResponseDto(entity.getAddress()))")
-    @Mapping(target = "picture", expression = "java(PictureMapper.INSTANCE.entityToResponseDto(entity.getPictures().stream().findFirst().orElse(null)))")
+    @Mapping(target = "pictures", expression = "java(PictureMapper.INSTANCE.listToResponseDtoSet(entity.getPictures()))")
     NgoV2ResponseDto entityToResponseDto(Ngo entity);
 
 }

@@ -17,14 +17,26 @@ import java.util.stream.Collectors;
 public interface SimpleContactMapper {
     SimpleContactMapper INSTANCE = Mappers.getMapper(SimpleContactMapper.class);
 
-    @Mapping(target = "website", expression = "java(entity.getContacts().stream()" +
+    @Mapping(target = "websites", expression = "java(entity.getContacts().stream()" +
             ".filter(contact -> contact.getType().equals(ContactType.WEB_SITE))" +
-            ".findFirst().isPresent() ? entity.getContacts().stream()" +
-            ".filter(contact -> contact.getType().equals(ContactType.WEB_SITE))" +
-            ".findFirst().get().getContent() : \"\")")
+            ".map(contact -> ContactMapper.INSTANCE.entityToResponseDto(contact))" +
+            ".collect(Collectors.toList()))")
     @Mapping(target = "phones", expression = "java(entity.getContacts().stream()" +
             ".filter(contact -> contact.getType().equals(ContactType.PHONE))" +
-            ".map(contact -> contact.getContent()).collect(Collectors.toList()))")
+            ".map(contact -> ContactMapper.INSTANCE.entityToResponseDto(contact))" +
+            ".collect(Collectors.toList()))")
+    @Mapping(target = "emails", expression = "java(entity.getContacts().stream()" +
+            ".filter(contact -> contact.getType().equals(ContactType.EMAIL))" +
+            ".map(contact -> ContactMapper.INSTANCE.entityToResponseDto(contact))" +
+            ".collect(Collectors.toList()))")
+    @Mapping(target = "socialMedias", expression = "java(entity.getContacts().stream()" +
+            ".filter(contact -> !(" +
+                "contact.getType().equals(ContactType.WEB_SITE) ||" +
+                "contact.getType().equals(ContactType.EMAIL) ||" +
+                "contact.getType().equals(ContactType.PHONE)" +
+            "))" +
+            ".map(contact -> ContactMapper.INSTANCE.entityToResponseDto(contact))" +
+            ".collect(Collectors.toList()))")
     SimpleContactResponseDto entityToResponseDto(Ngo entity);
 
 }

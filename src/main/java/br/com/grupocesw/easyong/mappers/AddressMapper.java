@@ -26,6 +26,6 @@ public interface AddressMapper {
     AddressResponseDto entityToResponseDto(Address entity);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "city", expression = "java(City.builder().id(dto.getCityId()).build())")
+    @Mapping(target = "city", expression = "java((dto.getCityId() != null) ? City.builder().id(dto.getCityId()).build() : null)")
     Address requestDtoToEntity(AddressRequestDto dto);
 }
