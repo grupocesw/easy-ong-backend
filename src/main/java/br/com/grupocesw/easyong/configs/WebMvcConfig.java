@@ -12,10 +12,16 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
+
         registry.addMapping("/**")
-            .allowedOrigins("*")
+            .allowedOrigins("https://goofy-almeida-c15740.netlify.app")
+            .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
+            .allowedHeaders("*")
+            .allowCredentials(true)
+            .maxAge(MAX_AGE_SECS);
+
+        registry.addMapping("/**")
             .allowedOrigins("http://localhost:3000")
-            .allowedOrigins("https://goofy-almeida-c15740.netlify.app/")
             .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
             .allowedHeaders("*")
             .allowCredentials(true)
