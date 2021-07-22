@@ -22,7 +22,7 @@ public class ScheduledTasksConfig {
         Cron Pattern: Second, minute, hour, day of month, month, day(s) of week
     */
     @Scheduled(cron = "0 0 0 * * *", zone = "America/Sao_Paulo")
-    @CacheEvict(value = {"ngos", "faqs", "socialCauses"}, allEntries = true)
+    @CacheEvict(value = {"ngos", "faqs", "socialCauses", "cities", "roles"}, allEntries = true)
     public void clearCacheSchedule() {
         log.info("Clean Cache {}", LocalDateTime.now()
                 .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));

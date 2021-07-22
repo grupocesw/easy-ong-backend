@@ -236,7 +236,7 @@ public class NgoServiceImpl implements NgoService {
 	}
 
 	@Override
-	@Cacheable(value = "ngos", key = "#pageable.pageSize")
+	@Cacheable(value = "ngos", key = "#pageable")
 	public Page<Ngo> findByActivated(Pageable pageable) {
 		return repository.findByActivatedTrueOrderByName(pageable);
 	}

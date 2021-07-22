@@ -28,7 +28,8 @@ public interface CityMapper {
         return entities.map(this::entityToResponseDto);
     }
 
-    @Mapping(target = "state", expression = "java(String.format(\"%s - %s\", entity.getState().getName(), entity.getState().getAbbreviation()))")
+    @Mapping(target = "name", expression = "java(String.format(\"%s - %s\", entity.getName(), entity.getState().getAbbreviation()))")
+    @Mapping(target = "state", expression = "java(entity.getState().getName())")
     CityResponseDto entityToResponseDto(City entity);
 
     @Mapping(target = "id", ignore = true)

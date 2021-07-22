@@ -14,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -76,7 +75,7 @@ public class SocialCauseServiceImpl implements SocialCauseService {
 	}
 
 	@Override
-	@Cacheable(value = "socialCauses", key = "#pageable.pageSize")
+	@Cacheable(value = "socialCauses", key = "#pageable")
 	public Page<SocialCause> findAll(Pageable pageable) {
 		return repository.findAll(pageable);
 	}

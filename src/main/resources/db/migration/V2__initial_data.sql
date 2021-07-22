@@ -46,7 +46,12 @@ INSERT INTO states (id, name, abbreviation, country_id) VALUES
 (26, 'Distrito Federal', 'DF', 1);
 
 INSERT INTO cities (id, name, state_id) VALUES
-(1, 'São Paulo', 23);
+(1, 'São Paulo', 23),
+(2, 'Sorocaba', 23),
+(3, 'São Caetano do Sul', 23),
+(4, 'Santana de Parnaíba', 23),
+(5, 'Santa Cecília Pilar do Sul', 23)
+;
 
 INSERT INTO pictures (id, url) VALUES
 (1, 'noImage.png'),

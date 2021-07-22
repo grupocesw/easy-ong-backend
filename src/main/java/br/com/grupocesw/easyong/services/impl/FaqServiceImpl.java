@@ -69,7 +69,7 @@ public class FaqServiceImpl implements FaqService {
 	}
 
 	@Override
-	@Cacheable(value = "faqs", key = "#pageable.pageSize")
+	@Cacheable(value = "faqs", key = "#pageable")
 	public Page<Faq> findAll(Pageable pageable) {
 		return repository.findAll(pageable);
 	}

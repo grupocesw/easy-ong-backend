@@ -12,7 +12,7 @@
 	<!-- Project Information -->
 	<groupId>br.com.grupocesw</groupId>
 	<artifactId>easyong-backend</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>EASY ONG</name>
 	<description>MVP Project to MBA Software Engineering - Faculdade Impacta</description>
 	<url>https://github.com/grupocesw/easy-ong-backend</url>
