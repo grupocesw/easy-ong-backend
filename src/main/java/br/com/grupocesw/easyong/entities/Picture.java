@@ -21,7 +21,7 @@ import java.util.Set;
 @ToString(of = { "id", "url" })
 public class Picture implements Serializable {
 	
-	private static final String path = "/api/pictures/";	
+	private static final String path = "/api/v1/pictures/";
 	public static final String noImage = "noImage.png";
 
 	@Id

@@ -270,9 +270,14 @@ public class UserServiceImpl implements UserService {
 	private User updateUser(User user, User request) {
 		log.info("Update to username {}", user.getUsername());
 
-		user.getPerson().setName(request.getPerson().getName());
-		user.getPerson().setBirthday(request.getPerson().getBirthday());
-		user.getPerson().setGender(request.getPerson().getGender());
+		if (request.getPerson().getName() != null && !request.getPerson().getName().isEmpty())
+			user.getPerson().setName(request.getPerson().getName());
+
+		if (request.getPerson().getBirthday() != null)
+			user.getPerson().setBirthday(request.getPerson().getBirthday());
+
+		if (request.getPerson().getGender() != null)
+			user.getPerson().setGender(request.getPerson().getGender());
 
 		if (request.getPicture() != null)
 			user.getPicture().setUrl(request.getPicture().getUrl());

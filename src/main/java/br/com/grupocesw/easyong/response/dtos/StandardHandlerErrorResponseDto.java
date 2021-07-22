@@ -18,7 +18,7 @@ public class StandardHandlerErrorResponseDto implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Builder.Default
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "America/Sao_Paulo")
 	private LocalDateTime timestamp = LocalDateTime.now();
 	private Integer code;
 	private String error;

@@ -9,3 +9,8 @@ INSERT INTO users (id, username, password, locked, enabled, person_id, picture_i
 INSERT INTO user_roles (user_id, role_id) VALUES
 (2, 2)
 ;
+
+INSERT INTO user_social_causes (user_id, social_cause_id) VALUES
+(2, 2),
+(2, 3)
+;
