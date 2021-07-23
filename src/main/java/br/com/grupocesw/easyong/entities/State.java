@@ -30,7 +30,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @Builder
-@ToString
+@ToString(exclude = "cities")
 public class State implements Serializable {
 
 	@Id

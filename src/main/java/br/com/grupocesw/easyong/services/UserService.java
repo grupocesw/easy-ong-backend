@@ -1,7 +1,8 @@
 package br.com.grupocesw.easyong.services;
 
-import br.com.grupocesw.easyong.entities.Ngo;
+import br.com.grupocesw.easyong.entities.SocialCause;
 import br.com.grupocesw.easyong.entities.User;
+import br.com.grupocesw.easyong.request.dtos.UserPasswordRequestDto;
 import br.com.grupocesw.easyong.response.dtos.JwtAuthenticationResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public interface UserService {
@@ -19,7 +21,7 @@ public interface UserService {
 
 	User update(Long id, User request);
 
-//	User updateMe(User request);
+	User updateMe(User request);
 
 	void delete(Long id);
 
@@ -29,13 +31,9 @@ public interface UserService {
 
 	Page<User> findCheckedAll(Pageable pageable);
 
-	void favorite(Long userId, Long ngoId);
-
-//	User getMe();
-
 	JwtAuthenticationResponseDto login(User request);
 
-    void changePassword(Long id, User request);
+    void changePassword(UserPasswordRequestDto dto);
 
     void recoverPassword(User request);
 
@@ -47,7 +45,12 @@ public interface UserService {
 
     Boolean existsByUsername(String username);
 
-	void enableUser(User user);
+	User enable(User user);
 
-	Page<Ngo> getFavoriteNgos(Long userId, Pageable pageable);
+	User getCurrentUser();
+
+	User getCurrentUserOrNull();
+
+	Set<User> findAllBySocialCauses(Set<SocialCause> causes);
+
 }

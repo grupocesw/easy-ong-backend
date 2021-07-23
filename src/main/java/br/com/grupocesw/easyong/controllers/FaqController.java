@@ -19,7 +19,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/faqs")
+@RequestMapping(value = "/api/v1/faqs")
 @Api(tags = "FAQ Controller")
 public class FaqController {
 
@@ -43,7 +43,7 @@ public class FaqController {
 			return FaqMapper.INSTANCE.listToResponseDto(service.findByQuestionAndAnswer(filter, pageable));
 	}
 
-	@ApiOperation(value = "Create new FAQ")
+	@ApiOperation(value = "Create new FAQ - Endpoint only available to admin users")
 	@ApiResponses(value = {
 			@ApiResponse(code = 201, message = "Created successfully"),
 			@ApiResponse(code = 400, message = "Validation failed for arguments or error input data"),
@@ -78,7 +78,7 @@ public class FaqController {
 		return ResponseEntity.ok(FaqMapper.INSTANCE.entityToResponseDto(service.retrieve(id)));
 	}
 
-	@ApiOperation(value = "Update specific FAQ")
+	@ApiOperation(value = "Update specific FAQ - Endpoint only available to admin users")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Updated successfully"),
 			@ApiResponse(code = 400, message = "Validation failed for arguments or error input data"),
@@ -107,7 +107,7 @@ public class FaqController {
 			);
 	}
 
-	@ApiOperation(value = "Delete specific FAQ")
+	@ApiOperation(value = "Delete specific FAQ - Endpoint only available to admin users")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Deleted successfully"),
 			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),

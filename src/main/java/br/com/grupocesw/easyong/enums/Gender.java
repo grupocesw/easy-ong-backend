@@ -1,7 +1,10 @@
 package br.com.grupocesw.easyong.enums;
 
 public enum Gender {
-	MALE(0), FEMALE(1), OTHER(2), UNINFORMED(3);
+	MALE(0),
+	FEMALE(1),
+	OTHER(2),
+	UNINFORMED(3);
 
 	private Integer code;
 

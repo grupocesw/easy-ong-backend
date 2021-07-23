@@ -1,20 +1,15 @@
 package br.com.grupocesw.easyong.entities;
 
-import java.io.Serializable;
-import java.util.Set;
+import br.com.grupocesw.easyong.utils.AppUtil;
+import br.com.grupocesw.easyong.utils.PictureUtil;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-
-import br.com.grupocesw.easyong.utils.AppUtil;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import br.com.grupocesw.easyong.utils.PictureUtil;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import java.io.Serializable;
+import java.util.Set;
 
 @Entity
 @Table(name = "pictures")
@@ -23,12 +18,12 @@ import lombok.ToString;
 @Getter
 @Setter
 @Builder
-@ToString
+@ToString(of = { "id", "url" })
 public class Picture implements Serializable {
 	
-	private static final String path = "/api/pictures/";	
-	public static final String noImage = "no_image.png";
-	
+	private static final String path = "/api/v1/pictures/";
+	public static final String noImage = "noImage.png";
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -39,13 +34,18 @@ public class Picture implements Serializable {
 	@Transient
 	private String name;
 
+	@JsonIgnore
 	@OneToOne(mappedBy = "picture")
 	@JoinColumn(name = "picture_id")
-	@ToString.Exclude
 	private User user;
 	
 	@JsonIgnore
-	@ManyToMany(mappedBy = "pictures")
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@ManyToMany(mappedBy = "pictures", cascade = {
+		CascadeType.DETACH,
+		CascadeType.REFRESH,
+		CascadeType.PERSIST,
+		CascadeType.MERGE })
 	private Set<Ngo> ngos;
 	
 	public String getUrl() {

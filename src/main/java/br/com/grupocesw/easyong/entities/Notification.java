@@ -1,26 +1,18 @@
 package br.com.grupocesw.easyong.entities;
 
-import java.io.Serializable;
-import java.util.Set;
+import br.com.grupocesw.easyong.enums.NotificationType;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Table(name = "notifications")
@@ -29,23 +21,33 @@ import lombok.ToString;
 @Getter
 @Setter
 @Builder
-@ToString
+@ToString(of = { "id", "title" })
 public class Notification implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+
+	@Builder.Default
+	@Column(name = "type", nullable = false)
+	private NotificationType type = NotificationType.INFORMATION;
 	
 	@NotEmpty(message = "Title required")
 	@Size(min = 3, max = 100, message = "Title must contain between 3 and 100 characters")
 	@Column(name = "title", nullable = false, length = 100)
 	private String title;
 
-	@NotEmpty(message = "Name required")
-	@Column(name = "description", nullable = false, columnDefinition = "TEXT")
+	@Column(name = "description", columnDefinition = "TEXT")
 	private String description;
 
-	@JsonIgnore
-	@ManyToMany(mappedBy = "notifications")
+	@CreationTimestamp
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+	@Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	private LocalDateTime createdAt;
+
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "notification_users", joinColumns = @JoinColumn(name = "notification_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
 	private Set<User> users;
+
 }

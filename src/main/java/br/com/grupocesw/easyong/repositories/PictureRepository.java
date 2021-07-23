@@ -8,4 +8,5 @@ import br.com.grupocesw.easyong.entities.Picture;
 @Repository
 public interface PictureRepository extends JpaRepository<Picture, Long> {
 
+    Picture findByUrlStartingWithIgnoreCase(String url);
 }

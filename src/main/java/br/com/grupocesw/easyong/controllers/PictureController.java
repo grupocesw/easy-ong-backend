@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/pictures")
+@RequestMapping(value = "/api/v1/pictures")
 @RestController
 @Api(tags = "Picture Controller")
 public class PictureController {
@@ -29,7 +29,7 @@ public class PictureController {
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
 	@ResponseBody
-	@PostMapping(value = "upload", produces = { MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })
+	@PostMapping(value = "/upload", produces = { MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })
 	public ResponseEntity<?> upload(@RequestPart(required = true) MultipartFile file, HttpServletRequest httpRequest) {
 		service.upload(file);
 		return ResponseEntity.ok().build();

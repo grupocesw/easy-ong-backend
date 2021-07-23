@@ -27,7 +27,6 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Builder
-@ToString
 public class City implements Serializable {
 
 	@Id
@@ -40,4 +39,9 @@ public class City implements Serializable {
 	@JsonIgnore
 	@ManyToOne(targetEntity = State.class, cascade = CascadeType.ALL)
 	private State state;
+
+	@Override
+	public String toString() {
+		return String.format("%s - %s", name, state.getAbbreviation());
+	}
 }

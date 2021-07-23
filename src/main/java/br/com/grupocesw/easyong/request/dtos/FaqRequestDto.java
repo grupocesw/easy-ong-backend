@@ -17,11 +17,11 @@ public class FaqRequestDto implements Serializable {
 
 	@NotNull
 	@NotEmpty(message = "Question required")
-	@Size(min = 3, max = 255, message = "Question must contain between 3 and 255 characters")
+	@Size(min = 3, message = "Question must contain at least 3 characters")
 	private String question;
 
 	@NotNull
 	@NotEmpty(message = "Answer required")
-	@Size(min = 3, max = 255, message = "Answer must contain between 3 and 255 characters")
+	@Size(min = 3, message = "Answer must contain at least 3 characters")
 	private String answer;
 }

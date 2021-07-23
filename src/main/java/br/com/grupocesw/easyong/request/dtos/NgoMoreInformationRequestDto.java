@@ -17,7 +17,7 @@ public class NgoMoreInformationRequestDto implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@NotEmpty(message = "Information required")
-	@Size(min = 3, max = 255, message = "Information must contain between 3 and 255 characters")
+	@Size(min = 3, message = "Information must contain at least 3 characters")
 	private String information;
 
 }

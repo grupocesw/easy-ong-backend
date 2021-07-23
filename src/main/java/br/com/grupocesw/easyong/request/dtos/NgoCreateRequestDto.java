@@ -1,7 +1,6 @@
 package br.com.grupocesw.easyong.request.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -40,11 +39,9 @@ public class NgoCreateRequestDto implements Serializable {
 	@JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
 	private Set<NgoMoreInformationRequestDto> moreInformations;
 
-	@Size(min = 1, message = "At least one picture required")
 	@NotEmpty(message = "At least one cause required")
 	private Set<Long> causeIds;
 
-	@Size(min = 1, message = "At least one picture required")
 	@NotEmpty(message = "At least one picture required")
 	@JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
 	private Set<PictureRequestDto> pictures;

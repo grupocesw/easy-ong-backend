@@ -3,13 +3,7 @@ package br.com.grupocesw.easyong.entities;
 import java.io.Serializable;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -20,6 +14,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "contacts")
@@ -28,7 +24,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @Builder
-@ToString
+@ToString(exclude = "ngos")
 public class Contact implements Serializable {
 
 	@Id
@@ -42,6 +38,11 @@ public class Contact implements Serializable {
 	private String content;
 
 	@JsonIgnore
-	@ManyToMany(mappedBy = "contacts")
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@ManyToMany(mappedBy = "contacts", cascade = {
+		CascadeType.DETACH,
+		CascadeType.REFRESH,
+		CascadeType.PERSIST,
+		CascadeType.MERGE })
 	private Set<Ngo> ngos;
 }

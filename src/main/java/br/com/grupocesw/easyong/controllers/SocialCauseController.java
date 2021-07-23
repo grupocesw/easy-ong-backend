@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/social-causes")
+@RequestMapping(value = "/api/v1/social-causes")
 @RestController
 @Api(tags = "Social Cause Controller")
 public class SocialCauseController {
@@ -43,7 +43,7 @@ public class SocialCauseController {
 			return SocialCauseMapper.INSTANCE.listToResponseDto(service.findByName(filter, pageable));
 	}
 
-	@ApiOperation(value = "Create new social cause")
+	@ApiOperation(value = "Create new social cause - Endpoint only available to admin users")
 	@ApiResponses(value = {
 			@ApiResponse(code = 201, message = "Created successfully"),
 			@ApiResponse(code = 400, message = "Validation failed for arguments or error input data"),
@@ -78,7 +78,7 @@ public class SocialCauseController {
 		return ResponseEntity.ok(SocialCauseMapper.INSTANCE.entityToResponseDto(service.retrieve(id)));
 	}
 
-	@ApiOperation(value = "Update specific FAQ")
+	@ApiOperation(value = "Update specific social cause - Endpoint only available to admin users")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Updated successfully"),
 			@ApiResponse(code = 400, message = "Validation failed for arguments or error input data"),
@@ -107,7 +107,7 @@ public class SocialCauseController {
 			);
 	}
 
-	@ApiOperation(value = "Delete specific social cause")
+	@ApiOperation(value = "Delete specific social cause - Endpoint only available to admin users")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Deleted successfully"),
 			@ApiResponse(code = 401, message = "Invalid credential to access this resource"),

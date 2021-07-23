@@ -1,0 +1,8 @@
+<div th:if="${!#strings.isEmpty(alertMessage)}"
+     th:class="'text-center alert alert-' + ${color}"
+     role="alert"
+     xmlns:th="http://thymeleaf.org">
+
+    <label th:text="${alertMessage}" class="font-weight-bold"></label>
+
+</div>

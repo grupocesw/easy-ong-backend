@@ -9,6 +9,10 @@ import java.io.IOException;
 @Service
 public interface PictureService {
 
+	Picture retrieve(Long id);
+
+	Picture findByUrl(String url);
+
 	Picture update(Long id, Picture request);
 
 	void delete(Long id);

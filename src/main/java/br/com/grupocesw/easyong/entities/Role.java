@@ -17,6 +17,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Data
@@ -27,7 +29,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @Builder
-@ToString
+@ToString(exclude = "users")
 public class Role implements Serializable {
 	
 	@Id
@@ -40,6 +42,7 @@ public class Role implements Serializable {
 	private String name;
 	
 	@JsonIgnore
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@ManyToMany(mappedBy = "roles")
 	private Set<User> users;
 }

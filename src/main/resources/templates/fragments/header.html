@@ -1,0 +1,48 @@
+<header th:if="not ${hideHeader}"
+        layout:fragment="~{header}"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        xmlns:th="http://thymeleaf.org">
+
+    <nav class="navbar navbar-expand-lg navbar-dark static-top">
+        <div class="container">
+
+            <a class="navbar-brand" href="/">
+                <img src="/static/img/logo-background-white.png"
+                     width="100rem"
+                     height="100rem"
+                     class="rounded-circle d-inline-block align-top"
+                     alt="Logo EASY ONG" />
+            </a>
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+                    aria-controls="navbarResponsive"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto font-weight-bold">
+                    <li class="nav-item active">
+                        <a class="nav-link text-dark" href="/">
+                            Home
+                            <span class="sr-only">(current)</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/terms">Termos de Uso</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/privacy-policy">Política de Privacidade</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/swagger-ui/" target="_blank">Swagger</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/about">Sobre</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </nav>
+</header>

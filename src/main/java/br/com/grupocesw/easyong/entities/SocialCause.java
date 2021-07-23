@@ -7,6 +7,8 @@ import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "social_causes")
@@ -16,7 +18,7 @@ import lombok.*;
 @Setter
 @Builder
 @EqualsAndHashCode(exclude = "users")
-@ToString
+@ToString(of = { "id", "name" })
 public class SocialCause implements Serializable {
 
     @Id
@@ -27,10 +29,20 @@ public class SocialCause implements Serializable {
     private String name;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "causes", cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @ManyToMany(mappedBy = "causes", cascade = {
+        CascadeType.DETACH,
+        CascadeType.REFRESH,
+        CascadeType.PERSIST,
+        CascadeType.MERGE })
     private Set<User> users;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "causes", cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @ManyToMany(mappedBy = "causes", cascade = {
+        CascadeType.DETACH,
+        CascadeType.REFRESH,
+        CascadeType.PERSIST,
+        CascadeType.MERGE })
     private Set<Ngo> ngos;
 }

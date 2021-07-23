@@ -2,6 +2,7 @@ package br.com.grupocesw.easyong.mappers;
 
 import br.com.grupocesw.easyong.entities.Ngo;
 import br.com.grupocesw.easyong.entities.SocialCause;
+import br.com.grupocesw.easyong.enums.ContactType;
 import br.com.grupocesw.easyong.request.dtos.NgoCreateRequestDto;
 import br.com.grupocesw.easyong.request.dtos.NgoUpdateRequestDto;
 import br.com.grupocesw.easyong.response.dtos.NgoResponseDto;
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring", imports = { Collectors.class, SocialCause.class })
+@Mapper(componentModel = "spring", imports = { Collectors.class, SocialCause.class, ContactType.class })
 public interface NgoMapper {
     NgoMapper INSTANCE = Mappers.getMapper(NgoMapper.class);
 
@@ -27,7 +28,7 @@ public interface NgoMapper {
                 .collect(Collectors.toSet());
     }
 
-    @Mapping(target = "favorited", expression = "java(entity.getFavorited())")
+    @Mapping(target = "favorite", expression = "java(entity.getFavorite())")
     default Page<NgoResponseDto> listToResponseDto(Page<Ngo> entities) {
         return entities.map(this::entityToResponseDto);
     }

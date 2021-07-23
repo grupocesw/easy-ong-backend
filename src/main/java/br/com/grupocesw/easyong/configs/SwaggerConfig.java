@@ -1,9 +1,12 @@
 
 package br.com.grupocesw.easyong.configs;
 
+import br.com.grupocesw.easyong.utils.MavenPomPropertyUtil;
+import org.apache.maven.model.Model;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -19,32 +22,46 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Import(BeanValidatorPluginsConfiguration.class)
 public class SwaggerConfig {
 
+	private static final Model pomModel = MavenPomPropertyUtil.getPom();
+
 	@Bean
-	public Docket docket() {
+	@Primary
+	public Docket docketV1() {
 		return new Docket(DocumentationType.SWAGGER_2)
+			.groupName(pomModel.getName() + " API Version 1")
 			.useDefaultResponseMessages(false)
 			.select()
-			.apis(
-					RequestHandlerSelectors.basePackage("br.com.grupocesw.easyong")
-			)
-			.paths(PathSelectors.any())
+			.apis(RequestHandlerSelectors.basePackage("br.com.grupocesw.easyong.controllers"))
+			.paths(PathSelectors.ant("/api/v1/**"))
+			.build()
+			.apiInfo(apiInfo());
+	}
+
+	@Bean
+	public Docket docketV2() {
+		return new Docket(DocumentationType.SWAGGER_2)
+			.groupName(pomModel.getName() + " API Version 2")
+			.useDefaultResponseMessages(false)
+			.select()
+			.apis(RequestHandlerSelectors.basePackage("br.com.grupocesw.easyong.controllers"))
+			.paths(PathSelectors.ant("/api/v2/**"))
 			.build()
 			.apiInfo(apiInfo());
 	}
 
 	private Contact contact() {
 		return new Contact(
-			"Grupo C Software Engineer",
-			"https://github.com/grupocesw/easy-ong-backend",
+			pomModel.getName(),
+			pomModel.getUrl(),
 			"grupocesw@gmail.com"
 		);
 	}
 
 	private ApiInfo apiInfo() {
 		return new ApiInfoBuilder()
-			.title("API EASY ONG")
-			.description("API to Project Bootcamp Impacta Software Engineer 2021")
-			.version("1.0.0")
+			.title(pomModel.getName())
+			.description(pomModel.getDescription())
+			.version(pomModel.getVersion())
 			.contact(contact())
 			.build();
 	}

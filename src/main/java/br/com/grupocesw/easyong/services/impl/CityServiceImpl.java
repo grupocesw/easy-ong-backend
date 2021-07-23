@@ -7,6 +7,8 @@ import br.com.grupocesw.easyong.repositories.CityRepository;
 import br.com.grupocesw.easyong.services.CityService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ public class CityServiceImpl implements CityService {
 	private final CityRepository repository;
 	
 	@Override
+	@CacheEvict(value = "cities", allEntries = true)
 	public City create(City request) {
 		log.info("Create city with name {}", request.getName());
 
@@ -28,12 +31,14 @@ public class CityServiceImpl implements CityService {
 	}
 	
 	@Override
+	@Cacheable(value = "cities", key = "#id")
 	public City retrieve(Long id) {
 		return repository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(id));
+				.orElseThrow(() -> new BadRequestException("City", id));
 	}
 
 	@Override
+	@CacheEvict(value = "cities", allEntries = true)
 	public City update(Long id, City request) {
 		log.info("Update city with name {}", request.getName());
 		City city = retrieve(id);
@@ -44,6 +49,7 @@ public class CityServiceImpl implements CityService {
 	}
 
 	@Override
+	@CacheEvict(value = "cities", allEntries = true)
 	public void delete(Long id) {
 		log.info("Delete city with id {}", id);
 
@@ -56,6 +62,7 @@ public class CityServiceImpl implements CityService {
 	}
 
 	@Override
+	@Cacheable(value = "cities", key = "#pageable")
 	public Page<City> findAll(Pageable pageable) {
 		return repository.findAll(pageable);
 	}

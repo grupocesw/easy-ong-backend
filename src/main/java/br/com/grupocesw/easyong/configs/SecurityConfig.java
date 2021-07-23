@@ -79,7 +79,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         "/**/*.js",
         "/auth/**",
         "/api/auth/**",
-        "/api/oauth2/**",
+        "/oauth2/**",
         "/recover-password/**",
         "/recover-change-password/**",
         "/clean-cache-resources"
@@ -110,19 +110,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .authenticationEntryPoint(new RestAuthenticationEntryPoint())
             .and()
             .authorizeRequests()
-            .antMatchers(WHITE_LIST).permitAll()
 	        .antMatchers(BLACK_LIST).denyAll()
 	        .antMatchers(ANONYMOUS_LIST).anonymous()
-            .anyRequest()
-            .authenticated()
+            .antMatchers(WHITE_LIST).permitAll()
+//            .anyRequest()
+//            .authenticated()
             .and()
             .oauth2Login()
             .authorizationEndpoint()
-            .baseUri("/api/oauth2/authorize")
+            .baseUri("/oauth2/authorize")
             .authorizationRequestRepository(cookieAuthorizationRequestRepository())
             .and()
             .redirectionEndpoint()
-            .baseUri("/api/oauth2/callback/*")
+            .baseUri("/oauth2/callback/*")
             .and()
             .userInfoEndpoint()
             .userService(customOAuth2UserService)

@@ -1,16 +1,17 @@
 package br.com.grupocesw.easyong.services.impl;
 
 import br.com.grupocesw.easyong.entities.ConfirmationToken;
-import br.com.grupocesw.easyong.entities.Ngo;
 import br.com.grupocesw.easyong.entities.SocialCause;
 import br.com.grupocesw.easyong.entities.User;
 import br.com.grupocesw.easyong.exceptions.BadRequestException;
-import br.com.grupocesw.easyong.exceptions.ResourceNotFoundException;
+import br.com.grupocesw.easyong.exceptions.UnauthenticatedUserException;
 import br.com.grupocesw.easyong.exceptions.UserNotExistException;
 import br.com.grupocesw.easyong.exceptions.UsernameAlreadyExistsException;
 import br.com.grupocesw.easyong.repositories.UserRepository;
+import br.com.grupocesw.easyong.request.dtos.UserPasswordRequestDto;
 import br.com.grupocesw.easyong.response.dtos.JwtAuthenticationResponseDto;
 import br.com.grupocesw.easyong.security.TokenProvider;
+import br.com.grupocesw.easyong.security.UserPrincipal;
 import br.com.grupocesw.easyong.services.*;
 import br.com.grupocesw.easyong.utils.AppUtil;
 import br.com.grupocesw.easyong.utils.PasswordVerificationUtil;
@@ -18,12 +19,12 @@ import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,8 +33,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TimeZone;
 
 @Service
 @RequiredArgsConstructor
@@ -41,7 +44,6 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
 	private final UserRepository repository;
-	private final NgoService ngoService;
 	private final SocialCauseService socialCauseService;
 	private final RoleService roleService;
 	private final PasswordEncoder passwordEncoder;
@@ -64,16 +66,7 @@ public class UserServiceImpl implements UserService {
 		}
 
 		if (request.getCauses() != null && request.getCauses().size() > 0) {
-			Set<SocialCause> causes = socialCauseService.findByIdIn(
-					request.getCauses().stream().map(c -> c.getId())
-							.collect(Collectors.toSet())
-			);
-
-			if (causes.isEmpty()) {
-				log.warn("Social cause not found {} already exists", request.getCauses());
-				throw new IllegalArgumentException("Social causes not found");
-			}
-
+			Set<SocialCause> causes = socialCauseService.retrieveIn(request.getCauses());
 			request.setCauses(causes);
 		}
 
@@ -87,13 +80,13 @@ public class UserServiceImpl implements UserService {
 			.causes(request.getCauses())
 			.build();
 
-		if(request.getPicture() != null)
+		if (request.getPicture() != null)
 			user.setPicture(request.getPicture());
 
-		if(request.getEnabled() != null)
+		if (request.getEnabled() != null)
 			user.setEnabled(request.getEnabled());
 
-		if(request.getProvider() != null) {
+		if (request.getProvider() != null) {
 			user.setProvider(request.getProvider());
 			user.setProviderId(request.getProviderId());
 		}
@@ -103,40 +96,18 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User retrieve(Long id) {
-		User user = repository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(id));
-
-		return user;
+		return repository.findById(id)
+				.orElseThrow(() -> new BadRequestException("User", id));
 	}
 
 	@Override
 	public User update(Long id, User request) {
-		log.info("Update to username {}", request.getUsername());
+		return updateUser(retrieve(id), request);
+	}
 
-		User user = retrieve(id);
-		user.getPerson().setName(request.getPerson().getName());
-		user.getPerson().setBirthday(request.getPerson().getBirthday());
-		user.getPerson().setGender(request.getPerson().getGender());
-
-		if (request.getPicture() != null)
-			user.getPicture().setUrl(request.getPicture().getUrl());
-
-		if (request.getCauses() != null && request.getCauses().size() > 0) {
-			Set<SocialCause> causes = socialCauseService.findByIdIn(
-				request.getCauses()
-					.stream()
-					.map(c -> c.getId())
-					.collect(Collectors.toSet())
-			);
-
-			if (causes.isEmpty())
-				throw new IllegalArgumentException("Social causes not found");
-
-			user.getCauses().clear();
-			user.getCauses().addAll(causes);
-		}
-
-		return repository.save(user);
+	@Override
+	public User updateMe(User request) {
+		return updateUser(getCurrentUser(), request);
 	}
 
 	@Override
@@ -184,15 +155,15 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void changePassword(Long id, User request) {
-		User user = retrieve(id);
-		user.setPassword(passwordEncoder.encode(
-			PasswordVerificationUtil.isPasswordOk(request.getPassword())
+	public void changePassword(UserPasswordRequestDto dto) {
+		User currentUser = getCurrentUser();
+		log.info("Change password to username {}", currentUser.getUsername());
+
+		currentUser.setPassword(passwordEncoder.encode(
+			PasswordVerificationUtil.isPasswordOk(dto.getPassword())
 		));
 
-		log.info("Change password to username {}", user.getUsername());
-
-		repository.save(user);
+		repository.save(currentUser);
 	}
 
 	@Override
@@ -261,58 +232,72 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void favorite(Long userId, Long ngoId) {
-		log.info("User id {} favorite Ngo id {}", userId, ngoId);
-
-		User userAuth = retrieve(userId);
-		Ngo ngo = ngoService.retrieve(ngoId);
-
-		if (userAuth.getFavoriteNgos().contains(ngo)) {
-			userAuth.getFavoriteNgos().remove(ngo);
-		} else {
-			userAuth.getFavoriteNgos().add(ngo);
-		}
-
-		repository.save(userAuth);
-	}
-
-	@Override
-	public Page<Ngo> getFavoriteNgos(Long userId, Pageable pageable) {
-		log.info("List favorite Ngos id");
-
-        int pageSize = pageable.getPageSize();
-        int currentPage = pageable.getPageNumber();
-        int startItem = currentPage * pageSize;
-
-		List<Ngo> ngos = retrieve(userId).getFavoriteNgos().stream().collect(Collectors.toList());
-
-        if (ngos.size() < startItem) {
-        	ngos = Collections.emptyList();
-        } else {
-            int toIndex = Math.min(startItem + pageSize, ngos.size());
-            ngos = ngos.subList(startItem, toIndex);
-        }
-
-		Page<Ngo> page = new PageImpl<>(
-			ngos,
-			PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()),
-			ngos.size()
-		);
-
-		return page;
-	}
-
-	@Override
-	public void enableUser(User user) {
-		user.setEnabled(true);
-		repository.save(user);
-
+	public User enable(User user) {
 		log.info("Enabled username {}", user.getUsername());
+		user.setEnabled(true);
+
+		return repository.save(user);
 	}
 
 	@Override
 	public Boolean existsByUsername(String username) {
 		return repository.existsByUsernameIgnoreCase(username);
+	}
+
+	@Override
+	public User getCurrentUser() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+		if (authentication instanceof AnonymousAuthenticationToken) {
+			throw new UnauthenticatedUserException();
+		}
+
+		UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+		return findByUsernameOrThrowUserNotExistException(userPrincipal.getEmail());
+	}
+
+	@Override
+	public User getCurrentUserOrNull() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+		if (authentication instanceof AnonymousAuthenticationToken) {
+			return null;
+		}
+
+		return getCurrentUser();
+	}
+
+	private User updateUser(User user, User request) {
+		log.info("Update to username {}", user.getUsername());
+
+		if (request.getPerson().getName() != null && !request.getPerson().getName().isEmpty())
+			user.getPerson().setName(request.getPerson().getName());
+
+		if (request.getPerson().getBirthday() != null)
+			user.getPerson().setBirthday(request.getPerson().getBirthday());
+
+		if (request.getPerson().getGender() != null)
+			user.getPerson().setGender(request.getPerson().getGender());
+
+		if (request.getPicture() != null)
+			user.getPicture().setUrl(request.getPicture().getUrl());
+
+		if (request.getCauses() != null && request.getCauses().size() > 0) {
+			Set<SocialCause> causes = socialCauseService.retrieveIn(request.getCauses());
+
+			if (causes.isEmpty())
+				throw new IllegalArgumentException("Social causes not found");
+
+			user.getCauses().clear();
+			user.getCauses().addAll(causes);
+		}
+
+		return repository.save(user);
+	}
+
+	@Override
+	public Set<User> findAllBySocialCauses(Set<SocialCause> causes) {
+		return repository.findAllByCausesIn(causes);
 	}
 
 }

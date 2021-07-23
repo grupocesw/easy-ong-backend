@@ -2,12 +2,12 @@ package br.com.grupocesw.easyong.entities;
 
 import br.com.grupocesw.easyong.enums.AuthProvider;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -17,7 +17,6 @@ import java.util.Set;
 
 @Entity
 @Data
-@PreAuthorize("hasRole('ADMIN')")
 @Table(name = "users")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,7 +24,7 @@ import java.util.Set;
 @Setter
 @EqualsAndHashCode(of = {"id", "username"})
 @Builder
-@ToString
+@ToString(of = { "id", "username" })
 public class User implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -85,19 +84,24 @@ public class User implements Serializable {
 	@JoinTable(name = "user_social_causes", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "social_cause_id"))
 	private Set<SocialCause> causes;
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@JsonIgnore
+	@ManyToMany(fetch = FetchType.LAZY)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinTable(name = "user_favorite_ngos", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "ngo_id"))
 	private Set<Ngo> favoriteNgos;
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@JsonIgnore
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	@JoinTable(name = "user_notifications", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "notification_id"))
+	@ManyToMany(mappedBy = "users", cascade = {
+		CascadeType.DETACH,
+		CascadeType.REFRESH,
+		CascadeType.PERSIST,
+		CascadeType.MERGE })
 	private Set<Notification> notifications;
 
-	@OneToMany(targetEntity = NgoSuggestion.class, mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	@OneToMany(targetEntity = AppContact.class, mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	private Set<NgoSuggestion> ngoSuggestions;
+	private Set<AppContact> appContacts;
 
 	public User(User user) {
 		this.id = user.id;

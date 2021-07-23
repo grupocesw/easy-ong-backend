@@ -23,13 +23,13 @@ import javax.validation.Valid;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(path = "api/registration")
+@RequestMapping(path = "api/v1/registration")
 @Api(tags = "Registration Controller")
 public class RegistrationController {
 
 	private final RegistrationService registrationService;
 
-	@ApiOperation(value = "Register new user")
+	@ApiOperation(value = "Register new user - Endpoint only available to anonymous users")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Register new user successfully"),
 			@ApiResponse(code = 400, message = "Validation failed for arguments or error input data | Username already exists"),
@@ -52,7 +52,7 @@ public class RegistrationController {
 			);
 	}
 
-	@ApiOperation(value = "Resend email for user account activation")
+	@ApiOperation(value = "Resend email for user account activation - Endpoint only available to anonymous users")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Email sent successfully"),
 			@ApiResponse(code = 400, message = "Validation failed for arguments or error input data | " +
@@ -62,7 +62,7 @@ public class RegistrationController {
 					"Email already sent. Please wait 15 minutes for new request"),
 			@ApiResponse(code = 500, message = "An exception was generated")
 	})
-	@PostMapping(path = "resend-confirmation")
+	@PostMapping(path = "/resend-confirmation")
 	public ResponseEntity<ApiStandardResponseDto> resendConfirmation(@RequestBody @Valid UserUsernameRequestDto request, HttpServletRequest httpRequest) {
 		registrationService.resendConfirmation(UserMapper.INSTANCE.requestDtoToEntity(request));
 

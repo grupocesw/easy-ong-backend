@@ -25,4 +25,12 @@ public interface NgoService {
 	Page<Ngo> findByActivatedWithFilter(String filter, Pageable pageable);
 
 	Page<Ngo> findSuggested(Pageable pageable);
+
+	void favorite(Long ngoId);
+
+	Page<Ngo> getFavoriteNgos(Pageable pageable);
+
+	Page<Ngo> getFavoriteNgosWithFilter(String filter, Pageable pageable);
+
+	boolean existsFavoriteNgosByLoggedUser();
 }

@@ -14,7 +14,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring", imports = { Collectors.class, SocialCause.class, PasswordVerificationUtil.class })
+@Mapper(componentModel = "spring", imports = {
+        Collectors.class, SocialCause.class, PasswordVerificationUtil.class })
 public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
@@ -47,7 +48,7 @@ public interface UserMapper {
     @Mapping(target = "tokens", ignore = true)
     @Mapping(target = "favoriteNgos", ignore = true)
     @Mapping(target = "notifications", ignore = true)
-    @Mapping(target = "ngoSuggestions", ignore = true)
+    @Mapping(target = "appContacts", ignore = true)
     @Mapping(source = "name", target = "person.name")
     @Mapping(source = "birthday", target = "person.birthday")
     @Mapping(source = "gender", target = "person.gender")
@@ -67,7 +68,7 @@ public interface UserMapper {
     @Mapping(target = "tokens", ignore = true)
     @Mapping(target = "favoriteNgos", ignore = true)
     @Mapping(target = "notifications", ignore = true)
-    @Mapping(target = "ngoSuggestions", ignore = true)
+    @Mapping(target = "appContacts", ignore = true)
     @Mapping(source = "name", target = "person.name")
     @Mapping(source = "birthday", target = "person.birthday")
     @Mapping(source = "gender", target = "person.gender")
@@ -89,7 +90,7 @@ public interface UserMapper {
     @Mapping(target = "picture", ignore = true)
     @Mapping(target = "favoriteNgos", ignore = true)
     @Mapping(target = "notifications", ignore = true)
-    @Mapping(target = "ngoSuggestions", ignore = true)
+    @Mapping(target = "appContacts", ignore = true)
     @Mapping(target = "causes", ignore = true)
     User requestDtoToEntity(UserPasswordRequestDto dto);
 
@@ -105,7 +106,7 @@ public interface UserMapper {
     @Mapping(target = "picture", ignore = true)
     @Mapping(target = "favoriteNgos", ignore = true)
     @Mapping(target = "notifications", ignore = true)
-    @Mapping(target = "ngoSuggestions", ignore = true)
+    @Mapping(target = "appContacts", ignore = true)
     @Mapping(target = "causes", ignore = true)
     User requestDtoToEntity(UserUsernameRequestDto dto);
 
@@ -120,7 +121,7 @@ public interface UserMapper {
     @Mapping(target = "picture", ignore = true)
     @Mapping(target = "favoriteNgos", ignore = true)
     @Mapping(target = "notifications", ignore = true)
-    @Mapping(target = "ngoSuggestions", ignore = true)
+    @Mapping(target = "appContacts", ignore = true)
     @Mapping(target = "causes", ignore = true)
     User requestDtoToEntity(LoginRequestDto dto);
 }

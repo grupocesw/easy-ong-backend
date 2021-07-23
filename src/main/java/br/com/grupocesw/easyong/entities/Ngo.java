@@ -1,29 +1,22 @@
 package br.com.grupocesw.easyong.entities;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.Set;
-
-import javax.persistence.*;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-import org.hibernate.annotations.Proxy;
-import org.hibernate.annotations.UpdateTimestamp;
-
+import br.com.grupocesw.easyong.security.UserPrincipal;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+import org.hibernate.annotations.*;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.*;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Table(name = "ngos")
@@ -34,7 +27,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 @Builder
 @Proxy(lazy = false)
 @EqualsAndHashCode(of = {"id", "cnpj"})
-@ToString
+@ToString(of = { "id", "cnpj", "name", "activated" })
 public class Ngo implements Serializable {
 
 	@Id
@@ -47,15 +40,15 @@ public class Ngo implements Serializable {
 	@Column(name = "cnpj", length = 14, unique = true, nullable = false)
 	private String cnpj;
 	
-	@Column(name = "description", columnDefinition="TEXT")
+	@Column(name = "description", columnDefinition = "TEXT")
 	private String description;
 	
 	@Builder.Default
-	@Column(name = "activated", nullable = false, columnDefinition="BOOLEAN DEFAULT true")
+	@Column(name = "activated", nullable = false, columnDefinition = "BOOLEAN DEFAULT true")
 	private Boolean activated = true;
 
 	@Transient
-	private boolean favorited;
+	private boolean favorite;
 
 	@CreationTimestamp
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
@@ -72,7 +65,11 @@ public class Ngo implements Serializable {
 	private Address address;
 	
 	@JsonProperty(required = true)
-	@ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+	@ManyToMany(fetch = FetchType.EAGER, cascade = {
+		CascadeType.DETACH,
+		CascadeType.REFRESH,
+		CascadeType.PERSIST,
+		CascadeType.MERGE })
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinTable(name = "ngo_contacts", joinColumns= @JoinColumn(name = "ngo_id"), inverseJoinColumns = @JoinColumn(name = "contact_id"))
 	private Set<Contact> contacts;
@@ -87,26 +84,36 @@ public class Ngo implements Serializable {
 	@JoinTable(name = "ngo_social_causes", joinColumns= @JoinColumn(name = "ngo_id"), inverseJoinColumns = @JoinColumn(name = "social_cause_id"))
 	private Set<SocialCause> causes;
 	
-	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@ManyToMany(fetch = FetchType.EAGER, cascade = {
+		CascadeType.DETACH,
+		CascadeType.REFRESH,
+		CascadeType.PERSIST,
+		CascadeType.MERGE })
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinTable(name = "ngo_pictures", joinColumns= @JoinColumn(name = "ngo_id"), inverseJoinColumns = @JoinColumn(name = "picture_id"))
 	private Set<Picture> pictures;
 	
 	@JsonIgnore
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	@ManyToMany(mappedBy = "favoriteNgos", fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+	@ManyToMany(mappedBy = "favoriteNgos", fetch = FetchType.EAGER, cascade = {
+		CascadeType.DETACH,
+		CascadeType.REFRESH,
+		CascadeType.PERSIST,
+		CascadeType.MERGE })
 	private Set<User> users;
 
-	public boolean getFavorited() {
-		if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser") && this.getUsers() != null) {
-			User authenticatedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	public boolean getFavorite() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+		if (!(authentication instanceof AnonymousAuthenticationToken) && this.getUsers() != null) {
+			UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
 			for (User user: this.getUsers()) {
-				if (authenticatedUser.getUsername().equals(user.getUsername()))
-					favorited = true;
+				if (userPrincipal.getEmail().equals(user.getUsername()))
+					favorite = true;
 			}
 		}
 
-		return favorited;
+		return favorite;
 	}
 }

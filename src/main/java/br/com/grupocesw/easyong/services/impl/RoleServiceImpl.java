@@ -5,6 +5,7 @@ import br.com.grupocesw.easyong.exceptions.BadRequestException;
 import br.com.grupocesw.easyong.repositories.RoleRepository;
 import br.com.grupocesw.easyong.services.RoleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -17,6 +18,7 @@ public class RoleServiceImpl implements RoleService {
 	private final RoleRepository repository;
 
 	@Override
+	@Cacheable(value = "roles", key = "#name")
 	public Role findByName(String name) {
 		return repository.findByName(name);
 	}
@@ -24,10 +26,11 @@ public class RoleServiceImpl implements RoleService {
 	@Override
 	public void existsOrThrowsException(Long id) {
 		if (!repository.existsById(id))
-			throw new BadRequestException("Role not found. Id " + id);
+			throw new BadRequestException("Role", id);
 	}
 
 	@Override
+	@Cacheable(value = "roles", key = "default")
 	public Set<Role> getDefaultRoles() {
 		Role role = repository.findByName("USER");
 

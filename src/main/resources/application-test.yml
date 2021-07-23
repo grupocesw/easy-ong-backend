@@ -8,7 +8,7 @@ spring:
   config:
     use-legacy-processing: true
     activate:
-      on-profile: staging
+      on-profile: test
 
 ---
 
@@ -19,6 +19,9 @@ spring:
       cache-null-values: false
 
   redis.url: ${REDIS_URL:redis://:@localhost:6379}
+
+  flyway:
+    enabled: false
 
   h2:
     console:
@@ -33,7 +36,7 @@ spring:
     username: sa
     password: 
     initialization-mode: ALWAYS
-    data: classpath:/database/initial-data.sql, classpath:/database/ngos.sql, classpath:/database/users.sql
+    data: classpath:/db/migration/V2__initial_data.sql, classpath:/db/migration/V3__initial_data_ngos.sql, classpath:/db/migration/V4__initial_data_faqs.sql, classpath:/db/test/users.sql
 
   jpa:
     hibernate:

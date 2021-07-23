@@ -1,13 +1,12 @@
 package br.com.grupocesw.easyong.request.dtos;
 
-import java.io.Serializable;
-
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 @Data
 @AllArgsConstructor
@@ -18,7 +17,16 @@ public class AddressRequestDto implements Serializable {
 
 	@Size(max = 7, message = "Number must contain a maximum of 7 digits")
 	private Integer number;
-	
+
+	@NotEmpty(message = "Title required")
+	@Size(max = 255, message = "Title must contain a maximum of 255 digits")
+	private String title;
+
+	@NotEmpty(message = "Description required")
+	@Size(max = 255, message = "Description must contain a maximum of 255 digits")
+	private String description;
+
+	@NotEmpty(message = "Street required")
 	@Size(max = 255, message = "Street must contain a maximum of 255 digits")
 	private String street;
 	

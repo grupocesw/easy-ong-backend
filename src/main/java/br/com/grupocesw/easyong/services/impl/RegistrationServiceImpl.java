@@ -2,13 +2,11 @@ package br.com.grupocesw.easyong.services.impl;
 
 import br.com.grupocesw.easyong.entities.ConfirmationToken;
 import br.com.grupocesw.easyong.entities.User;
+import br.com.grupocesw.easyong.enums.NotificationType;
 import br.com.grupocesw.easyong.exceptions.BadRequestException;
 import br.com.grupocesw.easyong.exceptions.UsernameAlreadyConfirmedException;
 import br.com.grupocesw.easyong.exceptions.UsernameAlreadyExistsException;
-import br.com.grupocesw.easyong.services.ConfirmationTokenService;
-import br.com.grupocesw.easyong.services.EmailSenderService;
-import br.com.grupocesw.easyong.services.RegistrationService;
-import br.com.grupocesw.easyong.services.UserService;
+import br.com.grupocesw.easyong.services.*;
 import br.com.grupocesw.easyong.utils.AppUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +26,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 	private final UserService userService;
     private final ConfirmationTokenService confirmationTokenService;
     private final EmailSenderService mailSenderService;
+	private final NotificationService notificationService;
 
 	@Override
 	public User register(User request) {
@@ -53,11 +53,17 @@ public class RegistrationServiceImpl implements RegistrationService {
         
 		try {
 			mailSenderService.sendUserRegister(user,
-					AppUtil.getRootUrlAppConcatPath("/confirmation-account/" + token)
+				AppUtil.getRootUrlAppConcatPath("/confirmation-account/" + token)
 			);
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 		}
+
+		notificationService.simpleCreate(
+			NotificationType.INFORMATION,
+			"Olá! Seja bem-vindo ao EASY ONG",
+			String.format("É um prazer te receber em nosso sistema, aproveite!", user.getPerson().getName()),
+			Set.of(user));
 
 		return user;
 	}
@@ -73,7 +79,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 			throw new UsernameAlreadyConfirmedException();
 		}
 
-        userService.enableUser(user);
+        userService.enable(user);
         confirmationTokenService.setConfirmedAt(token);
 
         return user;
