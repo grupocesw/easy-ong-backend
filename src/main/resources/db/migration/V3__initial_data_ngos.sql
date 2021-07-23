@@ -20,6 +20,16 @@ INSERT INTO pictures (id, url) VALUES(19, 'http://www.transparenciasocial.com.br
 INSERT INTO pictures (id, url) VALUES(20, 'http://www.transparenciasocial.com.br/files/ngos/3210/260718104803-logo-transparente-_x200.png?token=43d327325dc3a34678b911a5e1a024ad');
 INSERT INTO pictures (id, url) VALUES(21, 'https://www.integrarsorocaba.org.br/assets/site/img/logo-integrar.png');
 INSERT INTO pictures (id, url) VALUES(22, 'http://www.transparenciasocial.com.br/files/ngos/4935/211118164659-lar-bom-jesus-_x200.jpg?token=d43e5ff260d91b4c7b22fc25b0d1db58');
+INSERT INTO pictures (id, url) VALUES(23, 'https://static.wixstatic.com/media/e3f353_96905d7c973840ac94f158f22a4893da~mv2_d_1452_1474_s_2.png/v1/fill/w_75,h_75,al_c,q_85,usm_0.66_1.00_0.01/Logo%20Afago%202017.webp');
+INSERT INTO pictures (id, url) VALUES(24, 'https://static.wixstatic.com/media/b1f88a_2ca1516b4ac24d13abbe99131f587816~mv2.jpg/v1/fill/w_1019,h_764,al_c,q_85,usm_0.66_1.00_0.01/f1a8834b-cbdc-436b-bb93-88f3a9b35066.webp');
+INSERT INTO pictures (id, url) VALUES(25, 'http://www.transparenciasocial.com.br/files/ngos/3477/110518124510-abp-logo-_x200.jpeg?token=6edadb0143d53c63f575ece248f93c5c');
+INSERT INTO pictures (id, url) VALUES(26, 'https://static.wixstatic.com/media/37f1aa_03a0c95b1f3449a7bf97846d06c7fd27~mv2.png/v1/fill/w_213,h_70,al_c,q_85,usm_0.66_1.00_0.01/Logo_viver_bem.webp');
+INSERT INTO pictures (id, url) VALUES(27, 'http://www.transparenciasocial.com.br/files/ngos/245/150419142910-logo-anni-800x_.jpg?token=6e3a82bf71d2bf009564f6d32dbbb306');
+INSERT INTO pictures (id, url) VALUES(28, 'http://afissore.org.br/assets/afissore.png');
+INSERT INTO pictures (id, url) VALUES(29, 'https://www.euresolvo.org.br/wp-content/uploads/2019/10/log-lg.png');
+INSERT INTO pictures (id, url) VALUES(30, 'https://www.ecodigital.org.br/novo/wp-content/uploads/2021/05/topo2021.jpg');
+INSERT INTO pictures (id, url) VALUES(31, 'https://humanhand.org/sites/default/files/humanhandlogooficialblack.png');
+INSERT INTO pictures (id, url) VALUES(32, 'https://ongrefazer.org.br/assets/images/refazer-logo-1-122x81.png');
 
 -- contacts -------------------------------------------------------------------
 
@@ -87,7 +97,37 @@ INSERT INTO contacts (id, content, type) VALUES(61, '(15) 3212-9030', 4);
 INSERT INTO contacts (id, content, type) VALUES(62, 'http://larbomjesus.org', 8);
 INSERT INTO contacts (id, content, type) VALUES(63, '(15) 3278-1194', 4);
 INSERT INTO contacts (id, content, type) VALUES(64, 'larbomjesus.pilardosul@gmail.com', 0);
-
+INSERT INTO contacts (id, content, type) VALUES(65, 'afagosp@afagosp.org.br', 0);
+INSERT INTO contacts (id, content, type) VALUES(66, 'https://www.afagosp.org/', 8);
+INSERT INTO contacts (id, content, type) VALUES(67, '(11) 5543-1851', 4);
+INSERT INTO contacts (id, content, type) VALUES(68, '(15) 3297-7740', 4);
+INSERT INTO contacts (id, content, type) VALUES(69, 'https://casapadrepietro.wixsite.com/casapadrepietro', 8);
+INSERT INTO contacts (id, content, type) VALUES(70, 'casapadrepietro@gmail.com', 0);
+INSERT INTO contacts (id, content, type) VALUES(71, 'http://pastoraldomenorsorocaba.org.br/', 8);
+INSERT INTO contacts (id, content, type) VALUES(72, '(15) 3212-1965', 4);
+INSERT INTO contacts (id, content, type) VALUES(73, 'pastoraldomenor@terra.com.br', 0);
+INSERT INTO contacts (id, content, type) VALUES(74, 'https://www.associacaoviverbem.org.br/', 8);
+INSERT INTO contacts (id, content, type) VALUES(75, 'contato@associacaoviverbem.org.br', 0);
+INSERT INTO contacts (id, content, type) VALUES(76, '(11) 2307-7805', 4);
+INSERT INTO contacts (id, content, type) VALUES(77, '(13) 99761-6573', 4);
+INSERT INTO contacts (id, content, type) VALUES(78, 'annitanhaem@yahoo.com.br', 0);
+INSERT INTO contacts (id, content, type) VALUES(79, 'http://www2.itanhaem.sp.gov.br/assistencia-social/anni/', 8);
+INSERT INTO contacts (id, content, type) VALUES(80, '(15) 3211-3697', 4);
+INSERT INTO contacts (id, content, type) VALUES(81, 'afissore@afissore.org.br', 0);
+INSERT INTO contacts (id, content, type) VALUES(82, 'http://afissore.org.br/', 8);
+INSERT INTO contacts (id, content, type) VALUES(83, '(11) 3099-0452', 4);
+INSERT INTO contacts (id, content, type) VALUES(84, 'https://www.euresolvo.org.br/', 8);
+INSERT INTO contacts (id, content, type) VALUES(85, 'contato@ongeuresolvo.org', 0);
+INSERT INTO contacts (id, content, type) VALUES(86, 'https://www.ecodigital.org.br/novo/', 8);
+INSERT INTO contacts (id, content, type) VALUES(87, 'ecodigital@ecodigital.org.br', 0);
+INSERT INTO contacts (id, content, type) VALUES(88, '(11) 2631-1330', 4);
+INSERT INTO contacts (id, content, type) VALUES(89, '(11) 2381-4408', 4);
+INSERT INTO contacts (id, content, type) VALUES(90, 'info@humanhand.org', 0);
+INSERT INTO contacts (id, content, type) VALUES(91, '(11) 94003-4924', 9);
+INSERT INTO contacts (id, content, type) VALUES(92, 'https://humanhand.org/', 8);
+INSERT INTO contacts (id, content, type) VALUES(93, 'contato@refazer.org.br', 0);
+INSERT INTO contacts (id, content, type) VALUES(94, 'https://ongrefazer.org.br/index.html', 8);
+INSERT INTO contacts (id, content, type) VALUES(95, '(11) 4461-45655', 4);
 
 -- addresses -------------------------------------------------------------------
 
@@ -111,7 +151,16 @@ INSERT INTO addresses (id, complement, description, district, latitude, longitud
 INSERT INTO addresses (id, complement, description, district, latitude, longitude, number, street, title, zip_code, city_id) VALUES(18, '', 'Centro educacional, Sorocaba, São Paulo', 'Pq.Santa Isabel', '-23.53904', '-47.49734', '1111', 'Rua Antônio Aparecido Ferraz', 'Lar Escola Monteiro Lobato', '18052280', 2);
 INSERT INTO addresses (id, complement, description, district, latitude, longitude, number, street, title, zip_code, city_id) VALUES(19, '', 'Associação ou organização', 'Jardim Vergueiro', '-23.52318', '-47.45186', '1991', 'Avenida Comendador Pereira Inacio', 'Integrar Sorocaba', '18030005', 2);
 INSERT INTO addresses (id, complement, description, district, latitude, longitude, number, street, title, zip_code, city_id) VALUES(20, '', 'Associação em Pilar do Sul, São Paulo', 'Centro', '-23.80906', '-47.72277', '660', 'Rua Dom Lúcio Antunes de Souza', 'Associação Beneficente Bom Jesus', '18185000', 5);
-
+INSERT INTO addresses (id, complement, description, district, latitude, longitude, number, street, title, zip_code, city_id) VALUES(21, '', 'Associação ou organização', 'Jd. Pedreira', '-23.69355', '-46.66632', '525', 'Rua Cônego Antônio Pinto', 'AFAGO - ASSOCIAÇÃO DE APOIO Á FAMÍLIA, AO GRUPO E À COMUNIDADE – SÃO PAULO', '04468000', 1);
+INSERT INTO addresses (id, complement, description, district, latitude, longitude, number, street, title, zip_code, city_id) VALUES(22, '', 'Clínica de reabilitação em São Paulo', 'Aparecidinha', '-23.50895', '-47.70019', '240', 'Estrada Municipal - s/n Cx de Luz', 'Casa Padre Pietro - Comunidade Terapêutica', '18190000', 1);
+INSERT INTO addresses (id, complement, description, district, latitude, longitude, number, street, title, zip_code, city_id) VALUES(23, '', 'Associação ou organização', 'Vila Espírito Santo', '-23.51653', '-47.49273', '315', 'Rua Capitão Pedro Tavares', 'Pastoral do Menor', '18051330', 1);
+INSERT INTO addresses (id, complement, description, district, latitude, longitude, number, street, title, zip_code, city_id) VALUES(24, '', 'Associação ou organização', 'Cerqueira César', '-23.55820', '-46.67410', '145', 'Artur de Azevedo', 'Associação Viver Bem', '05404010', 1);
+INSERT INTO addresses (id, complement, description, district, latitude, longitude, number, street, title, zip_code, city_id) VALUES(25, '', 'Associação em Itanhaém, São Paulo', 'Jardim Sabauna', '-24.18414', '-46.81787', '205', 'Rua Maria Benedita Matos Poitena', 'Associação Nordestina e Nortista de Itanhaem', '11740000', 1);
+INSERT INTO addresses (id, complement, description, district, latitude, longitude, number, street, title, zip_code, city_id) VALUES(26, '', 'Organização de serviço social em São Paulo', 'Alto da Boa Vista', '-23.47997', '-47.43000', '128', 'Rua Lygia Fante', 'AFISSORE - Associação Fissurados Lábio Palatais de Sorocaba Região', '18085841', 1);
+INSERT INTO addresses (id, complement, description, district, latitude, longitude, number, street, title, zip_code, city_id) VALUES(27, '', 'Organização sem fins lucrativos', 'Jardim Paulista', '-23.56674', '-46.65063', '777', 'Av. Paulista', 'Eu Resolvo-ONG', '01311100', 1);
+INSERT INTO addresses (id, complement, description, district, latitude, longitude, number, street, title, zip_code, city_id) VALUES(28, '', 'Organização não governamental', 'VILA MARIA', '-23.50412', '-46.59202', '49', 'PRAÇA JOAQUIM JOSE DA NOVA', 'ONG Ecodigital', '02126000', 1);
+INSERT INTO addresses (id, complement, description, district, latitude, longitude, number, street, title, zip_code, city_id) VALUES(29, '', 'Organização sem fins lucrativos', 'Chácara Inglesa', '-23.69213', '-46.55960', '45', 'Rua Antônio Campanha', 'HUMAN HAND ORG ONG Organização sem fins lucrativos São Bernardo do Campo ABC', '09725460', 1);
+INSERT INTO addresses (id, complement, description, district, latitude, longitude, number, street, title, zip_code, city_id) VALUES(30, '', 'Organização não governamental', 'Utinga', '-23.62503', '-46.53532', '667', 'Alameda México', 'ONG Refazer', '09220120', 1);
 
 -- ngos -------------------------------------------------------------------
 
@@ -135,6 +184,16 @@ INSERT INTO ngos (id, activated, cnpj, created_at, description, name, updated_at
 INSERT INTO ngos (id, activated, cnpj, created_at, description, name, updated_at, address_id) VALUES(18, true, '71492318000185', '2021-07-20 19:52:16.351', 'O Projeto Renovar consiste em ofertar a crianças de 06 a 11 anos de idade espaços apropriados e com toda infraestrutura adequada para o convívio grupal, comunitário e social, promovendo, através de atendimentos, acompanhamentos, atividades e oficinas o desenvolvimento pessoal e social, contribuindo para a construção de uma visão mais ampla da realidade em que estão inseridos, na busca do exercício pleno de sua cidadania.', 'LAR ESCOLA MONTEIRO LOBATO DE SOROCABA', '2021-07-20 19:52:16.351', 18);
 INSERT INTO ngos (id, activated, cnpj, created_at, description, name, updated_at, address_id) VALUES(19, true, '71558647000181', '2021-07-20 19:52:32.872', 'A clínica-escola INTEGRAR (Instituição Terapêutica de Grupos de Habilitação e Reabilitação) é uma entidade filantrópica, sem fins lucrativos fundada em 1993, pela iniciativa de pais de crianças com diagnóstico de paralisia cerebral.', 'INTEGRAR', '2021-07-20 19:52:32.872', 19);
 INSERT INTO ngos (id, activated, cnpj, created_at, description, name, updated_at, address_id) VALUES(20, true, '54070354000131', '2021-07-20 19:52:46.882', 'Somos uma entidade civil, sem fins lucrativos que tem como principal objetivo dar abrigo, assistência a saúde e entretenimento a pessoa idosa, desamparada e necessitada.', 'Lar Bom Jesus Pilar do Sul', '2021-07-20 19:52:46.882', 20);
+INSERT INTO ngos (id, activated, cnpj, created_at, description, name, updated_at, address_id) VALUES(21, true, '73950362000117', '2021-07-23 17:28:48.569', 'A AFAGO SP, Associação de Apoio à Família, ao Grupo e à Comunidade, é uma iniciativa sem fins lucrativos de caráter socioeducativo fundada em 1993 para  atender diariamente 280 crianças e adolescentes entre 6 e 18 anos em situação de vulnerabilidade social, tendo em vista seu desenvolvimento pessoal e profissional.', 'AFAGO', '2021-07-23 17:28:48.569', 21);
+INSERT INTO ngos (id, activated, cnpj, created_at, description, name, updated_at, address_id) VALUES(22, true, '08436472000101', '2021-07-23 17:29:03.872', 'Resgatar vidas em situação de Dependência Química, devolvendo-as ao convívio familiar e social, como cidadãos produtivos economicamente e socialmente.', 'CASA PADRE PIETRO', '2021-07-23 17:29:03.872', 22);
+INSERT INTO ngos (id, activated, cnpj, created_at, description, name, updated_at, address_id) VALUES(23, true, '07668736000181', '2021-07-23 17:29:14.928', 'Desenvolver trabalhos de promoção humana, assistência e desenvolvimento social, cultural, esportivo e artístico como entidade beneficente de assistência social, junto a crianças, adolescentes, famílias e pessoas carentes em geral.', 'ASSOCIAÇÃO BOM PASTOR', '2021-07-23 17:29:14.928', 23);
+INSERT INTO ngos (id, activated, cnpj, created_at, description, name, updated_at, address_id) VALUES(24, true, '24550122000110', '2021-07-23 17:29:26.127', 'A Viver Bem é uma associação sem fins lucrativos, constituída por profissionais da saúde e áreas afins, que tem como objetivo difundir a promoção da qualidade de vida e o bem-estar para a comunidade, para os portadores de transtorno do impulso e suas famílias.', 'Associação Viver Bem ', '2021-07-23 17:29:26.127', 24);
+INSERT INTO ngos (id, activated, cnpj, created_at, description, name, updated_at, address_id) VALUES(25, true, '03729931000202', '2021-07-23 17:29:34.913', 'A Associação Nordestina e Nortista de Itanhaém - ANNI, iniciou suas atividades no ano de 2000, no município de Itanhaém/ SP, através de seus idealizadores: Srº Severino (Lima) e Srª Margareth, entre outros que acreditaram neste projeto. Desde então vem atuando em Projetos voltados para crianças e adolescentes, inclusive por meio de parcerias com o Governo do Estado de SP. Atualmente quem responde pela Entidade é Srª Margareth Lourdes de Barros - Presidente da Associação.', 'ANNI Associação', '2021-07-23 17:29:34.913', 25);
+INSERT INTO ngos (id, activated, cnpj, created_at, description, name, updated_at, address_id) VALUES(26, true, '60110863000143', '2021-07-23 17:29:43.297', 'Reabilitar as pessoas com fissuras labiopalatinas, promovendo a autoestima, autonomia, saúde, dignidade e bem - estar social, visando sua inserção na sociedade de Sorocaba e Região.', 'AFISSORE', '2021-07-23 17:29:43.297', 26);
+INSERT INTO ngos (id, activated, cnpj, created_at, description, name, updated_at, address_id) VALUES(27, true, '19925416000149', '2021-07-23 17:29:52.106', 'Você não precisa esperar povoar um novo planeta para construir a sociedade dos seus sonhos, foi com essa visão que a Eu Resolvo – ONG foi fundada. Tendo como objetivo promover e apoiar a iniciativa “eu resolvo” na população, a instituição visa fomentar que as pessoas considerem a opção de resolver pequenos problemas da cidade ao invés de apenas reclamar, e uma vez estimulados por essa atitude, tenham acesso a uma completa estrutura de apoio para realizar com excelência a transformação desejada.', 'Eu Resolvo', '2021-07-23 17:29:52.106', 27);
+INSERT INTO ngos (id, activated, cnpj, created_at, description, name, updated_at, address_id) VALUES(28, true, '08919717000143', '2021-07-23 17:30:01.303', 'A Instituição “ONG Ecodigital” é uma associação civil sem fins lucrativos, filantrópica, de caráter assistencial, social e cultural, com o objetivo de valorizar e promover a inclusão digital para cidadãos e/ou comunidades através da Reciclagem de Equipamentos de Informática, isenta de quaisquer preconceitos ou discriminações seja de raça, credo religioso, cor ou política, quer em suas atividades e objetivos sociais, quer entre os componentes de seu quadro associativo.', 'Ecodigital', '2021-07-23 17:30:01.303', 28);
+INSERT INTO ngos (id, activated, cnpj, created_at, description, name, updated_at, address_id) VALUES(29, true, '35060655000130', '2021-07-23 17:30:10.335', 'HUMAN HAND é uma organização humanitária que nasceu em 12.11.2018 para dar voz a quem não tem e visibilidade aos invisíveis, essa é a nossa Missão! Temos independência política e religiosa. Quebrar o som do silêncio, é a nossa Visão de futuro. Quando alguem lhe pedir ajuda, estenda-lhe a mão. A solidariedade começa com o olhar para o outro”. “Significa também perceber o que acontece à volta, a situação e as pessoas.', 'HUMAN HAND', '2021-07-23 17:30:10.335', 29);
+INSERT INTO ngos (id, activated, cnpj, created_at, description, name, updated_at, address_id) VALUES(30, true, '34631835000161', '2021-07-23 17:30:18.580', 'Encontros que geram conexões, foi assim que surgiu a ONG Refazer, de um impulso visionário e do desejo latente de ajudar o próximo. Começamos identificando a grande necessidade de pessoas em vulnerabilidade social de serem assistidas e amparadas. A partir daí, desenvolvemos o projeto de uma Ong que busca não apenas ajudar, mas inserir refugiados e imigrantes na sociedade e introduzi-los no mercado de trabalho. Uma das medidas tomadas foi a absorção de alguns refugiados em empresas parceiras. No entanto, barreiras surgiram, como a da língua e uma das soluções encontradas foi a de oferecer aulas de língua portuguesa. Um novo capítulo começa e vários outros projetos surgem, sendo desenvolvidos por profissionais apaixonados por pessoas e com o intuito de mudar vidas. Os refugiados e imigrantes encontram não somente assistência social, mas também resgatam a dignidade e a esperança de um futuro melhor. Assim nasceu a Ong Refazer, da vontade de mudar o mundo e da necessidade de ajudar o próximo.', 'ONG Refazer', '2021-07-23 17:30:18.580', 30);
 
 -- ngo_more_informations -------------------------------------------------------------------
 
@@ -173,6 +232,16 @@ INSERT INTO ngo_pictures (ngo_id, picture_id) VALUES(17, 19);
 INSERT INTO ngo_pictures (ngo_id, picture_id) VALUES(18, 20);
 INSERT INTO ngo_pictures (ngo_id, picture_id) VALUES(19, 21);
 INSERT INTO ngo_pictures (ngo_id, picture_id) VALUES(20, 22);
+INSERT INTO ngo_pictures (ngo_id, picture_id) VALUES(21, 23);
+INSERT INTO ngo_pictures (ngo_id, picture_id) VALUES(22, 24);
+INSERT INTO ngo_pictures (ngo_id, picture_id) VALUES(23, 25);
+INSERT INTO ngo_pictures (ngo_id, picture_id) VALUES(24, 26);
+INSERT INTO ngo_pictures (ngo_id, picture_id) VALUES(25, 27);
+INSERT INTO ngo_pictures (ngo_id, picture_id) VALUES(26, 28);
+INSERT INTO ngo_pictures (ngo_id, picture_id) VALUES(27, 29);
+INSERT INTO ngo_pictures (ngo_id, picture_id) VALUES(28, 30);
+INSERT INTO ngo_pictures (ngo_id, picture_id) VALUES(29, 31);
+INSERT INTO ngo_pictures (ngo_id, picture_id) VALUES(30, 32);
 
 -- ngo_social_causes -------------------------------------------------------------------
 
@@ -217,6 +286,23 @@ INSERT INTO ngo_social_causes (ngo_id, social_cause_id) VALUES(19, 9);
 INSERT INTO ngo_social_causes (ngo_id, social_cause_id) VALUES(20, 7);
 INSERT INTO ngo_social_causes (ngo_id, social_cause_id) VALUES(20, 10);
 INSERT INTO ngo_social_causes (ngo_id, social_cause_id) VALUES(20, 11);
+INSERT INTO ngo_social_causes (ngo_id, social_cause_id) VALUES(21, 9);
+INSERT INTO ngo_social_causes (ngo_id, social_cause_id) VALUES(21, 10);
+INSERT INTO ngo_social_causes (ngo_id, social_cause_id) VALUES(22, 3);
+INSERT INTO ngo_social_causes (ngo_id, social_cause_id) VALUES(22, 10);
+INSERT INTO ngo_social_causes (ngo_id, social_cause_id) VALUES(23, 9);
+INSERT INTO ngo_social_causes (ngo_id, social_cause_id) VALUES(23, 10);
+INSERT INTO ngo_social_causes (ngo_id, social_cause_id) VALUES(24, 1);
+INSERT INTO ngo_social_causes (ngo_id, social_cause_id) VALUES(25, 1);
+INSERT INTO ngo_social_causes (ngo_id, social_cause_id) VALUES(26, 7);
+INSERT INTO ngo_social_causes (ngo_id, social_cause_id) VALUES(26, 9);
+INSERT INTO ngo_social_causes (ngo_id, social_cause_id) VALUES(26, 11);
+INSERT INTO ngo_social_causes (ngo_id, social_cause_id) VALUES(27, 7);
+INSERT INTO ngo_social_causes (ngo_id, social_cause_id) VALUES(27, 9);
+INSERT INTO ngo_social_causes (ngo_id, social_cause_id) VALUES(27, 11);
+INSERT INTO ngo_social_causes (ngo_id, social_cause_id) VALUES(28, 5);
+INSERT INTO ngo_social_causes (ngo_id, social_cause_id) VALUES(29, 10);
+INSERT INTO ngo_social_causes (ngo_id, social_cause_id) VALUES(30, 5);
 
 -- ngo_contacts -------------------------------------------------------------------
 
@@ -284,3 +370,34 @@ INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES(19, 61);
 INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES(20, 62);
 INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES(20, 63);
 INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES(20, 64);
+INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES(21, 65);
+INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES(21, 66);
+INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES(21, 67);
+INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES(22, 68);
+INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES(22, 69);
+INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES(22, 70);
+INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES(23, 71);
+INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES(23, 72);
+INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES(23, 73);
+INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES(24, 74);
+INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES(24, 75);
+INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES(24, 76);
+INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES(25, 77);
+INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES(25, 78);
+INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES(25, 79);
+INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES(26, 80);
+INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES(26, 81);
+INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES(26, 82);
+INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES(27, 83);
+INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES(27, 84);
+INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES(27, 85);
+INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES(28, 86);
+INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES(28, 87);
+INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES(28, 88);
+INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES(29, 89);
+INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES(29, 90);
+INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES(29, 91);
+INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES(29, 92);
+INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES(30, 93);
+INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES(30, 94);
+INSERT INTO ngo_contacts (ngo_id, contact_id) VALUES(30, 95);
