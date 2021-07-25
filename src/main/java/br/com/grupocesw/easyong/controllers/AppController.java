@@ -127,7 +127,7 @@ public class AppController {
     }
 
     @GetMapping(value = "/clean-cache-resources")
-    @CacheEvict(value = {"ngos", "faqs", "socialCauses", "cities", "roles"}, allEntries = true)
+    @CacheEvict(value = {"ngos", "faqs", "socialCauses", "cities"}, allEntries = true)
     public String clearCacheResources(ModelMap model) {
         model.addAttribute("message", "Success. Clean Cache!");
 

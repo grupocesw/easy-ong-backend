@@ -1,7 +1,7 @@
 SELECT setval(pg_get_serial_sequence('addresses', 'id'), MAX(id)) FROM addresses;
-SELECT setval(pg_get_serial_sequence('app_contacts', 'id'), MAX(id)) FROM addresses;
+SELECT setval(pg_get_serial_sequence('app_contacts', 'id'), MAX(id)) FROM app_contacts;
 SELECT setval(pg_get_serial_sequence('cities', 'id'), MAX(id)) FROM cities;
-SELECT setval(pg_get_serial_sequence('confirmation_tokens', 'id'), MAX(id)) FROM contacts;
+SELECT setval(pg_get_serial_sequence('confirmation_tokens', 'id'), MAX(id)) FROM confirmation_tokens;
 SELECT setval(pg_get_serial_sequence('contacts', 'id'), MAX(id)) FROM contacts;
 SELECT setval(pg_get_serial_sequence('countries', 'id'), MAX(id)) FROM countries;
 SELECT setval(pg_get_serial_sequence('faqs', 'id'), MAX(id)) FROM faqs;
