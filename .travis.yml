@@ -1,0 +1,85 @@
+language: java
+
+sudo: required
+
+dist: xenial
+
+jdk:
+  - openjdk11
+
+cache:
+  directories:
+    - "$HOME/.m2/repository"
+
+before_install:
+  - export TZ=Brazil/East
+  - chmod +x mvnw
+
+jobs:
+  include:
+
+    - stage: BUILD
+      name: "Build APP"
+      if: branch IN (develop, main)
+      env:
+        - APP_PROFILE=test
+      script:
+        - ./mvnw install -DskipTests
+
+    - stage: TESTS
+      name: "Unit Tests"
+      if: branch IN (develop, main)
+      env:
+        - APP_PROFILE=test
+      script:
+        - ./mvnw test || travis_terminate 1;
+
+    - name: "Quality Code Tests"
+      if: branch == develop AND type IN (push, pull_request)
+      addons:
+        sonarcloud:
+          organization: "grupocesw"
+          token: $SONAR_TOKEN
+      script:
+        - ./mvnw clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=grupocesw_easy-ong-backend
+
+    - stage: STAGING DEPLOY
+      name: "Staging Deploy - Heroku"
+      if: branch == develop AND type IN (push, pull_request)
+      script: skip
+      deploy:
+        provider: heroku
+        strategy: api
+        api_key: $HEROKU_API_KEY
+        edge: true
+        app: easyong-staging
+        on:
+          branch: develop
+
+    - stage: STAGING TEST
+      if: branch == develop AND type IN (push, pull_request)
+      name: "Staging Test - Alive APP"
+      script:
+        - curl https://easyong-staging.herokuapp.com/clean-cache-resources
+        - curl https://easyong-staging.herokuapp.com/api/v2/ngos/4 | grep '{"id":4,' || travis_terminate 1;
+
+    - stage: PRODUCTION DEPLOY
+      if: branch == main AND type IN (tag)
+      name: "Production Deploy - Heroku"
+      script: skip
+
+      deploy:
+        provider: heroku
+        strategy: api
+        api_key: $HEROKU_API_KEY
+        edge: true
+        app: easyong
+        on:
+          branch: main
+
+    - stage: PRODUCTION TEST
+      if: branch == main AND type IN (tag)
+      name: "Production Test - Alive APP"
+      script:
+        - curl https://easyong.herokuapp.com/clean-cache-resources
+        - curl https://easyong.herokuapp.com/api/v2/ngos/4 | grep '{"id":4,' || travis_terminate 1;
